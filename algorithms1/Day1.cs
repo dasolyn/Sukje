@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace algorithms1 {
     class Day1 {
@@ -46,27 +45,48 @@ namespace algorithms1 {
         }
         #endregion
         #region Class7
-        public int Class7_Compare(string s1, string s2) {
-            if (s1.Length > 0 && s2.Length == 0) return 1;
-            else if (s1.Length == 0 && s2.Length > 0) return -1;
-            else if (s1.Length == 0 && s2.Length == 0) return 0;
+        public int Class7_Compare(string s1, string s2, int pos1, int pos2) {
+            if (s1.Length > pos1 && s2.Length == pos2) return 1;
+            else if (s1.Length == pos1 && s2.Length > pos2) return -1;
+            else if (s1.Length == pos1 && s2.Length == pos2) return 0;
 
-            if (s1[0] < s2[0]) return -1;
-            else if (s1[0] > s2[0]) return 1;
-            else return Class7_Compare(s1.Substring(1), s2.Substring(1));
+            if (s1[pos1] < s2[pos2]) return -1;
+            else if (s1[pos1] > s2[pos2]) return 1;
+            else return Class7_Compare(s1, s2, pos1 + 1, pos2 + 1);
         }
         #endregion
         #region Class8
         public int Class8(IList<int> data, int left, int right, int sum) {
-            if (left == right) return 0;
-            return Class8(data, left + 1, right, sum) + Class8_Right(data, left, right, sum);
+            if (left >= right) return 0;
+
+            int temp = data[left] + data[right];
+            if (temp == sum) return 1 + Class8(data, left + 1, right - 1, sum);
+            else if (temp > sum) return Class8(data, left, right - 1, sum);
+            else return Class8(data, left + 1, right, sum);
         }
-        public int Class8_Right(IList<int> data, int left, int right, int sum) {
-            if (left == right) return 0;
-            if (data[left] + data[right] < sum) return 0;
-            if (data[left] + data[right] == sum) return 1; // 검색 성공
-            else return Class8_Right(data, left, right - 1, sum);
+        #endregion
+        #region Class9
+        public int Class9(IList<int> data, int left, int right, int n) {
+            if (left > right) {
+                if (right < 0) return -1;
+                else if (data[right] < n) return right;
+                else return left;
+            } else {
+                int m = (left + right) / 2;
+                if (data[m] == n) return m;
+                else if (data[m] > n) return Class9(data, left, m - 1, n);
+                else return Class9(data, m + 1, right, n);
+            }
+        }
+        #endregion
+        #region Class10
+        public int Class10(IList<int> data1, IList<int> data2, int pos1, int pos2) {
+            if (pos1 >= data1.Count || pos2 >= data2.Count) return 0;
+            if (data1[pos1] == data2[pos2]) return 1 + Class10(data1, data2, pos1 + 1, pos2 + 1);
+            else if (data1[pos1] < data2[pos2]) return Class10(data1, data2, pos1 + 1, pos2);
+            else return Class10(data1, data2, pos1, pos2 + 1);
         }
         #endregion
     }
 }
+

@@ -1,5 +1,5 @@
 ﻿#define Day1
-#define Class8
+#define Class9
 
 using System;
 using System.Collections.Generic;
@@ -47,7 +47,7 @@ namespace algorithms1 {
             string s1 = Console.ReadLine();
             Console.Write("Input the string2 (Class7): ");
             string s2 = Console.ReadLine();
-            int res = r.Class7_Compare(s1, s2);
+            int res = r.Class7_Compare(s1, s2, 0, 0);
             if (res < 0) {
                 Console.WriteLine("String 1 is first, String 2 is second.");
             } else if (res == 0) {
@@ -57,12 +57,29 @@ namespace algorithms1 {
             }
 #endif
 #if Class8
-            Console.Write("Input the white-space seperated numbers (Class8): ");
+            Console.Write("Input white-space seperated numbers (Class8): ");
             string s1 = Console.ReadLine();
             IList<int> s2 = s1.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
             Console.Write("Input the sum number (Class8): ");
             int s3 = int.Parse(Console.ReadLine());
             Console.WriteLine($"Result is {r.Class8(s2, 0, s2.Count - 1, s3)}");
+#endif
+#if Class9
+            Console.Write("Input white-space seperated numbers (Class9): ");
+            string s1 = Console.ReadLine();
+            IList<int> s2 = s1.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
+            Console.Write("Input the number for find (Class9): ");
+            int s3 = int.Parse(Console.ReadLine());
+            Console.WriteLine($"Result is {r.Class9(s2, 0, s2.Count - 1, s3)}");
+#endif
+#if Class10
+            Console.Write("Input white-space seperated numbers1 (Class10): ");
+            string s1 = Console.ReadLine();
+            IList<int> s2 = s1.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
+            Console.Write("Input white-space seperated numbers2 (Class10): ");
+            string s3 = Console.ReadLine();
+            IList<int> s4 = s3.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
+            Console.WriteLine($"Result is {r.Class10(s2, s4, 0, 0)}");
 #endif
 #endif
             Console.ReadLine(); // 자동 종료 방지
