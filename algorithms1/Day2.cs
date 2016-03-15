@@ -95,8 +95,8 @@ namespace algorithms1 {
             return res;
         }
         private int Class3_CountBlob(List<List<int>> ints, int x, int y, int size) {
-            if (ints[x][y] != 1) return 0;
             if (x < 0 || y < 0 || x >= size || y >= size) return 0;
+            if (ints[x][y] != 1) return 0;
 
             ints[x][y] = 2;
 
