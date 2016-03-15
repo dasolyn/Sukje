@@ -81,5 +81,35 @@ namespace algorithms1 {
             return false;
         }
         #endregion
+        #region Class3
+        public List<int> Class3(List<List<int>> ints, int size) {
+            List<int> res = new List<int>();
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (ints[i][j] == 1) {
+                        int r = Class3_CountBlob(ints, i, j, size);
+                        if (r > 0) res.Add(r);
+                    }
+                }
+            }
+            return res;
+        }
+        private int Class3_CountBlob(List<List<int>> ints, int x, int y, int size) {
+            if (ints[x][y] != 1) return 0;
+            if (x < 0 || y < 0 || x >= size || y >= size) return 0;
+
+            ints[x][y] = 2;
+
+            return 1
+                + Class3_CountBlob(ints, x + 1, y, size)
+                + Class3_CountBlob(ints, x + 1, y + 1, size)
+                + Class3_CountBlob(ints, x, y + 1, size)
+                + Class3_CountBlob(ints, x - 1, y, size)
+                + Class3_CountBlob(ints, x - 1, y - 1, size)
+                + Class3_CountBlob(ints, x, y - 1, size)
+                + Class3_CountBlob(ints, x + 1, y - 1, size)
+                + Class3_CountBlob(ints, x - 1, y + 1, size);
+        }
+        #endregion
     }
 }

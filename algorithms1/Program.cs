@@ -141,6 +141,11 @@ namespace algorithms1 {
                     ints.Add(strs[i].Split(' ').Select(k => { if (int.Parse(k) == 1) return 1; else return 0; }).ToList());
                 }
             }
+            List<int> blobs = new List<int>();
+            Console.WriteLine($"The number of blobs is {blobs.Count}");
+            foreach (int i in blobs) {
+                Console.WriteLine(i);
+            }
 #endif
 #endif
             Console.ReadLine(); // 자동 종료 방지
