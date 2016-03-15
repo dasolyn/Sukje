@@ -15,19 +15,19 @@ namespace algorithms1 {
             ints[startx][starty] = 2;
 
             // x--
-            if (startx - 1 >= 0 && ints[startx - 1][starty] == 0) {
+            if (startx - 1 >= 0 && ints[startx - 1][starty] != 1) {
                 if (Class1(ints, startx - 2, starty - 1, endx, endy, size) || Class1(ints, startx - 2, starty + 1, endx, endy, size)) return true;
             }
             // x++
-            if (startx + 1 < size && ints[startx + 1][starty] == 0) {
+            if (startx + 1 < size && ints[startx + 1][starty] != 1) {
                 if (Class1(ints, startx + 2, starty - 1, endx, endy, size) || Class1(ints, startx + 2, starty + 1, endx, endy, size)) return true;
             }
             // y--
-            if (starty - 1 >= 0 && ints[startx][starty - 1] == 0) {
+            if (starty - 1 >= 0 && ints[startx][starty - 1] != 1) {
                 if (Class1(ints, startx - 1, starty - 2, endx, endy, size) || Class1(ints, startx + 1, starty - 2, endx, endy, size)) return true;
             }
             // y++
-            if (starty + 1 < size && ints[startx][starty + 1] == 0) {
+            if (starty + 1 < size && ints[startx][starty + 1] != 1) {
                 if (Class1(ints, startx - 1, starty + 2, endx, endy, size) || Class1(ints, startx + 1, starty + 2, endx, endy, size)) return true;
             }
             return false;
