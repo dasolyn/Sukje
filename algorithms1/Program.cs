@@ -1,8 +1,9 @@
-﻿#define Day1
-#define Class9
+﻿#define Day2
+#define Class3
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace algorithms1 {
@@ -75,11 +76,71 @@ namespace algorithms1 {
 #if Class10
             Console.Write("Input white-space seperated numbers1 (Class10): ");
             string s1 = Console.ReadLine();
-            IList<int> s2 = s1.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
+            List<int> s2 = s1.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
             Console.Write("Input white-space seperated numbers2 (Class10): ");
             string s3 = Console.ReadLine();
-            IList<int> s4 = s3.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
+            List<int> s4 = s3.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
             Console.WriteLine($"Result is {r.Class10(s2, s4, 0, 0)}");
+#endif
+#endif
+#if Day2
+            Day2 r = new Day2();
+#if Class1
+            List<string> strs = File.ReadLines("D2C1.txt").ToList();
+            List<List<int>> ints = new List<List<int>>();
+            int size = 0,  startx = 0, starty = 0, endx = 0, endy = 0;
+            for (int i = 0; i < strs.Count; i++) {
+                if (i == 0) {
+                    List<string> s1 = strs[0].Split(' ').ToList();
+                    size = int.Parse(s1[0]);
+                    startx = int.Parse(s1[1]);
+                    starty = int.Parse(s1[2]);
+                    endx = int.Parse(s1[3]);
+                    endy = int.Parse(s1[4]);
+                } else {
+                    ints.Add(strs[i].Split(' ').Select(k => { if (int.Parse(k) == 1) return 1; else return 0; }).ToList());
+                }
+            }
+            if (r.Class1(ints, startx, starty, endx, endy, size)) {
+                Console.WriteLine("Class1: OK! You can reach that cell.");
+            } else {
+                Console.WriteLine("Class1: You can't reach that cell.");
+            }
+#endif
+#if Class2
+            List<string> strs = File.ReadLines("D2C1.txt").ToList();
+            List<List<int>> ints = new List<List<int>>();
+            int size = 0,  startx = 0, starty = 0, endx = 0, endy = 0;
+            for (int i = 0; i < strs.Count; i++) {
+                if (i == 0) {
+                    List<string> s1 = strs[0].Split(' ').ToList();
+                    size = int.Parse(s1[0]);
+                    startx = int.Parse(s1[1]);
+                    starty = int.Parse(s1[2]);
+                    endx = int.Parse(s1[3]);
+                    endy = int.Parse(s1[4]);
+                } else {
+                    ints.Add(strs[i].Split(' ').Select(k => { if (int.Parse(k) == 1) return 1; else return 0; }).ToList());
+                }
+            }
+            if (r.Class2(ints, startx, starty, endx, endy, size)) {
+                Console.WriteLine("Class2: OK! You can reach that cell.");
+            } else {
+                Console.WriteLine("Class2: You can't reach that cell.");
+            }
+#endif
+#if Class3
+            List<string> strs = File.ReadLines("D2C3.txt").ToList();
+            List<List<int>> ints = new List<List<int>>();
+            int size = 0;
+            for (int i = 0; i < strs.Count; i++) {
+                if (i == 0) {
+                    List<string> s1 = strs[0].Split(' ').ToList();
+                    size = int.Parse(s1[0]);
+                } else {
+                    ints.Add(strs[i].Split(' ').Select(k => { if (int.Parse(k) == 1) return 1; else return 0; }).ToList());
+                }
+            }
 #endif
 #endif
             Console.ReadLine(); // 자동 종료 방지
