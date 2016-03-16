@@ -1,5 +1,5 @@
-﻿#define Day2
-#define Class3
+﻿#define Day3
+#define Class1
 
 using System;
 using System.Collections.Generic;
@@ -145,6 +145,24 @@ namespace algorithms1 {
             Console.WriteLine($"The number of blobs is {blobs.Count}");
             foreach (int i in blobs) {
                 Console.WriteLine(i);
+            }
+#endif
+#endif
+#if Day3
+            Day3 r = new Day3();
+#if Class1
+            for (int i = 1; i <= 15; i++) {
+                // 보드 만들기
+                var board = new List<List<int>>();
+                for (int x = 0; x < i; x++) {
+                    var temp = new List<int>();
+                    for (int y = 0; y < i; y++) {
+                        temp.Add(0);
+                    }
+                    board.Add(temp);
+                }
+
+                Console.WriteLine($"When N={i}, result is {r.Class1_Start(board, i)}");
             }
 #endif
 #endif
