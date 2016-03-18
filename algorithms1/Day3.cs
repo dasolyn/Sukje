@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace algorithms1 {
     class Day3 {
+        #region Class1
         public int Class1_Start(int size) {
             // 첫번째 행
             int sum = 0;
@@ -18,9 +19,8 @@ namespace algorithms1 {
                 // 같은 대각선
                 if (Math.Abs(board.Count - i) == Math.Abs(col - board[i])) return 0;
             }
-
             // 마지막 행
-            if (board.Count - 1 == size) return 1;
+            if (board.Count + 1 == size) return 1;
 
             // 다음 행 진행
             board.Add(col);
@@ -29,5 +29,34 @@ namespace algorithms1 {
             board.RemoveAt(board.Count - 1);
             return sum;
         }
+        #endregion
+        #region Class2
+        public int Class2(List<int> numbers, int sum) {
+            Stack<int> subset = new Stack<int>();
+            int count = 0;
+            for (int i = 0; i < numbers.Count; i++) count += Class2_Find(numbers, i, subset, sum);
+            return count;
+        }
+        public int Class2_Find(List<int> numbers, int pos, Stack<int> subset, int sum) {
+            if (Class2_Sum(subset) + numbers[pos] > sum) {
+                return 0;
+            } else if (Class2_Sum(subset) + numbers[pos] == sum) {
+                foreach (int i in subset) Console.Write($"{i} ");
+                Console.WriteLine($"{numbers[pos] }");
+                return 1;
+            } else {
+                subset.Push(numbers[pos]);
+                int count = 0;
+                for (int i = pos + 1; i < numbers.Count; i++) count += Class2_Find(numbers, i, subset, sum);
+                subset.Pop();
+                return count;
+            }
+        }
+        public int Class2_Sum(IEnumerable<int> set) {
+            int sum = 0;
+            foreach (int i in set) sum += i;
+            return sum;
+        }
+        #endregion
     }
 }

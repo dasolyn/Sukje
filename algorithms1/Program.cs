@@ -1,5 +1,5 @@
 ﻿#define Day3
-#define Class1
+#define Class2
 
 using System;
 using System.Collections.Generic;
@@ -151,18 +151,15 @@ namespace algorithms1 {
 #if Day3
             Day3 r = new Day3();
 #if Class1
-            for (int i = 1; i <= 15; i++) {
-                // 보드 만들기
-                Console.WriteLine($"Class1, When N={i}, result is {r.Class1_Start(i)}");
-            }
+            for (int i = 1; i <= 15; i++) Console.WriteLine($"Class1, When N={i}, result is {r.Class1_Start(i)}");
 #endif
 #if Class2
             Console.Write("Input white-space seperated numbers (Class2): ");
             string s1 = Console.ReadLine();
-            IList<int> s2 = s1.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
+            List<int> s2 = s1.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
             Console.Write("Input the number for sum of subset's elements (Class2): ");
             int s3 = int.Parse(Console.ReadLine());
-            Console.WriteLine($"Result is {r.Class2(s2, 0, s2.Count - 1, s3)}");
+            Console.WriteLine($"Result is {r.Class2(s2, s3)}");
 #endif
 #endif
             Console.ReadLine(); // 자동 종료 방지
