@@ -1,33 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace algorithms1 {
     class Day3 {
-        public int Class1_Start(List<List<int>> board, int size) {
+        public int Class1_Start(int size) {
             // 첫번째 행
             int sum = 0;
-            for (int i = 0; i < size; i++) sum += Class1_Find(board, size, 0, i);
+            List<int> board = new List<int>();
+            for (int i = 0; i < size; i++) sum += Class1_Find(board, size, i);
             return sum;
         }
-        public int Class1_Find(List<List<int>> board, int size, int x, int y) {
+        public int Class1_Find(List<int> board, int size, int col) {
             // 다른 말과 충돌이 없는지 검사
-            for (int i = 0; i < x; i++) {
+            for (int i = 0; i < board.Count; i++) {
                 // 같은 열
-                if (board[i][y] == 1) return 0;
-                // 같은 대각선 1; x-- y-- 대각선
-                if (y - (x - i) >= 0 && board[i][y - (x - i)] == 1) return 0;
-                // 같은 대각선 2; x-- y++ 대각선
-                if (y + (x - i) < size && board[i][y + (x - i)] == 1) return 0;
+                if (col == board[i]) return 0;
+                // 같은 대각선
+                if (Math.Abs(board.Count - i) == Math.Abs(col - board[i])) return 0;
             }
 
             // 마지막 행
-            if (size - 1 == x)
-                return 1;
+            if (board.Count - 1 == size) return 1;
 
-            board[x][y] = 1;
             // 다음 행 진행
+            board.Add(col);
             int sum = 0;
-            for (int i = 0; i < size; i++) sum += Class1_Find(board, size, x + 1, i);
-            board[x][y] = 0;
+            for (int i = 0; i < size; i++) sum += Class1_Find(board, size, i);
+            board.RemoveAt(board.Count - 1);
             return sum;
         }
     }

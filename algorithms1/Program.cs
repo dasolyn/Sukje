@@ -153,17 +153,16 @@ namespace algorithms1 {
 #if Class1
             for (int i = 1; i <= 15; i++) {
                 // 보드 만들기
-                var board = new List<List<int>>();
-                for (int x = 0; x < i; x++) {
-                    var temp = new List<int>();
-                    for (int y = 0; y < i; y++) {
-                        temp.Add(0);
-                    }
-                    board.Add(temp);
-                }
-
-                Console.WriteLine($"When N={i}, result is {r.Class1_Start(board, i)}");
+                Console.WriteLine($"Class1, When N={i}, result is {r.Class1_Start(i)}");
             }
+#endif
+#if Class2
+            Console.Write("Input white-space seperated numbers (Class2): ");
+            string s1 = Console.ReadLine();
+            IList<int> s2 = s1.Split(' ').Select(x => int.Parse(x)).OrderBy(x => x).ToList();
+            Console.Write("Input the number for sum of subset's elements (Class2): ");
+            int s3 = int.Parse(Console.ReadLine());
+            Console.WriteLine($"Result is {r.Class2(s2, 0, s2.Count - 1, s3)}");
 #endif
 #endif
             Console.ReadLine(); // 자동 종료 방지
