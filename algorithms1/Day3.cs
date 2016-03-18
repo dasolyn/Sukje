@@ -32,12 +32,12 @@ namespace algorithms1 {
         #endregion
         #region Class2
         public int Class2(List<int> numbers, int sum) {
-            Stack<int> subset = new Stack<int>();
+            List<int> subset = new List<int>();
             int count = 0;
             for (int i = 0; i < numbers.Count; i++) count += Class2_Find(numbers, i, subset, sum);
             return count;
         }
-        public int Class2_Find(List<int> numbers, int pos, Stack<int> subset, int sum) {
+        public int Class2_Find(List<int> numbers, int pos, List<int> subset, int sum) {
             if (Class2_Sum(subset) + numbers[pos] > sum) {
                 return 0;
             } else if (Class2_Sum(subset) + numbers[pos] == sum) {
@@ -45,14 +45,14 @@ namespace algorithms1 {
                 Console.WriteLine($"{numbers[pos] }");
                 return 1;
             } else {
-                subset.Push(numbers[pos]);
+                subset.Add(numbers[pos]);
                 int count = 0;
                 for (int i = pos + 1; i < numbers.Count; i++) count += Class2_Find(numbers, i, subset, sum);
-                subset.Pop();
+                subset.RemoveAt(subset.Count - 1);
                 return count;
             }
         }
-        public int Class2_Sum(IEnumerable<int> set) {
+        public int Class2_Sum(List<int> set) {
             int sum = 0;
             foreach (int i in set) sum += i;
             return sum;
