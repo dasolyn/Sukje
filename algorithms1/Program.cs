@@ -216,7 +216,8 @@ namespace algorithms1 {
             Console.WriteLine();
 #endif
 #if Class_Real
-            Day4<long> r = new Day4<long>();
+            // 데이터 생성
+            List<List<long>> datas = new List<List<long>>();
             for (long i = 100; i <= 1000000; i *= 10) {
                 List<long> data = new List<long>();
                 Random rand = new Random();
@@ -226,35 +227,56 @@ namespace algorithms1 {
                     long randomlong = BitConverter.ToInt64(buf, 0);
                     data.Add(randomlong);
                 }
-
-                Console.WriteLine($"Try with {i} elements");
-                
-                r.Data = new List<long>(data);
-                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-                r.BubbleSort();
-                watch.Stop();
-                Console.WriteLine($"Bubble Sort: {watch.ElapsedMilliseconds} ms");
-                
-                r.Data = new List<long>(data);
-                watch.Start();
-                r.SelectionSort();
-                watch.Stop();
-                Console.WriteLine($"Selection Sort: {watch.ElapsedMilliseconds} ms");
-                
-                r.Data = new List<long>(data);
-                watch.Start();
-                r.InsertionSort();
-                watch.Stop();
-                Console.WriteLine($"Insertion Sort: {watch.ElapsedMilliseconds} ms");
-
-                r.Data = new List<long>(data);
-                watch.Start();
-                r.MergeSort();
-                watch.Stop();
-                Console.WriteLine($"Merge Sort: {watch.ElapsedMilliseconds} ms");
-
-                Console.WriteLine();
+                datas.Add(data);
             }
+
+            // 거품 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    Day4<long> r = new Day4<long>();
+                    r.Data = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    r.BubbleSort();
+                    watch.Stop();
+                    Console.WriteLine($"Bubble Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
+
+            // 선택 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    Day4<long> r = new Day4<long>();
+                    r.Data = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    r.SelectionSort();
+                    watch.Stop();
+                    Console.WriteLine($"Selection Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
+
+            // 삽입 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    Day4<long> r = new Day4<long>();
+                    r.Data = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    r.InsertionSort();
+                    watch.Stop();
+                    Console.WriteLine($"Insertion Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
+
+            // 병합 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    Day4<long> r = new Day4<long>();
+                    r.Data = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    r.MergeSort();
+                    watch.Stop();
+                    Console.WriteLine($"Merge Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
 #endif
 #endif
             Console.ReadLine(); // 자동 종료 방지
