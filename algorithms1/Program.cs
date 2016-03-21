@@ -1,5 +1,5 @@
-﻿#define Day3
-#define Class2
+﻿#define Day4
+#define Class_Real
 
 using System;
 using System.Collections.Generic;
@@ -160,6 +160,101 @@ namespace algorithms1 {
             Console.Write("Input the number for sum of subset's elements (Class2): ");
             int s3 = int.Parse(Console.ReadLine());
             Console.WriteLine($"Result is {r.Class2(s2, s3)}");
+#endif
+#endif
+#if Day4
+#if Class_Test
+            Day4<int> r = new Day4<int>();
+            List<int> data = new List<int>();
+            Random rand = new Random();
+            for (int i = 0; i < 10; i++) {
+                data.Add(rand.Next(-99999, 99999));
+            }
+
+            r.Data = new List<int>(data);
+            Console.WriteLine("Original Data: ");
+            r.PrintData();
+            System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+            r.BubbleSort();
+            watch.Stop();
+            Console.WriteLine($"Bubble Sort: {watch.ElapsedMilliseconds} ms");
+            Console.WriteLine("Sorted Data: ");
+            r.PrintData();
+            Console.WriteLine();
+
+            r.Data = new List<int>(data);
+            Console.WriteLine("Original Data: ");
+            r.PrintData();
+            watch.Start();
+            r.SelectionSort();
+            watch.Stop();
+            Console.WriteLine($"Selection Sort: {watch.ElapsedMilliseconds} ms");
+            Console.WriteLine("Sorted Data: ");
+            r.PrintData();
+            Console.WriteLine();
+
+            r.Data = new List<int>(data);
+            Console.WriteLine("Original Data: ");
+            r.PrintData();
+            watch.Start();
+            r.InsertionSort();
+            watch.Stop();
+            Console.WriteLine($"Insertion Sort: {watch.ElapsedMilliseconds} ms");
+            Console.WriteLine("Sorted Data: ");
+            r.PrintData();
+            Console.WriteLine();
+
+            r.Data = new List<int>(data);
+            Console.WriteLine("Original Data: ");
+            r.PrintData();
+            watch.Start();
+            r.MergeSort();
+            watch.Stop();
+            Console.WriteLine($"Merge Sort: {watch.ElapsedMilliseconds} ms");
+            Console.WriteLine("Sorted Data: ");
+            r.PrintData();
+            Console.WriteLine();
+#endif
+#if Class_Real
+            Day4<long> r = new Day4<long>();
+            for (long i = 100; i <= 1000000; i *= 10) {
+                List<long> data = new List<long>();
+                Random rand = new Random();
+                for (long j = 0; j < i; j++) {
+                    byte[] buf = new byte[8];
+                    rand.NextBytes(buf);
+                    long randomlong = BitConverter.ToInt64(buf, 0);
+                    data.Add(randomlong);
+                }
+
+                Console.WriteLine($"Try with {i} elements");
+                
+                r.Data = new List<long>(data);
+                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                r.BubbleSort();
+                watch.Stop();
+                Console.WriteLine($"Bubble Sort: {watch.ElapsedMilliseconds} ms");
+                
+                r.Data = new List<long>(data);
+                watch.Start();
+                r.SelectionSort();
+                watch.Stop();
+                Console.WriteLine($"Selection Sort: {watch.ElapsedMilliseconds} ms");
+                
+                r.Data = new List<long>(data);
+                watch.Start();
+                r.InsertionSort();
+                watch.Stop();
+                Console.WriteLine($"Insertion Sort: {watch.ElapsedMilliseconds} ms");
+
+                r.Data = new List<long>(data);
+                watch.Start();
+                r.MergeSort();
+                watch.Stop();
+                Console.WriteLine($"Merge Sort: {watch.ElapsedMilliseconds} ms");
+
+                Console.WriteLine();
+            }
 #endif
 #endif
             Console.ReadLine(); // 자동 종료 방지
