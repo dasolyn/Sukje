@@ -1,5 +1,5 @@
 ﻿#define Day4
-#define Class_Real
+#define Class3
 
 using System;
 using System.Collections.Generic;
@@ -212,8 +212,30 @@ namespace algorithms1 {
             Console.WriteLine("Sorted Data: ");
             copied.Print();
             Console.WriteLine();
+
+            copied = new List<int>(data);
+            Console.WriteLine("Original Data: ");
+            copied.Print();
+            watch.Start();
+            copied.QuickSort();
+            watch.Stop();
+            Console.WriteLine($"Quick Sort: {watch.ElapsedMilliseconds} ms");
+            Console.WriteLine("Sorted Data: ");
+            copied.Print();
+            Console.WriteLine();
+
+            copied = new List<int>(data);
+            Console.WriteLine("Original Data: ");
+            copied.Print();
+            watch.Start();
+            copied.MedianQuickSort();
+            watch.Stop();
+            Console.WriteLine($"Median Quick Sort: {watch.ElapsedMilliseconds} ms");
+            Console.WriteLine("Sorted Data: ");
+            copied.Print();
+            Console.WriteLine();
 #endif
-#if Class_Real
+#if Class1
             // 데이터 생성
             List<List<long>> datas = new List<List<long>>();
             for (int i = 100; i <= 1000000; i *= 10) {
@@ -228,6 +250,17 @@ namespace algorithms1 {
                 datas.Add(data);
             }
 
+            // C# 내부 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    List<long> copy = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    copy.Sort();
+                    watch.Stop();
+                    Console.WriteLine($"C# internal sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
+
             // 거품 정렬
             System.Threading.Tasks.Task.Run(() => {
                 foreach (var d in datas) {
@@ -235,7 +268,7 @@ namespace algorithms1 {
                     System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                     copy.BubbleSort();
                     watch.Stop();
-                    Console.WriteLine($"Bubble Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
+                    Console.WriteLine($"Bubble sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
                 }
             });
 
@@ -246,7 +279,7 @@ namespace algorithms1 {
                     System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                     copy.SelectionSort();
                     watch.Stop();
-                    Console.WriteLine($"Selection Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
+                    Console.WriteLine($"Selection sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
                 }
             });
 
@@ -257,7 +290,7 @@ namespace algorithms1 {
                     System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                     copy.InsertionSort();
                     watch.Stop();
-                    Console.WriteLine($"Insertion Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
+                    Console.WriteLine($"Insertion sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
                 }
             });
 
@@ -268,8 +301,104 @@ namespace algorithms1 {
                     System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                     copy.MergeSort();
                     watch.Stop();
-                    Console.WriteLine($"Merge Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
+                    Console.WriteLine($"Merge sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
                 }
+            });
+
+            // 퀵 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    List<long> copy = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    copy.QuickSort();
+                    watch.Stop();
+                    Console.WriteLine($"Quick sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
+
+            // 중간값 사용 퀵 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    List<long> copy = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    copy.MedianQuickSort();
+                    watch.Stop();
+                    Console.WriteLine($"Median quick sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
+#endif
+#if Class2
+            // 데이터 생성
+            List<List<long>> datas = new List<List<long>>();
+            for (int i = 100; i <= 1000000; i *= 10) {
+                List<long> data = new List<long>();
+                Random rand = new Random();
+                for (int j = 0; j < i; j++) {
+                    byte[] buf = new byte[8];
+                    rand.NextBytes(buf);
+                    long randomlong = BitConverter.ToInt64(buf, 0);
+                    data.Add(randomlong);
+                }
+                datas.Add(data);
+            }
+
+            // 정렬된 배열에 대한 퀵 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    // 개수가 1만만 넘어도 스택 오버플로우가 뜸
+                    if (d.Count >= 10000) break;
+                    List<long> copy = new List<long>(d);
+                    copy.Sort();
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    copy.QuickSort();
+                    watch.Stop();
+                    Console.WriteLine($"Quick sort with sorted {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
+
+            // 정렬된 배열에 대한 중간값 사용 퀵 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    List<long> copy = new List<long>(d);
+                    copy.Sort();
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    copy.MedianQuickSort();
+                    watch.Stop();
+                    Console.WriteLine($"Median quick sort with sorted {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
+#endif
+#if Class3
+            // 데이터 생성
+            List<long> data = new List<long>();
+            Random rand = new Random();
+            for (int j = 0; j < 100000; j++) {
+                byte[] buf = new byte[8];
+                rand.NextBytes(buf);
+                long randomlong = BitConverter.ToInt64(buf, 0);
+                data.Add(randomlong);
+            }
+
+            Console.Write("Input the number, for find n-th smallest number(Class3): ");
+            int findex = int.Parse(Console.ReadLine());
+
+            // 퀵 정렬후 찾기
+            System.Threading.Tasks.Task.Run(() => {
+                List<long> copy = new List<long>(data);
+                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                copy.QuickSort();
+                long found = copy[findex];
+                watch.Stop();
+                Console.WriteLine($"Quick sort to find number: It takes {watch.ElapsedMilliseconds} ms, result is {found}");
+            });
+
+            // 퀵 선택
+            System.Threading.Tasks.Task.Run(() => {
+                List<long> copy = new List<long>(data);
+                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                long found = copy.QuickSelection(findex);
+                watch.Stop();
+                Console.WriteLine($"Quick selection to find number: It takes {watch.ElapsedMilliseconds} ms, result is {found}");
             });
 #endif
 #endif

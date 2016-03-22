@@ -78,8 +78,7 @@ namespace algorithms1 {
             }
         }
         private static IList<T> MergeSort_Merge<T>(IList<T> FirstPart, IList<T> SecondPart) where T : IComparable<T> {
-            int i = 0;
-            int j = 0;
+            int i = 0, j = 0;
             List<T> merged = new List<T>();
             while (true) {
                 if (FirstPart[i].CompareTo(SecondPart[j]) <= 0) {
@@ -94,6 +93,123 @@ namespace algorithms1 {
             for (; i < FirstPart.Count; i++) merged.Add(FirstPart[i]);
             for (; j < SecondPart.Count; j++) merged.Add(SecondPart[j]);
             return merged;
+        }
+        public static void QuickSort<T>(this IList<T> Source) where T : IComparable<T> {
+            QuickSort(Source, 0, Source.Count - 1);
+        }
+        private static void QuickSort<T>(IList<T> Source, int StartIndex, int LastIndex) where T : IComparable<T> {
+            if (StartIndex >= LastIndex) {
+                return;
+            } else {
+                // 피벗보다 작은 원소를 왼쪽으로
+                int small = StartIndex - 1;
+                for (int i = StartIndex; i < LastIndex; i++) {
+                    if (Source[i].CompareTo(Source[LastIndex]) < 0) {
+                        small++;
+                        T temp = Source[small];
+                        Source[small] = Source[i];
+                        Source[i] = temp;
+                    }
+                }
+                // 피벗을 그 사이로
+                {
+                    small++;
+                    T temp = Source[small];
+                    Source[small] = Source[LastIndex];
+                    Source[LastIndex] = temp;
+                }
+                // 재귀
+                QuickSort(Source, StartIndex, small - 1);
+                QuickSort(Source, small + 1, LastIndex);
+            }
+        }
+        public static void MedianQuickSort<T>(this IList<T> Source) where T : IComparable<T> {
+            MedianQuickSort(Source, 0, Source.Count - 1);
+        }
+        private static void MedianQuickSort<T>(IList<T> Source, int StartIndex, int LastIndex) where T : IComparable<T> {
+            if (StartIndex >= LastIndex) {
+                return;
+            } else {
+                // 피벗 고르기
+                int pivot;
+                {
+                    int mid = (StartIndex + LastIndex) / 2;
+                    if (Source[StartIndex].CompareTo(Source[mid]) <= 0) {
+                        if (Source[mid].CompareTo(Source[LastIndex]) <= 0) {
+                            pivot = mid;
+                        } else {
+                            if (Source[StartIndex].CompareTo(Source[LastIndex]) <= 0) {
+                                pivot = LastIndex;
+                            } else {
+                                pivot = StartIndex;
+                            }
+                        }
+                    } else {
+                        if (Source[mid].CompareTo(Source[LastIndex]) <= 0) {
+                            if (Source[StartIndex].CompareTo(Source[LastIndex]) <= 0) {
+                                pivot = StartIndex;
+                            } else {
+                                pivot = LastIndex;
+                            }
+                        } else {
+                            pivot = mid;
+                        }
+                    }
+                }
+                // 피벗을 오른쪽 끝으로 옮긴다
+                if (pivot != LastIndex) {
+                    T temp = Source[LastIndex];
+                    Source[LastIndex] = Source[pivot];
+                    Source[pivot] = temp;
+                }
+                // 피벗보다 작은 원소를 왼쪽으로
+                int small = StartIndex - 1;
+                for (int i = StartIndex; i < LastIndex; i++) {
+                    if (Source[i].CompareTo(Source[LastIndex]) < 0) {
+                        small++;
+                        T temp = Source[small];
+                        Source[small] = Source[i];
+                        Source[i] = temp;
+                    }
+                }
+                // 피벗을 그 사이로
+                {
+                    small++;
+                    T temp = Source[small];
+                    Source[small] = Source[LastIndex];
+                    Source[LastIndex] = temp;
+                }
+                // 재귀
+                MedianQuickSort(Source, StartIndex, small - 1);
+                MedianQuickSort(Source, small + 1, LastIndex);
+            }
+        }
+        public static T QuickSelection<T>(this IList<T> Source, int k) where T : IComparable<T> {
+            return QuickSelection(Source, 0, Source.Count - 1, k);
+        }
+        private static T QuickSelection<T>(IList<T> Source, int StartIndex, int LastIndex, int k) where T : IComparable<T> {
+            // 피벗보다 작은 원소를 왼쪽으로
+            int small = StartIndex - 1;
+            for (int i = StartIndex; i < LastIndex; i++) {
+                if (Source[i].CompareTo(Source[LastIndex]) < 0) {
+                    small++;
+                    T temp = Source[small];
+                    Source[small] = Source[i];
+                    Source[i] = temp;
+                }
+            }
+            // 피벗을 그 사이로
+            {
+                small++;
+                T temp = Source[small];
+                Source[small] = Source[LastIndex];
+                Source[LastIndex] = temp;
+            }
+            // 재귀
+            int smallcount = small - StartIndex;
+            if (smallcount == k) return Source[small];
+            else if (smallcount > k) return QuickSelection(Source, StartIndex, small - 1, k);
+            else return QuickSelection(Source, small + 1, LastIndex, k - smallcount - 1);
         }
         public static void Print<T>(this IEnumerable<T> Source) {
             int index = 0;
