@@ -218,10 +218,10 @@ namespace algorithms1 {
 #if Class_Real
             // 데이터 생성
             List<List<long>> datas = new List<List<long>>();
-            for (long i = 100; i <= 1000000; i *= 10) {
+            for (int i = 100; i <= 1000000; i *= 10) {
                 List<long> data = new List<long>();
                 Random rand = new Random();
-                for (long j = 0; j < i; j++) {
+                for (int j = 0; j < i; j++) {
                     byte[] buf = new byte[8];
                     rand.NextBytes(buf);
                     long randomlong = BitConverter.ToInt64(buf, 0);
