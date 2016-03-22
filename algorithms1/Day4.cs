@@ -1,86 +1,83 @@
-﻿using System;
+﻿//#define SuppressDay4
+
+using System;
 using System.Collections.Generic;
 
 namespace algorithms1 {
-    class Day4<T> where T : IComparable<T> {
-        public List<T> Data { get; set; } = new List<T>();
-        /// <summary>
-        /// 거품 정렬입니다.
-        /// </summary>
-        public void BubbleSort() {
-            for (int i = 0; i < Data.Count - 1; i++) {
-                for (int j = i + 1; j < Data.Count; j++) {
-                    // Data[i]가 Data[j]보다 크면 스왑
-                    if (Data[i].CompareTo(Data[j]) > 0) {
-                        T temp = Data[i];
-                        Data[i] = Data[j];
-                        Data[j] = temp;
+#if !SuppressDay4
+    public static class Day4 {
+        public static void BubbleSort<T>(this IList<T> Source) where T : IComparable<T> {
+            for (int i = 0; i < Source.Count - 1; i++) {
+                for (int j = i + 1; j < Source.Count; j++) {
+                    if (Source[i].CompareTo(Source[j]) > 0) {
+                        T temp = Source[i];
+                        Source[i] = Source[j];
+                        Source[j] = temp;
                     }
                 }
             }
         }
-        /// <summary>
-        /// 선택 정렬입니다.
-        /// </summary>
-        public void SelectionSort() {
-            for (int i = Data.Count - 1; i > 0; i--) {
+        public static void SelectionSort<T>(this IList<T> Source) where T : IComparable<T> {
+            for (int i = Source.Count - 1; i > 0; i--) {
                 // 최대값 찾기
                 int maxindex = 0;
-                T maxvalue = Data[0];
+                T maxvalue = Source[0];
                 for (int j = 1; j <= i; j++) {
-                    if (Data[j].CompareTo(maxvalue) > 0) {
-                        maxvalue = Data[j];
+                    if (Source[j].CompareTo(maxvalue) > 0) {
+                        maxvalue = Source[j];
                         maxindex = j;
                     }
                 }
                 // 그 값이 가장 오른쪽 값이 아니면 스왑
                 if (i != maxindex) {
-                    T temp = Data[i];
-                    Data[i] = Data[maxindex];
-                    Data[maxindex] = temp;
+                    T temp = Source[i];
+                    Source[i] = Source[maxindex];
+                    Source[maxindex] = temp;
                 }
             }
         }
-        /// <summary>
-        /// 삽입 정렬입니다.
-        /// </summary>
-        public void InsertionSort() {
-            for (int i = 1; i < Data.Count; i++) {
+        public static void InsertionSort<T>(this IList<T> Source) where T : IComparable<T> {
+            for (int i = 1; i < Source.Count; i++) {
                 // 삽입할 자리 찾기
                 int newindex = i;
                 for (int j = 0; j < i; j++) {
-                    if (Data[j].CompareTo(Data[i]) > 0) {
+                    if (Source[j].CompareTo(Source[i]) > 0) {
                         newindex = j;
                         break;
                     }
                 }
                 // 삽입
-                T temp = Data[i];
+                T temp = Source[i];
                 for (int j = i - 1; j >= newindex; j--) {
-                    Data[j + 1] = Data[j];
+                    Source[j + 1] = Source[j];
                 }
-                Data[newindex] = temp;
+                Source[newindex] = temp;
             }
         }
-        /// <summary>
-        /// 합병 정렬입니다.
-        /// </summary>
-        public void MergeSort() {
-            Data = MergeSort_Divide(Data);
+        public static void MergeSort<T>(this IList<T> Source) where T : IComparable<T> {
+            IList<T> sorted = MergeSort_Divide(Source);
+            Source.Clear();
+            foreach (T i in sorted) {
+                Source.Add(i);
+            }
         }
-        private List<T> MergeSort_Divide(List<T> DividedList) {
-            if (DividedList.Count == 1) {
-                return DividedList;
+        private static IList<T> MergeSort_Divide<T>(IList<T> source) where T : IComparable<T> {
+            if (source.Count == 1) {
+                return source;
             } else {
-                int mid = DividedList.Count / 2;
-                List<T> First = DividedList.GetRange(0, mid);
-                List<T> Second = DividedList.GetRange(mid, DividedList.Count - mid);
-                List<T> SortedFirst = MergeSort_Divide(First);
-                List<T> SortedSecond = MergeSort_Divide(Second);
+                int mid = source.Count / 2;
+                List<T> First = new List<T>();
+                List<T> Second = new List<T>();
+                for (int i = 0; i < source.Count; i++) {
+                    if (i < mid) First.Add(source[i]);
+                    else Second.Add(source[i]);
+                }
+                IList<T> SortedFirst = MergeSort_Divide(First);
+                IList<T> SortedSecond = MergeSort_Divide(Second);
                 return MergeSort_Merge(SortedFirst, SortedSecond);
             }
         }
-        private List<T> MergeSort_Merge(List<T> FirstPart, List<T> SecondPart) {
+        private static IList<T> MergeSort_Merge<T>(IList<T> FirstPart, IList<T> SecondPart) where T : IComparable<T> {
             int i = 0;
             int j = 0;
             List<T> merged = new List<T>();
@@ -98,15 +95,15 @@ namespace algorithms1 {
             for (; j < SecondPart.Count; j++) merged.Add(SecondPart[j]);
             return merged;
         }
-        /// <summary>
-        /// 리스트에 들어있는 값을 순서대로 출력합니다.
-        /// </summary>
-        public void PrintData() {
-            for (int i = 0; i < Data.Count; i++) {
-                Console.Write($"{Data[i]} ");
-                if ((i + 1) % 10 == 0) Console.WriteLine();
+        public static void Print<T>(this IEnumerable<T> Source) {
+            int index = 0;
+            foreach (T i in Source) {
+                Console.Write($"{i} ");
+                index++;
+                if (index % 10 == 0) Console.WriteLine();
             }
-            if (Data.Count % 10 != 0) Console.WriteLine();
+            if (index % 10 != 0) Console.WriteLine();
         }
     }
+#endif
 }

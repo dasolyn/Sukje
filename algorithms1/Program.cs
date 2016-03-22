@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace algorithms1 {
@@ -86,7 +85,7 @@ namespace algorithms1 {
 #if Day2
             Day2 r = new Day2();
 #if Class1
-            List<string> strs = File.ReadLines("D2C1.txt").ToList();
+            List<string> strs = System.IO.File.ReadLines("D2C1.txt").ToList();
             List<List<int>> ints = new List<List<int>>();
             int size = 0,  startx = 0, starty = 0, endx = 0, endy = 0;
             for (int i = 0; i < strs.Count; i++) {
@@ -108,7 +107,7 @@ namespace algorithms1 {
             }
 #endif
 #if Class2
-            List<string> strs = File.ReadLines("D2C1.txt").ToList();
+            List<string> strs = System.IO.File.ReadLines("D2C1.txt").ToList();
             List<List<int>> ints = new List<List<int>>();
             int size = 0,  startx = 0, starty = 0, endx = 0, endy = 0;
             for (int i = 0; i < strs.Count; i++) {
@@ -130,7 +129,7 @@ namespace algorithms1 {
             }
 #endif
 #if Class3
-            List<string> strs = File.ReadLines("D2C3.txt").ToList();
+            List<string> strs = System.IO.File.ReadLines("D2C3.txt").ToList();
             List<List<int>> ints = new List<List<int>>();
             int size = 0;
             for (int i = 0; i < strs.Count; i++) {
@@ -164,55 +163,54 @@ namespace algorithms1 {
 #endif
 #if Day4
 #if Class_Test
-            Day4<int> r = new Day4<int>();
             List<int> data = new List<int>();
             Random rand = new Random();
             for (int i = 0; i < 10; i++) {
                 data.Add(rand.Next(-99999, 99999));
             }
 
-            r.Data = new List<int>(data);
+            List<int> copied = new List<int>(data);
             Console.WriteLine("Original Data: ");
-            r.PrintData();
+            copied.Print();
             System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-            r.BubbleSort();
+            copied.BubbleSort();
             watch.Stop();
             Console.WriteLine($"Bubble Sort: {watch.ElapsedMilliseconds} ms");
             Console.WriteLine("Sorted Data: ");
-            r.PrintData();
+            copied.Print();
             Console.WriteLine();
 
-            r.Data = new List<int>(data);
+            copied = new List<int>(data);
             Console.WriteLine("Original Data: ");
-            r.PrintData();
+            copied.Print();
             watch.Start();
-            r.SelectionSort();
+            copied.SelectionSort();
             watch.Stop();
             Console.WriteLine($"Selection Sort: {watch.ElapsedMilliseconds} ms");
             Console.WriteLine("Sorted Data: ");
-            r.PrintData();
+            copied.Print();
             Console.WriteLine();
 
-            r.Data = new List<int>(data);
+            copied = new List<int>(data);
             Console.WriteLine("Original Data: ");
-            r.PrintData();
+            copied.Print();
             watch.Start();
-            r.InsertionSort();
+            copied.InsertionSort();
             watch.Stop();
             Console.WriteLine($"Insertion Sort: {watch.ElapsedMilliseconds} ms");
             Console.WriteLine("Sorted Data: ");
-            r.PrintData();
+            copied.Print();
             Console.WriteLine();
 
-            r.Data = new List<int>(data);
+            copied = new List<int>(data);
             Console.WriteLine("Original Data: ");
-            r.PrintData();
+            copied.Print();
             watch.Start();
-            r.MergeSort();
+            copied.MergeSort();
             watch.Stop();
             Console.WriteLine($"Merge Sort: {watch.ElapsedMilliseconds} ms");
             Console.WriteLine("Sorted Data: ");
-            r.PrintData();
+            copied.Print();
             Console.WriteLine();
 #endif
 #if Class_Real
@@ -233,10 +231,9 @@ namespace algorithms1 {
             // 거품 정렬
             System.Threading.Tasks.Task.Run(() => {
                 foreach (var d in datas) {
-                    Day4<long> r = new Day4<long>();
-                    r.Data = new List<long>(d);
+                    List<long> copy = new List<long>(d);
                     System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-                    r.BubbleSort();
+                    copy.BubbleSort();
                     watch.Stop();
                     Console.WriteLine($"Bubble Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
                 }
@@ -245,10 +242,9 @@ namespace algorithms1 {
             // 선택 정렬
             System.Threading.Tasks.Task.Run(() => {
                 foreach (var d in datas) {
-                    Day4<long> r = new Day4<long>();
-                    r.Data = new List<long>(d);
+                    List<long> copy = new List<long>(d);
                     System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-                    r.SelectionSort();
+                    copy.SelectionSort();
                     watch.Stop();
                     Console.WriteLine($"Selection Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
                 }
@@ -257,10 +253,9 @@ namespace algorithms1 {
             // 삽입 정렬
             System.Threading.Tasks.Task.Run(() => {
                 foreach (var d in datas) {
-                    Day4<long> r = new Day4<long>();
-                    r.Data = new List<long>(d);
+                    List<long> copy = new List<long>(d);
                     System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-                    r.InsertionSort();
+                    copy.InsertionSort();
                     watch.Stop();
                     Console.WriteLine($"Insertion Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
                 }
@@ -269,10 +264,9 @@ namespace algorithms1 {
             // 병합 정렬
             System.Threading.Tasks.Task.Run(() => {
                 foreach (var d in datas) {
-                    Day4<long> r = new Day4<long>();
-                    r.Data = new List<long>(d);
+                    List<long> copy = new List<long>(d);
                     System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-                    r.MergeSort();
+                    copy.MergeSort();
                     watch.Stop();
                     Console.WriteLine($"Merge Sort with {d.Count} elements: {watch.ElapsedMilliseconds} ms");
                 }
