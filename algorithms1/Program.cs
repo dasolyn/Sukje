@@ -1,5 +1,5 @@
 ﻿#define Day4
-#define Class3
+#define Class1
 
 using System;
 using System.Collections.Generic;
@@ -234,6 +234,17 @@ namespace algorithms1 {
             Console.WriteLine("Sorted Data: ");
             copied.Print();
             Console.WriteLine();
+
+            copied = new List<int>(data);
+            Console.WriteLine("Original Data: ");
+            copied.Print();
+            watch.Start();
+            copied.HeapSort();
+            watch.Stop();
+            Console.WriteLine($"Heap Sort: {watch.ElapsedMilliseconds} ms");
+            Console.WriteLine("Sorted Data: ");
+            copied.Print();
+            Console.WriteLine();
 #endif
 #if Class1
             // 데이터 생성
@@ -326,6 +337,17 @@ namespace algorithms1 {
                     Console.WriteLine($"Median quick sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
                 }
             });
+            
+            // 힙 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    List<long> copy = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    copy.HeapSort();
+                    watch.Stop();
+                    Console.WriteLine($"Heap sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
 #endif
 #if Class2
             // 데이터 생성
@@ -387,7 +409,7 @@ namespace algorithms1 {
                 List<long> copy = new List<long>(data);
                 System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 copy.QuickSort();
-                long found = copy[findex];
+                long found = copy[findex - 1];
                 watch.Stop();
                 Console.WriteLine($"Quick sort to find number: It takes {watch.ElapsedMilliseconds} ms, result is {found}");
             });
@@ -396,7 +418,7 @@ namespace algorithms1 {
             System.Threading.Tasks.Task.Run(() => {
                 List<long> copy = new List<long>(data);
                 System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-                long found = copy.QuickSelection(findex);
+                long found = copy.QuickSelection(findex - 1);
                 watch.Stop();
                 Console.WriteLine($"Quick selection to find number: It takes {watch.ElapsedMilliseconds} ms, result is {found}");
             });

@@ -184,6 +184,41 @@ namespace algorithms1 {
                 MedianQuickSort(Source, small + 1, LastIndex);
             }
         }
+        public static void HeapSort<T>(this IList<T> Source) where T : IComparable<T> {
+            HeapSort_BuildHeap(Source);
+            for (int i = Source.Count - 1; i > 0; i--) {
+                T temp = Source[0];
+                Source[0] = Source[i];
+                Source[i] = temp;
+                HeapSort_Heapify(Source, 0, i);
+            }
+        }
+        private static void HeapSort_BuildHeap<T>(IList<T> Source) where T : IComparable<T> {
+            for (int i = Source.Count / 2; i >= 0; i--) {
+                HeapSort_Heapify(Source, i, Source.Count);
+            }
+        }
+        private static void HeapSort_Heapify<T>(IList<T> Source, int Index, int HeapSize) where T : IComparable<T> {
+            int Mother = Index;
+            while (true) {
+                int LeftChild = 2 * (Mother + 1) - 1;
+                int RightChild = 2 * (Mother + 1);
+                // 자식이 없는 경우
+                if (LeftChild >= HeapSize) return;
+                int BiggerChild;
+                if (RightChild >= HeapSize) BiggerChild = LeftChild;
+                else if (Source[LeftChild].CompareTo(Source[RightChild]) > 0) BiggerChild = LeftChild;
+                else BiggerChild = RightChild;
+                // 자기보다 큰 자식이 없을 경우
+                if (Source[Mother].CompareTo(Source[BiggerChild]) >= 0) return;
+                // 스왑
+                T temp = Source[Mother];
+                Source[Mother] = Source[BiggerChild];
+                Source[BiggerChild] = temp;
+                // 반복
+                Mother = BiggerChild;
+            }
+        }
         public static T QuickSelection<T>(this IList<T> Source, int k) where T : IComparable<T> {
             return QuickSelection(Source, 0, Source.Count - 1, k);
         }
