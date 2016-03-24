@@ -165,7 +165,7 @@ namespace algorithms1 {
 #if Class_Test
             List<int> data = new List<int>();
             Random rand = new Random();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 20; i++) {
                 data.Add(rand.Next(-99999, 99999));
             }
 
@@ -360,7 +360,7 @@ namespace algorithms1 {
                 }
             });
 
-            // 정민 정렬
+            // 종민 정렬
             System.Threading.Tasks.Task.Run(() => {
                 foreach (var d in datas) {
                     List<long> copy = new List<long>(d);

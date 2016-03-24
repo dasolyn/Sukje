@@ -139,13 +139,16 @@ namespace algorithms1 {
                         Source[right] = temp;
                     }
                 }
+                int pivot = right;
                 if (Source[right].CompareTo(Source[LastIndex]) > 0) {
                     T temp = Source[right];
                     Source[right] = Source[LastIndex];
                     Source[LastIndex] = temp;
+                } else if (right == LastIndex - 1) {
+                    pivot++;
                 }
-                JMSort(Source, StartIndex, right);
-                JMSort(Source, right + 1, LastIndex);
+                JMSort(Source, StartIndex, pivot - 1);
+                JMSort(Source, pivot + 1, LastIndex);
             }
         }
         public static void MedianQuickSort<T>(this IList<T> Source) where T : IComparable<T> {
