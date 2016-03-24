@@ -122,6 +122,32 @@ namespace algorithms1 {
                 QuickSort(Source, small + 1, LastIndex);
             }
         }
+        public static void JMSort<T>(this IList<T> Source) where T : IComparable<T> {
+            JMSort(Source, 0, Source.Count - 1);
+        }
+        private static void JMSort<T>(IList<T> Source, int StartIndex, int LastIndex) where T : IComparable<T> {
+            if (StartIndex >= LastIndex) {
+                return;
+            } else {
+                int left = StartIndex, right = LastIndex - 1;
+                while (left < right) {
+                    while (left < right && Source[left].CompareTo(Source[LastIndex]) <= 0) left++;
+                    while (left < right && Source[right].CompareTo(Source[LastIndex]) >= 0) right--;
+                    if (left < right) {
+                        T temp = Source[left];
+                        Source[left] = Source[right];
+                        Source[right] = temp;
+                    }
+                }
+                if (Source[right].CompareTo(Source[LastIndex]) > 0) {
+                    T temp = Source[right];
+                    Source[right] = Source[LastIndex];
+                    Source[LastIndex] = temp;
+                }
+                JMSort(Source, StartIndex, right);
+                JMSort(Source, right + 1, LastIndex);
+            }
+        }
         public static void MedianQuickSort<T>(this IList<T> Source) where T : IComparable<T> {
             MedianQuickSort(Source, 0, Source.Count - 1);
         }
