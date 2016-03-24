@@ -162,18 +162,17 @@ namespace algorithms1 {
                     Source[pivot] = temp;
                 }
                 // 피벗보다 작은 원소를 왼쪽으로
-                int small = StartIndex - 1;
+                int small = StartIndex;
                 for (int i = StartIndex; i < LastIndex; i++) {
                     if (Source[i].CompareTo(Source[LastIndex]) < 0) {
-                        small++;
                         T temp = Source[small];
                         Source[small] = Source[i];
                         Source[i] = temp;
+                        small++;
                     }
                 }
                 // 피벗을 그 사이로
                 {
-                    small++;
                     T temp = Source[small];
                     Source[small] = Source[LastIndex];
                     Source[LastIndex] = temp;
@@ -223,18 +222,17 @@ namespace algorithms1 {
         }
         private static T QuickSelection<T>(IList<T> Source, int StartIndex, int LastIndex, int k) where T : IComparable<T> {
             // 피벗보다 작은 원소를 왼쪽으로
-            int small = StartIndex - 1;
+            int small = StartIndex;
             for (int i = StartIndex; i < LastIndex; i++) {
                 if (Source[i].CompareTo(Source[LastIndex]) < 0) {
-                    small++;
                     T temp = Source[small];
                     Source[small] = Source[i];
                     Source[i] = temp;
+                    small++;
                 }
             }
             // 피벗을 그 사이로
             {
-                small++;
                 T temp = Source[small];
                 Source[small] = Source[LastIndex];
                 Source[LastIndex] = temp;
