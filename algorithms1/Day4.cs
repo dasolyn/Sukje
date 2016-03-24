@@ -103,7 +103,7 @@ namespace algorithms1 {
             } else {
                 // 피벗보다 작은 원소를 왼쪽으로
                 int small = StartIndex;
-                for (int i = StartIndex; i < LastIndex; i++) {
+                for (int i = StartIndex + 1; i < LastIndex; i++) {
                     if (Source[i].CompareTo(Source[LastIndex]) < 0) {
                         T temp = Source[small];
                         Source[small] = Source[i];
@@ -163,7 +163,7 @@ namespace algorithms1 {
                 }
                 // 피벗보다 작은 원소를 왼쪽으로
                 int small = StartIndex;
-                for (int i = StartIndex; i < LastIndex; i++) {
+                for (int i = StartIndex + 1; i < LastIndex; i++) {
                     if (Source[i].CompareTo(Source[LastIndex]) < 0) {
                         T temp = Source[small];
                         Source[small] = Source[i];
@@ -223,7 +223,7 @@ namespace algorithms1 {
         private static T QuickSelection<T>(IList<T> Source, int StartIndex, int LastIndex, int k) where T : IComparable<T> {
             // 피벗보다 작은 원소를 왼쪽으로
             int small = StartIndex;
-            for (int i = StartIndex; i < LastIndex; i++) {
+            for (int i = StartIndex + 1; i < LastIndex; i++) {
                 if (Source[i].CompareTo(Source[LastIndex]) < 0) {
                     T temp = Source[small];
                     Source[small] = Source[i];
