@@ -1,5 +1,5 @@
 ﻿#define Day4
-#define Class_Test
+#define Class1
 
 using System;
 using System.Collections.Generic;
@@ -165,7 +165,7 @@ namespace algorithms1 {
 #if Class_Test
             List<int> data = new List<int>();
             Random rand = new Random();
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 10; i++) {
                 data.Add(rand.Next(-99999, 99999));
             }
 
@@ -272,14 +272,25 @@ namespace algorithms1 {
                 datas.Add(data);
             }
 
-            // C# 내부 정렬
+            // C# 내부 정렬 (불안정)
             System.Threading.Tasks.Task.Run(() => {
                 foreach (var d in datas) {
                     List<long> copy = new List<long>(d);
                     System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                     copy.Sort();
                     watch.Stop();
-                    Console.WriteLine($"C# internal sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
+                    Console.WriteLine($"C# internal unstable sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
+
+            // C# 내부 정렬 (안정)
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    List<long> copy = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    List<long> sorted = copy.OrderBy(k => k).ToList();
+                    watch.Stop();
+                    Console.WriteLine($"C# internal stable sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
                 }
             });
 
@@ -357,17 +368,6 @@ namespace algorithms1 {
                     copy.HeapSort();
                     watch.Stop();
                     Console.WriteLine($"Heap sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
-                }
-            });
-
-            // 종민 정렬
-            System.Threading.Tasks.Task.Run(() => {
-                foreach (var d in datas) {
-                    List<long> copy = new List<long>(d);
-                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-                    copy.JMSort();
-                    watch.Stop();
-                    Console.WriteLine($"JM sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
                 }
             });
 #endif
