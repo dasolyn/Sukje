@@ -370,6 +370,17 @@ namespace algorithms1 {
                     Console.WriteLine($"Heap sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
                 }
             });
+
+            // 종민 정렬
+            System.Threading.Tasks.Task.Run(() => {
+                foreach (var d in datas) {
+                    List<long> copy = new List<long>(d);
+                    System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                    copy.JMSort();
+                    watch.Stop();
+                    Console.WriteLine($"JM sort with {d.Count:#,###} elements: {watch.ElapsedMilliseconds} ms");
+                }
+            });
 #endif
 #if Class2
             // 데이터 생성
