@@ -43,7 +43,7 @@ namespace AddressBook {
                         });
                     } else if (cmd[0].ToLower() == "print") {
                         foreach (AddressBook i in data2) {
-                            Console.WriteLine($"{i.Name}");
+                            Console.WriteLine(i.Name);
                             Console.WriteLine($"Company: {i.Company}");
                             Console.WriteLine($"Address: {i.Address}");
                             Console.WriteLine($"Zipcode: {i.Zipcode}");
