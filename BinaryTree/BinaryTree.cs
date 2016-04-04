@@ -25,7 +25,7 @@ namespace BinaryTree {
         /// <summary>
         /// 이진 트리의 해당 위치에 노드를 삽입합니다.
         /// </summary>
-        /// <exception cref="ArgumentException">해당 위치의 노드가 존재하지 않습니다.</exception>
+        /// <exception cref="ArgumentException">해당 위치에 접근할 수 없습니다. 부모 노드가 없는 위치에 노드를 삽입할려고 할 때 발생합니다.</exception>
         public void SetNodeByTraversal(Node<T> Node, params NodeTraversal[] Traversal) {
             try {
                 if (Traversal.Length == 0) {
