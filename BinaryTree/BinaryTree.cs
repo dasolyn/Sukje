@@ -98,12 +98,12 @@ namespace BinaryTree {
             if (Root == null) yield break;
             Queue<Node<T>> q = new Queue<Node<T>>();
             q.Enqueue(Root);
-            while (q.Count != 0) {
+            do {
                 Node<T> temp = q.Dequeue();
                 yield return temp;
                 if (temp.LeftSibling != null) q.Enqueue(temp.LeftSibling);
                 if (temp.RightSibling != null) q.Enqueue(temp.RightSibling);
-            }
+            } while (q.Count != 0);
         }
     }
 }
