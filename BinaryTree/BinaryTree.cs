@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace BinaryTree {
     public enum NodeTraversal { Left, Right }
     class BinaryTree<T> {
-        private Node<T> Root = null;
+        protected Node<T> Root = null;
         /// <summary>
         /// 해당 순서에 따라 이진 트리를 탐색하여 결과 노드를 반환합니다.
         /// </summary>
