@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BinaryTree {
     class Program {
@@ -35,17 +36,18 @@ namespace BinaryTree {
 
 #endif
 #if Day2
-            BinaryTree<AddressBook> bt = new BinaryTree<AddressBook>();
+            BinarySearchTree<AddressBook> bst = new BinarySearchTree<AddressBook>();
             while (true) {
                 Console.Write("$ ");
-                string[] cmd = Console.ReadLine().Split(' ');
+                string cmd = Console.ReadLine();
+                string[] splitcmd = cmd.Split(' ');
                 try {
-                    if (cmd[0].ToLower() == "read") {
+                    if (splitcmd[0].ToLower() == "read") {
                         try {
-                            foreach (string s in System.IO.File.ReadLines(cmd[1])) {
+                            foreach (string s in System.IO.File.ReadLines(splitcmd[1])) {
                                 List<string> splited = s.Split('|').Select(l => l.Trim()).ToList();
                                 try {
-                                    data2.Add(new AddressBook {
+                                    bst.InsertNodeToBST(new Node<AddressBook>(new AddressBook {
                                         Name = splited[0],
                                         Company = splited[1],
                                         Address = splited[2],
@@ -54,37 +56,50 @@ namespace BinaryTree {
                                         Phone2 = splited[5],
                                         Email = splited[6],
                                         Web = splited[7]
-                                    });
+                                    }));
                                 } catch (ArgumentOutOfRangeException) { }
                             }
-                            data2.TrimExcess();
-                        } catch (FileNotFoundException) {
+                        } catch (System.IO.FileNotFoundException) {
                             Console.WriteLine("Specified file does not exist");
                         }
-                    } else if (cmd[0].ToLower() == "sort") {
-                        data2.Sort((a, b) => {
-                            IComparable va = (IComparable)a.GetType().GetProperty(cmd[1]).GetValue(a);
-                            IComparable vb = (IComparable)b.GetType().GetProperty(cmd[1]).GetValue(b);
-                            return va.CompareTo(vb);
-                        });
-                    } else if (cmd[0].ToLower() == "print") {
-                        foreach (AddressBook i in data2) {
-                            Console.WriteLine(i.Name);
-                            Console.WriteLine($"Company: {i.Company}");
-                            Console.WriteLine($"Address: {i.Address}");
-                            Console.WriteLine($"Zipcode: {i.Zipcode}");
-                            Console.WriteLine($"Phones: {i.Phone1}, {i.Phone2}");
-                            Console.WriteLine($"Email: {i.Email}");
-                            Console.WriteLine($"Web: {i.Web}");
+                    } else if (splitcmd[0].ToLower() == "list") {
+                        foreach (var i in bst.AsInorderedEnumerable()) {
+                            Console.WriteLine(i.Data.Name);
+                            Console.WriteLine($"Company: {i.Data.Company}");
+                            Console.WriteLine($"Address: {i.Data.Address}");
+                            Console.WriteLine($"Zipcode: {i.Data.Zipcode}");
+                            Console.WriteLine($"Phones: {i.Data.Phone1}, {i.Data.Phone2}");
+                            Console.WriteLine($"Email: {i.Data.Email}");
+                            Console.WriteLine($"Web: {i.Data.Web}");
                             Console.WriteLine();
                         }
-                    } else if (cmd[0].ToLower() == "exit") {
+                    } else if (splitcmd[0].ToLower() == "delete") {
+                        try {
+                            bst.DeleteNodeFromBST(new AddressBook { Name = cmd.Replace("delete ", "") });
+                        } catch (ArgumentException) {
+                            Console.WriteLine("Failed to find node");
+                        }
+                    } else if (splitcmd[0].ToLower() == "find") {
+                        try {
+                            Node<AddressBook> node = bst.SearchNodeFromBST(new AddressBook { Name = cmd.Replace("find ", "") });
+                            Console.WriteLine(node.Data.Name);
+                            Console.WriteLine($"Company: {node.Data.Company}");
+                            Console.WriteLine($"Address: {node.Data.Address}");
+                            Console.WriteLine($"Zipcode: {node.Data.Zipcode}");
+                            Console.WriteLine($"Phones: {node.Data.Phone1}, {node.Data.Phone2}");
+                            Console.WriteLine($"Email: {node.Data.Email}");
+                            Console.WriteLine($"Web: {node.Data.Web}");
+                            Console.WriteLine();
+                        } catch (ArgumentException) {
+                            Console.WriteLine("Failed to find node");
+                        }
+                    } else if (splitcmd[0].ToLower() == "exit") {
                         break;
                     } else {
-                        Console.WriteLine("Commands: read (filename), print, sort (fieldname), exit");
+                        Console.WriteLine("Commands: read (filename), list, find (name), delete (name), exit");
                     }
                 } catch (IndexOutOfRangeException) {
-                    Console.WriteLine("Commands: read (filename), print, sort (fieldname), exit");
+                    Console.WriteLine("Commands: read (filename), list, find (name), delete (name), exit");
                 }
             }
 #endif
