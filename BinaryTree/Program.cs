@@ -99,7 +99,7 @@ namespace BinaryTree {
                         Console.WriteLine("Commands: read (filename), list, find (name), delete (name), exit");
                     }
                 } catch (IndexOutOfRangeException) {
-                    Console.WriteLine("Commands: read (filename), print, sort (fieldname), exit");
+                    Console.WriteLine("Commands: read (filename), list, find (name), delete (name), exit");
                 }
             }
 #endif
