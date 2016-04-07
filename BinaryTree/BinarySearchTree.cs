@@ -13,18 +13,18 @@ namespace BinaryTree {
             Node<T> temp = Root;
             while (true) {
                 if (Node.Data.CompareTo(temp.Data) < 0) {
-                    if (temp.LeftSibling == null) {
-                        temp.LeftSibling = Node;
+                    if (temp.LeftChild == null) {
+                        temp.LeftChild = Node;
                         break;
                     } else {
-                        temp = temp.LeftSibling;
+                        temp = temp.LeftChild;
                     }
                 } else {
-                    if (temp.RightSibling == null) {
-                        temp.RightSibling = Node;
+                    if (temp.RightChild == null) {
+                        temp.RightChild = Node;
                         break;
                     } else {
-                        temp = temp.RightSibling;
+                        temp = temp.RightChild;
                     }
                 }
             }
@@ -37,8 +37,8 @@ namespace BinaryTree {
         public Node<T> SearchNodeFromBST(T Data) {
             Node<T> temp = Root;
             do {
-                if (Data.CompareTo(temp.Data) < 0) temp = temp.LeftSibling;
-                else temp = temp.RightSibling;
+                if (Data.CompareTo(temp.Data) < 0) temp = temp.LeftChild;
+                else temp = temp.RightChild;
             } while (temp != null && temp.Data.CompareTo(Data) != 0);
             if (temp == null) throw new ArgumentException();
             else return temp;
@@ -50,15 +50,15 @@ namespace BinaryTree {
         public void DeleteNodeFromBST(T Data) {
             Node<T> delete = SearchNodeFromBST(Data);
             // Case 1 : 자식 노드가 없는 경우
-            if (delete.LeftSibling == null && delete.RightSibling == null) {
+            if (delete.LeftChild == null && delete.RightChild == null) {
                 if (delete != Root) {
-                    if (delete.Parent.LeftSibling == delete) delete.Parent.LeftSibling = null;
-                    else delete.Parent.RightSibling = null;
+                    if (delete.Parent.LeftChild == delete) delete.Parent.LeftChild = null;
+                    else delete.Parent.RightChild = null;
                 } else {
                     Clear();
                 }
             // Case 3 : 자식 노드가 2개인 경우
-            } else if (delete.LeftSibling != null && delete.RightSibling != null) {
+            } else if (delete.LeftChild != null && delete.RightChild != null) {
 
             // Case 2: 자식 노드가 1개인 경우
             } else {
