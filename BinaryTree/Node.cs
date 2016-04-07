@@ -1,24 +1,24 @@
 ﻿namespace BinaryTree {
     class Node<T> {
         public Node<T> Parent { get; set; } = null;
-        private Node<T> _LeftSibling = null;
-        public Node<T> LeftSibling {
+        private Node<T> _LeftChild = null;
+        public Node<T> LeftChild {
             get {
-                return _LeftSibling;
+                return _LeftChild;
             }
             set {
                 if (value != null) value.Parent = this;
-                _LeftSibling = value;
+                _LeftChild = value;
             }
         }
-        private Node<T> _RightSibling = null;
-        public Node<T> RightSibling {
+        private Node<T> _RightChild = null;
+        public Node<T> RightChild {
             get {
-                return _RightSibling;
+                return _RightChild;
             }
             set {
                 if (value != null) value.Parent = this;
-                _RightSibling = value;
+                _RightChild = value;
             }
         }
         public T Data { get; set; }
