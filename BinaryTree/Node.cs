@@ -1,13 +1,13 @@
 ﻿namespace BinaryTree {
     class Node<T> {
-        public Node<T> Parent { get; private set; } = null;
+        public Node<T> Parent { get; set; } = null;
         private Node<T> _LeftSibling = null;
         public Node<T> LeftSibling {
             get {
                 return _LeftSibling;
             }
             set {
-                value.Parent = this;
+                if (value != null) value.Parent = this;
                 _LeftSibling = value;
             }
         }
@@ -17,11 +17,11 @@
                 return _RightSibling;
             }
             set {
-                value.Parent = this;
+                if (value != null) value.Parent = this;
                 _RightSibling = value;
             }
         }
-        public T Data { get; }
+        public T Data { get; set; }
         public Node(T Data) {
             this.Data = Data;
         }
