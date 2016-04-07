@@ -105,5 +105,11 @@ namespace BinaryTree {
                 if (temp.RightSibling != null) q.Enqueue(temp.RightSibling);
             } while (q.Count != 0);
         }
+        /// <summary>
+        /// 이진 트리의 모든 노드를 초기화합니다.
+        /// </summary>
+        public void Clear() {
+            Root = null;
+        }
     }
 }

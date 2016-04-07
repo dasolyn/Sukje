@@ -3,12 +3,6 @@
 namespace BinaryTree {
     class BinarySearchTree<T> : BinaryTree<T> where T : IComparable<T> {
         /// <summary>
-        /// 현재 이진 검색 트리의 모든 노드를 초기화합니다.
-        /// </summary>
-        public void Clear() {
-            Root = null;
-        }
-        /// <summary>
         /// 이진 검색 트리에 새 노드를 삽입합니다.
         /// </summary>
         public void InsertNodeToBST(Node<T> Node) {
