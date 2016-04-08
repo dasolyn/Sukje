@@ -33,18 +33,12 @@ namespace BinaryTree {
                     return;
                 }
                 Node<T> temp = Root;
-                Node<T> parent = null;
-                foreach (NodeTraversal i in Traversal) {
-                    if (i == NodeTraversal.Left) {
-                        parent = temp;
-                        temp = temp.LeftChild;
-                    } else {
-                        parent = temp;
-                        temp = temp.RightChild;
-                    }
+                for (int i = 0; i < Traversal.Length - 1; i++) {
+                    if (Traversal[i] == NodeTraversal.Left) temp = temp.LeftChild;
+                    else temp = temp.RightChild;
                 }
-                if (Traversal[Traversal.Length - 1] == NodeTraversal.Left) parent.LeftChild = Node;
-                else parent.RightChild = Node;
+                if (Traversal[Traversal.Length - 1] == NodeTraversal.Left) temp.LeftChild = Node;
+                else temp.RightChild = Node;
             } catch (NullReferenceException) {
                 throw new ArgumentException();
             }
