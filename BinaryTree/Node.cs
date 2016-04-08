@@ -18,6 +18,7 @@ namespace BinaryTree {
                 if (value == null && _Parent != null) {
                     if (_Parent._LeftChild == this) _Parent._LeftChild = null;
                     else _Parent._RightChild = null;
+                    _Parent = null;
                 } else if (value != null) {
                     throw new ArgumentException();
                 }
