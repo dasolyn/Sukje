@@ -63,31 +63,27 @@ namespace BinaryTree {
         private void DeleteSpecificNode(Node<T> Node) {
             if (Node.LeftChild == null && Node.RightChild == null) {
                 // 자식 0개
-                if (Node.Parent == null) {
-                    Clear();
-                } else {
-                    if (Node.Parent.LeftChild == Node) Node.Parent.LeftChild = null;
-                    else Node.Parent.RightChild = null;
-                    Node.Parent = null;
-                }
+                if (Node.Parent == null) Clear();
+                else Node.Parent = null;
             } else {
                 // 자식 1개
                 if (Node.Parent == null) {
-                    if (Node.LeftChild != null) Root = Node.LeftChild;
-                    else Root = Node.RightChild;
-                    Root.Parent = null;
+                    if (Node.LeftChild != null) {
+                        Root = Node.LeftChild;
+                        Node.LeftChild = null;
+                    } else {
+                        Root = Node.RightChild;
+                        Node.RightChild = null;
+                    }
                 } else {
                     if (Node.LeftChild != null) {
-                        if (Node.Parent.LeftChild == Node) Node.Parent.LeftChild = Node.LeftChild;
-                        else Node.Parent.RightChild = Node.LeftChild;
+                        Node.LeftChild.Parent = Node.Parent;
+                        Node.Parent = null;
                     } else {
-                        if (Node.Parent.LeftChild == Node) Node.Parent.LeftChild = Node.RightChild;
-                        else Node.Parent.RightChild = Node.RightChild;
+                        Node.RightChild.Parent = Node.Parent;
+                        Node.Parent = null;
                     }
-                    Node.Parent = null;
                 }
-                Node.LeftChild = null;
-                Node.RightChild = null;
             }
         }
         private Node<T> GetSuccessor(Node<T> Node) {
