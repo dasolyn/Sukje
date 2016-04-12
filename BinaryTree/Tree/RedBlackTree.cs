@@ -5,11 +5,15 @@ namespace BinaryTree {
     /// 레드-블랙 탐색 트리입니다.
     /// </summary>
     class RedBlackTree<T> : BinarySearchTree<T> where T : IComparable<T> {
-        public override void Insert(T Data) {
+        public override Node<T> Insert(T Data) {
             // 빨간 노드를 일반 BST와 동일한 방법으로 삽입
             Node<T> insert = new ColoredNode<T>(Data, ColoredNode<T>.ColorOfNode.Red);
-            InternalInsert(insert);
+            Insert(insert);
             // 픽스
+            return null;
+        }
+        public override Node<T> Insert(Node<T> Node) {
+            return base.Insert(Node);
         }
         public override void Delete(T Data) {
             throw new NotImplementedException();

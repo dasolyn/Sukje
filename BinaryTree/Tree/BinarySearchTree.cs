@@ -1,54 +1,41 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace BinaryTree {
     /// <summary>
     /// 기초적인 이진 탐색 트리입니다. 트리의 균형을 자동으로 보정하는 과정이 수행되지 않습니다.
     /// </summary>
-    class BinarySearchTree<T> : SearchTree<T> where T : IComparable<T> {
+    class BinarySearchTree<T> : BinaryTree<T>, IEnumerable<Node<T>> where T : IComparable<T> {
         /// <summary>
         /// 이진 탐색 트리에 데이터를 삽입합니다.
         /// </summary>
-        public override void Insert(T Data) {
-            InternalInsert(new Node<T>(Data));
+        /// <returns>새로 생성되어 삽입된 노드입니다.</returns>
+        public virtual Node<T> Insert(T Data) {
+            return Insert(new Node<T>(Data));
         }
         /// <summary>
-        /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 노드의 데이터를 찾아 반환합니다.
+        /// 이진 탐색 트리에 노드를 삽입합니다.
         /// </summary>
-        /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
-        public override T Search(T Data) {
-            return InternalSearch(Data).Data;
-        }
-        /// <summary>
-        /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 노드를 삭제합니다.
-        /// </summary>
-        /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
-        public override void Delete(T Data) {
-            Node<T> delete = InternalSearch(Data);
-            if (delete.LeftChild != null && delete.RightChild != null) {
-                Node<T> suc = GetSuccessor(delete);
-                delete.Data = suc.Data;
-                InternalDelete(suc);
-            } else {
-                InternalDelete(delete);
-            }
-        }
-        protected void InternalInsert(Node<T> Node) {
+        /// <returns>삽입된 노드입니다.</returns>
+        public virtual Node<T> Insert(Node<T> Node) {
             if (Root == null) {
                 Root = Node;
+                return Node;
             } else {
                 Node<T> temp = Root;
                 while (true) {
                     if (Node.Data.CompareTo(temp.Data) < 0) {
                         if (temp.LeftChild == null) {
                             temp.LeftChild = Node;
-                            return;
+                            return Node;
                         } else {
                             temp = temp.LeftChild;
                         }
                     } else {
                         if (temp.RightChild == null) {
                             temp.RightChild = Node;
-                            return;
+                            return Node;
                         } else {
                             temp = temp.RightChild;
                         }
@@ -56,7 +43,11 @@ namespace BinaryTree {
                 }
             }
         }
-        protected Node<T> InternalSearch(T Data) {
+        /// <summary>
+        /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 노드를 찾아 반환합니다.
+        /// </summary>
+        /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
+        public virtual Node<T> Search(T Data) {
             Node<T> temp = Root;
             do {
                 if (Data.CompareTo(temp.Data) < 0) temp = temp.LeftChild;
@@ -66,9 +57,32 @@ namespace BinaryTree {
             else return temp;
         }
         /// <summary>
+        /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 노드의 데이터를 찾아 반환합니다.
+        /// </summary>
+        /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
+        public virtual T SearchData(T Data) {
+            return Search(Data).Data;
+        }
+        /// <summary>
+        /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 노드를 삭제합니다.
+        /// </summary>
+        /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
+        public virtual void Delete(T Data) {
+            Delete(Search(Data));
+        }
+        public virtual void Delete(Node<T> Node) {
+            if (Node.LeftChild != null && Node.RightChild != null) {
+                Node<T> suc = GetSuccessor(Node);
+                Node.Data = suc.Data;
+                InternalDelete(suc);
+            } else {
+                InternalDelete(Node);
+            }
+        }
+        /// <summary>
         /// 자식이 1개 또는 0개 존재하는 특정 노드를 삭제하는 내부 메서드입니다.
         /// </summary>
-        protected void InternalDelete(Node<T> Node) {
+        private void InternalDelete(Node<T> Node) {
             if (Node.LeftChild == null && Node.RightChild == null) {
                 // 자식 0개
                 if (Node.Parent == null) Clear();
@@ -109,5 +123,14 @@ namespace BinaryTree {
             while (temp.LeftChild != null) temp = temp.LeftChild;
             return temp;
         }
+
+        #region IEnumerable
+        public IEnumerator<Node<T>> GetEnumerator() {
+            foreach (var i in AsInorderedEnumerable()) yield return i;
+        }
+        IEnumerator IEnumerable.GetEnumerator() {
+            foreach (var i in AsInorderedEnumerable()) yield return i;
+        }
+        #endregion
     }
 }

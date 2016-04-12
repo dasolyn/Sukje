@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace BinaryTree {
     public enum NodeTraversal { Left, Right }
     /// <summary>
-    /// 단순한 이진 트리입니다. 순회 순서에 따라 노드를 탐색하거나 삽입할 수 있으며 트리를 열거하는 메서드를 제공합니다.
+    /// 단순한 이진 트리입니다. 순회 순서에 따라 노드를 탐색, 삽입, 제거할 수 있으며 트리를 열거하는 메서드를 제공합니다.
     /// </summary>
     class BinaryTree<T> {
         protected Node<T> Root = null;
@@ -30,20 +30,37 @@ namespace BinaryTree {
         /// </summary>
         /// <exception cref="ArgumentException">해당 위치에 접근할 수 없습니다. 부모 노드가 없는 위치에 노드를 삽입할려고 할 때 발생합니다.</exception>
         public void SetNodeByTraversal(Node<T> Node, params NodeTraversal[] Traversal) {
-            try {
-                if (Traversal.Length == 0) {
-                    Root = Node;
-                    return;
+            if (Traversal.Length == 0) {
+                if (Root != null) {
+                    Node.LeftChild = Root.LeftChild;
+                    Node.RightChild = Root.RightChild;
                 }
-                Node<T> temp = Root;
+                Root = Node;
+                return;
+            }
+            Node<T> temp = Root;
+            try {
                 for (int i = 0; i < Traversal.Length - 1; i++) {
                     if (Traversal[i] == NodeTraversal.Left) temp = temp.LeftChild;
                     else temp = temp.RightChild;
                 }
-                if (Traversal[Traversal.Length - 1] == NodeTraversal.Left) temp.LeftChild = Node;
-                else temp.RightChild = Node;
             } catch (NullReferenceException) {
                 throw new ArgumentException();
+            }
+            if (Traversal[Traversal.Length - 1] == NodeTraversal.Left) {
+                Node<T> prev = temp.LeftChild;
+                if (prev != null) {
+                    Node.LeftChild = prev.LeftChild;
+                    Node.RightChild = prev.RightChild;
+                }
+                temp.LeftChild = Node;
+            } else {
+                Node<T> prev = temp.LeftChild;
+                if (prev != null) {
+                    Node.LeftChild = prev.LeftChild;
+                    Node.RightChild = prev.RightChild;
+                }
+                temp.RightChild = Node;
             }
         }
         /// <summary>
@@ -52,7 +69,7 @@ namespace BinaryTree {
         public IEnumerable<Node<T>> AsInorderedEnumerable() {
             foreach (var i in InternalInorderedEnum(Root)) yield return i;
         }
-        protected IEnumerable<Node<T>> InternalInorderedEnum(Node<T> Parent) {
+        private IEnumerable<Node<T>> InternalInorderedEnum(Node<T> Parent) {
             if (Parent == null) yield break;
             else {
                 foreach (var i in InternalInorderedEnum(Parent.LeftChild)) yield return i;
@@ -66,7 +83,7 @@ namespace BinaryTree {
         public IEnumerable<Node<T>> AsPreorderedEnumerable() {
             foreach (var i in InternalPreorderedEnum(Root)) yield return i;
         }
-        protected IEnumerable<Node<T>> InternalPreorderedEnum(Node<T> Parent) {
+        private IEnumerable<Node<T>> InternalPreorderedEnum(Node<T> Parent) {
             if (Parent == null) yield break;
             else {
                 yield return Parent;
@@ -80,7 +97,7 @@ namespace BinaryTree {
         public IEnumerable<Node<T>> AsPostorderedEnumerable() {
             foreach (var i in InternalPostorderedEnum(Root)) yield return i;
         }
-        protected IEnumerable<Node<T>> InternalPostorderedEnum(Node<T> Parent) {
+        private IEnumerable<Node<T>> InternalPostorderedEnum(Node<T> Parent) {
             if (Parent == null) yield break;
             else {
                 foreach (var i in InternalPostorderedEnum(Parent.LeftChild)) yield return i;
@@ -92,9 +109,6 @@ namespace BinaryTree {
         /// 현재 이진 트리를 레벨 순위로 순회하여 열거합니다.
         /// </summary>
         public IEnumerable<Node<T>> AsLevelorderedEnumerable() {
-            foreach (var i in InternalLevelorderedEnum(Root)) yield return i;
-        }
-        protected IEnumerable<Node<T>> InternalLevelorderedEnum(Node<T> Parent) {
             if (Root == null) yield break;
             Queue<Node<T>> q = new Queue<Node<T>>();
             q.Enqueue(Root);

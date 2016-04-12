@@ -31,12 +31,12 @@ namespace BinaryTree {
             foreach (var i in bt.AsPostorderedEnumerable()) Console.Write($"{i.Data} ");
             Console.WriteLine();
             Console.Write("Levelorder: ");
-            foreach (var i in bt.AsLevelOrderedEnumerable()) Console.Write($"{i.Data} ");
+            foreach (var i in bt.AsLevelorderedEnumerable()) Console.Write($"{i.Data} ");
             Console.WriteLine();
 
 #endif
 #if Day2
-            SearchTree<AddressBook> tree = new BinarySearchTree<AddressBook>();
+            BinarySearchTree<AddressBook> tree = new BinarySearchTree<AddressBook>();
             while (true) {
                 Console.Write("$ ");
                 string cmd = Console.ReadLine();
@@ -81,7 +81,7 @@ namespace BinaryTree {
                         }
                     } else if (splitcmd[0].ToLower() == "find") {
                         try {
-                            AddressBook data = tree.Search(new AddressBook { Name = cmd.Replace("find ", "") });
+                            AddressBook data = tree.SearchData(new AddressBook { Name = cmd.Replace("find ", "") });
                             Console.WriteLine(data.Name);
                             Console.WriteLine($"Company: {data.Company}");
                             Console.WriteLine($"Address: {data.Address}");
