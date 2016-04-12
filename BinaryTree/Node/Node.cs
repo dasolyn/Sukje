@@ -36,7 +36,7 @@ namespace BinaryTree {
                 if (value == null && _LeftChild != null) {
                     _LeftChild._Parent = null;
                 } else if (value != null) {
-                    if (_LeftChild != null) _LeftChild._Parent = null;
+                    if (_LeftChild != null) _LeftChild.Parent = null;
                     value._Parent = this;
                 }
                 _LeftChild = value;
@@ -54,7 +54,7 @@ namespace BinaryTree {
                 if (value == null && _RightChild != null) {
                     _RightChild._Parent = null;
                 } else if (value != null) {
-                    if (_RightChild != null) _RightChild._Parent = null;
+                    if (_RightChild != null) _RightChild.Parent = null;
                     value._Parent = this;
                 }
                 _RightChild = value;

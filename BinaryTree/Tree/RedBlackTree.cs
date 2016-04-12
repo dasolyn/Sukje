@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace BinaryTree {
     /// <summary>
@@ -21,34 +22,46 @@ namespace BinaryTree {
                     ColoredNode<T> temp = insert;
                     while (true) {
                         ColoredNode<T> parent = (ColoredNode<T>)temp.Parent;
-                        if (IsNodeBlack(parent)) {
-                            if (temp == Root) temp.Color = ColorOfNode.Black;
-                            break;
-                        } else { // 부모가 빨강색
-                            // 조부모 노드와 삼촌 노드 구하기
-                            ColoredNode<T> grandparent = (ColoredNode<T>)parent.Parent;
-                            ColoredNode<T> uncle;
-                            if (parent == grandparent.LeftChild) uncle = (ColoredNode<T>)grandparent.RightChild;
-                            else uncle = (ColoredNode<T>)grandparent.LeftChild;
-                            // 트리 높이 조정
+                        if (IsNodeBlack(parent)) break;
+                        ColoredNode<T> grandparent = (ColoredNode<T>)parent.Parent;
+                        ColoredNode<T> uncle;
+                        if (parent == grandparent.LeftChild) {
+                            uncle = (ColoredNode<T>)grandparent.RightChild;
                             if (IsNodeBlack(uncle)) {
                                 if (temp == parent.RightChild) {
-                                    LeftRotation(parent);
                                     temp = parent;
-                                } else {
-                                    parent.Color = ColorOfNode.Black;
-                                    grandparent.Color = ColorOfNode.Red;
-                                    RightRotation(grandparent);
-                                    break;
+                                    LeftRotation(temp);
                                 }
-                            } else {
-                                uncle.Color = ColorOfNode.Black;
+                                parent = (ColoredNode<T>)temp.Parent;
+                                grandparent = (ColoredNode<T>)parent.Parent;
                                 parent.Color = ColorOfNode.Black;
                                 grandparent.Color = ColorOfNode.Red;
-                                temp = grandparent;
+                                RightRotation(grandparent);
+                            } else {
+                                uncle.Color = ColorOfNode.Black;
+                                grandparent.Color = ColorOfNode.Red;
                             }
+                            temp = grandparent;
+                        } else {
+                            uncle = (ColoredNode<T>)grandparent.LeftChild;
+                            if (IsNodeBlack(uncle)) {
+                                if (temp == parent.LeftChild) {
+                                    temp = parent;
+                                    RightRotation(temp);
+                                }
+                                parent = (ColoredNode<T>)temp.Parent;
+                                grandparent = (ColoredNode<T>)parent.Parent;
+                                parent.Color = ColorOfNode.Black;
+                                grandparent.Color = ColorOfNode.Red;
+                                LeftRotation(grandparent);
+                            } else {
+                                uncle.Color = ColorOfNode.Black;
+                                grandparent.Color = ColorOfNode.Red;
+                            }
+                            temp = grandparent;
                         }
                     }
+                    ((ColoredNode<T>)Root).Color = ColorOfNode.Black;
                 } catch (InvalidCastException) { // 반복문 내의 Node<T> -> ColoredNode<T> 캐스팅이 실패시 발생
                     throw new InvalidOperationException();
                 }
@@ -56,7 +69,6 @@ namespace BinaryTree {
         }
         private void LeftRotation(Node<T> Node) {
             Node<T> y = Node.RightChild;
-            if (y == null) return;
             // y의 왼쪽 트리를 x의 오른쪽 트리로 이동
             Node.RightChild = y.LeftChild;
             // y의 새 부모 지정
@@ -68,7 +80,6 @@ namespace BinaryTree {
         }
         private void RightRotation(Node<T> Node) {
             Node<T> x = Node.LeftChild;
-            if (x == null) return;
             // x의 오른쪽 트리를 y의 왼쪽 트리로 이동
             Node.LeftChild = x.RightChild;
             // x의 새 부모 지정
