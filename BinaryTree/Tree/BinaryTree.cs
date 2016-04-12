@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace BinaryTree {
     public enum NodeTraversal { Left, Right }
+    /// <summary>
+    /// 단순한 이진 트리입니다. 순회 순서에 따라 노드를 탐색하거나 삽입할 수 있으며 트리를 열거하는 메서드를 제공합니다.
+    /// </summary>
     class BinaryTree<T> {
         protected Node<T> Root = null;
         /// <summary>
@@ -49,7 +52,7 @@ namespace BinaryTree {
         public IEnumerable<Node<T>> AsInorderedEnumerable() {
             foreach (var i in InternalInorderedEnum(Root)) yield return i;
         }
-        private IEnumerable<Node<T>> InternalInorderedEnum(Node<T> Parent) {
+        protected IEnumerable<Node<T>> InternalInorderedEnum(Node<T> Parent) {
             if (Parent == null) yield break;
             else {
                 foreach (var i in InternalInorderedEnum(Parent.LeftChild)) yield return i;
@@ -63,7 +66,7 @@ namespace BinaryTree {
         public IEnumerable<Node<T>> AsPreorderedEnumerable() {
             foreach (var i in InternalPreorderedEnum(Root)) yield return i;
         }
-        private IEnumerable<Node<T>> InternalPreorderedEnum(Node<T> Parent) {
+        protected IEnumerable<Node<T>> InternalPreorderedEnum(Node<T> Parent) {
             if (Parent == null) yield break;
             else {
                 yield return Parent;
@@ -77,7 +80,7 @@ namespace BinaryTree {
         public IEnumerable<Node<T>> AsPostorderedEnumerable() {
             foreach (var i in InternalPostorderedEnum(Root)) yield return i;
         }
-        private IEnumerable<Node<T>> InternalPostorderedEnum(Node<T> Parent) {
+        protected IEnumerable<Node<T>> InternalPostorderedEnum(Node<T> Parent) {
             if (Parent == null) yield break;
             else {
                 foreach (var i in InternalPostorderedEnum(Parent.LeftChild)) yield return i;
@@ -88,7 +91,10 @@ namespace BinaryTree {
         /// <summary>
         /// 현재 이진 트리를 레벨 순위로 순회하여 열거합니다.
         /// </summary>
-        public IEnumerable<Node<T>> AsLevelOrderedEnumerable() {
+        public IEnumerable<Node<T>> AsLevelorderedEnumerable() {
+            foreach (var i in InternalLevelorderedEnum(Root)) yield return i;
+        }
+        protected IEnumerable<Node<T>> InternalLevelorderedEnum(Node<T> Parent) {
             if (Root == null) yield break;
             Queue<Node<T>> q = new Queue<Node<T>>();
             q.Enqueue(Root);

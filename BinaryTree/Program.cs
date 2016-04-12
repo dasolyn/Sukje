@@ -36,7 +36,7 @@ namespace BinaryTree {
 
 #endif
 #if Day2
-            BinarySearchTree<AddressBook> bst = new BinarySearchTree<AddressBook>();
+            SearchTree<AddressBook> tree = new BinarySearchTree<AddressBook>();
             while (true) {
                 Console.Write("$ ");
                 string cmd = Console.ReadLine();
@@ -47,7 +47,7 @@ namespace BinaryTree {
                             foreach (string s in System.IO.File.ReadLines(splitcmd[1])) {
                                 List<string> splited = s.Split('|').Select(l => l.Trim()).ToList();
                                 try {
-                                    bst.InsertNodeToBST(new Node<AddressBook>(new AddressBook {
+                                    tree.Insert(new AddressBook {
                                         Name = splited[0],
                                         Company = splited[1],
                                         Address = splited[2],
@@ -56,14 +56,14 @@ namespace BinaryTree {
                                         Phone2 = splited[5],
                                         Email = splited[6],
                                         Web = splited[7]
-                                    }));
+                                    });
                                 } catch (ArgumentOutOfRangeException) { }
                             }
                         } catch (System.IO.FileNotFoundException) {
                             Console.WriteLine("Specified file does not exist");
                         }
                     } else if (splitcmd[0].ToLower() == "list") {
-                        foreach (var i in bst.AsInorderedEnumerable()) {
+                        foreach (var i in tree.AsInorderedEnumerable()) {
                             Console.WriteLine(i.Data.Name);
                             Console.WriteLine($"Company: {i.Data.Company}");
                             Console.WriteLine($"Address: {i.Data.Address}");
@@ -75,20 +75,20 @@ namespace BinaryTree {
                         }
                     } else if (splitcmd[0].ToLower() == "delete") {
                         try {
-                            bst.DeleteNodeFromBST(new AddressBook { Name = cmd.Replace("delete ", "") });
+                            tree.Delete(new AddressBook { Name = cmd.Replace("delete ", "") });
                         } catch (ArgumentException) {
                             Console.WriteLine("Failed to find node");
                         }
                     } else if (splitcmd[0].ToLower() == "find") {
                         try {
-                            Node<AddressBook> node = bst.SearchNodeFromBST(new AddressBook { Name = cmd.Replace("find ", "") });
-                            Console.WriteLine(node.Data.Name);
-                            Console.WriteLine($"Company: {node.Data.Company}");
-                            Console.WriteLine($"Address: {node.Data.Address}");
-                            Console.WriteLine($"Zipcode: {node.Data.Zipcode}");
-                            Console.WriteLine($"Phones: {node.Data.Phone1}, {node.Data.Phone2}");
-                            Console.WriteLine($"Email: {node.Data.Email}");
-                            Console.WriteLine($"Web: {node.Data.Web}");
+                            AddressBook data = tree.Search(new AddressBook { Name = cmd.Replace("find ", "") });
+                            Console.WriteLine(data.Name);
+                            Console.WriteLine($"Company: {data.Company}");
+                            Console.WriteLine($"Address: {data.Address}");
+                            Console.WriteLine($"Zipcode: {data.Zipcode}");
+                            Console.WriteLine($"Phones: {data.Phone1}, {data.Phone2}");
+                            Console.WriteLine($"Email: {data.Email}");
+                            Console.WriteLine($"Web: {data.Web}");
                             Console.WriteLine();
                         } catch (ArgumentException) {
                             Console.WriteLine("Failed to find node");
