@@ -10,32 +10,32 @@ namespace BinaryTree {
         /// <summary>
         /// 이진 탐색 트리에 데이터를 삽입합니다.
         /// </summary>
-        /// <returns>새로 생성되어 삽입된 노드입니다.</returns>
-        public virtual Node<T> Insert(T Data) {
-            return Insert(new Node<T>(Data));
+        public void Insert(T Data) {
+            Insert(new Node<T>(Data));
         }
         /// <summary>
         /// 이진 탐색 트리에 노드를 삽입합니다.
         /// </summary>
-        /// <returns>삽입된 노드입니다.</returns>
-        public virtual Node<T> Insert(Node<T> Node) {
-            if (Root == null) {
+        /// <exception cref="ArgumentException">해당 노드가 자손 혹은 부모를 가지고 있습니다. 아무 관계도 가지고 있지 않은 노드가 아니면 삽입할 수 없습니다.</exception>
+        public virtual void Insert(Node<T> Node) {
+            if (Node.Parent != null || Node.LeftChild != null || Node.RightChild != null) {
+                throw new ArgumentException();
+            } else if (Root == null) {
                 Root = Node;
-                return Node;
             } else {
                 Node<T> temp = Root;
                 while (true) {
                     if (Node.Data.CompareTo(temp.Data) < 0) {
                         if (temp.LeftChild == null) {
                             temp.LeftChild = Node;
-                            return Node;
+                            return;
                         } else {
                             temp = temp.LeftChild;
                         }
                     } else {
                         if (temp.RightChild == null) {
                             temp.RightChild = Node;
-                            return Node;
+                            return;
                         } else {
                             temp = temp.RightChild;
                         }
@@ -47,7 +47,7 @@ namespace BinaryTree {
         /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 노드를 찾아 반환합니다.
         /// </summary>
         /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
-        public virtual Node<T> Search(T Data) {
+        public Node<T> Search(T Data) {
             Node<T> temp = Root;
             do {
                 if (Data.CompareTo(temp.Data) < 0) temp = temp.LeftChild;
@@ -60,14 +60,14 @@ namespace BinaryTree {
         /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 노드의 데이터를 찾아 반환합니다.
         /// </summary>
         /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
-        public virtual T SearchData(T Data) {
+        public T SearchData(T Data) {
             return Search(Data).Data;
         }
         /// <summary>
         /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 노드를 삭제합니다.
         /// </summary>
         /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
-        public virtual void Delete(T Data) {
+        public void Delete(T Data) {
             Delete(Search(Data));
         }
         public virtual void Delete(Node<T> Node) {
@@ -108,7 +108,7 @@ namespace BinaryTree {
                 }
             }
         }
-        protected Node<T> GetSuccessor(Node<T> Node) {
+        private Node<T> GetSuccessor(Node<T> Node) {
             if (Node.RightChild != null) return GetMinOfTree(Node.RightChild);
             Node<T> origin = Node;
             Node<T> temp = Node;
@@ -118,7 +118,7 @@ namespace BinaryTree {
                 else return temp;
             }
         }
-        protected Node<T> GetMinOfTree(Node<T> Parent) {
+        private Node<T> GetMinOfTree(Node<T> Parent) {
             Node<T> temp = Parent;
             while (temp.LeftChild != null) temp = temp.LeftChild;
             return temp;

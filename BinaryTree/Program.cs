@@ -36,7 +36,8 @@ namespace BinaryTree {
 
 #endif
 #if Day2
-            BinarySearchTree<AddressBook> tree = new BinarySearchTree<AddressBook>();
+            //BinarySearchTree<AddressBook> tree = new BinarySearchTree<AddressBook>();
+            RedBlackTree<AddressBook> tree = new RedBlackTree<AddressBook>();
             while (true) {
                 Console.Write("$ ");
                 string cmd = Console.ReadLine();
