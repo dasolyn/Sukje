@@ -15,12 +15,11 @@ namespace BinaryTree {
                 return _Parent;
             }
             set {
-                if (value == null && _Parent != null) {
+                if (value != null) throw new ArgumentException();
+                if (_Parent != null) {
                     if (_Parent._LeftChild == this) _Parent._LeftChild = null;
                     else _Parent._RightChild = null;
                     _Parent = null;
-                } else if (value != null) {
-                    throw new ArgumentException();
                 }
             }
         }
@@ -33,12 +32,8 @@ namespace BinaryTree {
                 return _LeftChild;
             }
             set {
-                if (value == null && _LeftChild != null) {
-                    _LeftChild._Parent = null;
-                } else if (value != null) {
-                    if (_LeftChild != null) _LeftChild.Parent = null;
-                    value._Parent = this;
-                }
+                if (_LeftChild != null) _LeftChild.Parent = null;
+                if (value != null) value._Parent = this;
                 _LeftChild = value;
             }
         }
@@ -51,12 +46,8 @@ namespace BinaryTree {
                 return _RightChild;
             }
             set {
-                if (value == null && _RightChild != null) {
-                    _RightChild._Parent = null;
-                } else if (value != null) {
-                    if (_RightChild != null) _RightChild.Parent = null;
-                    value._Parent = this;
-                }
+                if (_RightChild != null) _RightChild.Parent = null;
+                if (value != null) value._Parent = this;
                 _RightChild = value;
             }
         }

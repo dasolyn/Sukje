@@ -18,27 +18,26 @@ namespace BinaryTree {
         /// </summary>
         /// <exception cref="ArgumentException">해당 노드가 자손 혹은 부모를 가지고 있습니다. 아무 관계도 가지고 있지 않은 노드가 아니면 삽입할 수 없습니다.</exception>
         public virtual void Insert(Node<T> Node) {
-            if (Node.Parent != null || Node.LeftChild != null || Node.RightChild != null) {
-                throw new ArgumentException();
-            } else if (Root == null) {
+            if (Node.Parent != null || Node.LeftChild != null || Node.RightChild != null) throw new ArgumentException();
+            if (Root == null) {
                 Root = Node;
-            } else {
-                Node<T> temp = Root;
-                while (true) {
-                    if (Node.Data.CompareTo(temp.Data) < 0) {
-                        if (temp.LeftChild == null) {
-                            temp.LeftChild = Node;
-                            return;
-                        } else {
-                            temp = temp.LeftChild;
-                        }
+                return;
+            }
+            Node<T> temp = Root;
+            while (true) {
+                if (Node.Data.CompareTo(temp.Data) < 0) {
+                    if (temp.LeftChild == null) {
+                        temp.LeftChild = Node;
+                        return;
                     } else {
-                        if (temp.RightChild == null) {
-                            temp.RightChild = Node;
-                            return;
-                        } else {
-                            temp = temp.RightChild;
-                        }
+                        temp = temp.LeftChild;
+                    }
+                } else {
+                    if (temp.RightChild == null) {
+                        temp.RightChild = Node;
+                        return;
+                    } else {
+                        temp = temp.RightChild;
                     }
                 }
             }
@@ -64,12 +63,15 @@ namespace BinaryTree {
             return Search(Data).Data;
         }
         /// <summary>
-        /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 노드를 삭제합니다.
+        /// 이진 탐색 트리에서 주어진 데이터와 정렬 순서가 동일한 데이터를 갖는 노드를 삭제합니다.
         /// </summary>
         /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
         public void Delete(T Data) {
             Delete(Search(Data));
         }
+        /// <summary>
+        /// 이진 탐색 트리에서 트리의 일부인 특정 노드를 삭제합니다.
+        /// </summary>
         public virtual void Delete(Node<T> Node) {
             if (Node.LeftChild != null && Node.RightChild != null) {
                 Node<T> suc = GetSuccessor(Node);

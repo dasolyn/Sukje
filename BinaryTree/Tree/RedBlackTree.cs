@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace BinaryTree {
     /// <summary>
@@ -11,61 +10,64 @@ namespace BinaryTree {
         /// </summary>
         /// <returns>삽입된 노드입니다.</returns>
         /// <exception cref="ArgumentException">해당 노드가 자손 혹은 부모를 가지고 있습니다. 아무 관계도 가지고 있지 않은 노드가 아니면 삽입할 수 없습니다.</exception>
-        /// <exception cref="InvalidCastException">이 레드-블랙 트리가 무결하지 않습니다. 이 트리가 가지고 있는 노드 중에 색깔이 없는 노드가 있을 경우 발생합니다.</exception>
+        /// <exception cref="InvalidOperationException">이 레드-블랙 트리가 무결하지 않습니다. 이 트리가 가지고 있는 노드 중에 색깔이 없는 노드가 있을 경우 발생합니다.</exception>
         public override void Insert(Node<T> Node) {
-            if (Node.Parent != null || Node.LeftChild != null || Node.RightChild != null) {
-                throw new ArgumentException();
-            } else {
-                ColoredNode<T> insert = new ColoredNode<T>(Node.Data);
-                base.Insert(insert);
-                try {
-                    ColoredNode<T> temp = insert;
-                    while (true) {
-                        ColoredNode<T> parent = (ColoredNode<T>)temp.Parent;
-                        if (IsNodeBlack(parent)) break;
-                        ColoredNode<T> grandparent = (ColoredNode<T>)parent.Parent;
-                        ColoredNode<T> uncle;
-                        if (parent == grandparent.LeftChild) {
-                            uncle = (ColoredNode<T>)grandparent.RightChild;
-                            if (IsNodeBlack(uncle)) {
-                                if (temp == parent.RightChild) {
-                                    temp = parent;
-                                    LeftRotation(temp);
-                                }
-                                parent = (ColoredNode<T>)temp.Parent;
-                                grandparent = (ColoredNode<T>)parent.Parent;
-                                parent.Color = ColorOfNode.Black;
-                                grandparent.Color = ColorOfNode.Red;
-                                RightRotation(grandparent);
-                            } else {
-                                uncle.Color = ColorOfNode.Black;
-                                grandparent.Color = ColorOfNode.Red;
-                            }
-                            temp = grandparent;
-                        } else {
-                            uncle = (ColoredNode<T>)grandparent.LeftChild;
-                            if (IsNodeBlack(uncle)) {
-                                if (temp == parent.LeftChild) {
-                                    temp = parent;
-                                    RightRotation(temp);
-                                }
-                                parent = (ColoredNode<T>)temp.Parent;
-                                grandparent = (ColoredNode<T>)parent.Parent;
-                                parent.Color = ColorOfNode.Black;
-                                grandparent.Color = ColorOfNode.Red;
-                                LeftRotation(grandparent);
-                            } else {
-                                uncle.Color = ColorOfNode.Black;
-                                grandparent.Color = ColorOfNode.Red;
-                            }
-                            temp = grandparent;
+            if (Node.Parent != null || Node.LeftChild != null || Node.RightChild != null) throw new ArgumentException();
+            ColoredNode<T> insert = new ColoredNode<T>(Node.Data);
+            base.Insert(insert);
+            Node<T> temp = insert;
+            while (true) {
+                Node<T> parent = temp.Parent;
+                if (IsNodeBlack(parent)) break;
+                Node<T> grandparent = parent.Parent;
+                Node<T> uncle;
+                if (parent == grandparent.LeftChild) {
+                    uncle = grandparent.RightChild;
+                    if (IsNodeBlack(uncle)) {
+                        if (temp == parent.RightChild) {
+                            LeftRotation(parent);
+                            temp = parent;
+                            parent = temp.Parent;
+                            grandparent = parent.Parent;
                         }
+                        SetColor(parent, ColorOfNode.Black);
+                        SetColor(grandparent, ColorOfNode.Red);
+                        RightRotation(grandparent);
+                    } else {
+                        SetColor(uncle, ColorOfNode.Black);
+                        SetColor(grandparent, ColorOfNode.Red);
                     }
-                    ((ColoredNode<T>)Root).Color = ColorOfNode.Black;
-                } catch (InvalidCastException) { // 반복문 내의 Node<T> -> ColoredNode<T> 캐스팅이 실패시 발생
-                    throw new InvalidOperationException();
+                    temp = grandparent;
+                } else {
+                    uncle = grandparent.LeftChild;
+                    if (IsNodeBlack(uncle)) {
+                        if (temp == parent.LeftChild) {
+                            RightRotation(parent);
+                            temp = parent;
+                            parent = temp.Parent;
+                            grandparent = parent.Parent;
+                        }
+                        SetColor(parent, ColorOfNode.Black);
+                        SetColor(grandparent, ColorOfNode.Red);
+                        LeftRotation(grandparent);
+                    } else {
+                        SetColor(uncle, ColorOfNode.Black);
+                        SetColor(grandparent, ColorOfNode.Red);
+                    }
+                    temp = grandparent;
                 }
             }
+            SetColor(Root, ColorOfNode.Black);
+        }
+        /// <summary>
+        /// 레드-블랙 탐색 트리에서 트리의 일부인 특정 노드를 삭제합니다.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">이 레드-블랙 트리가 무결하지 않습니다. 이 트리가 가지고 있는 노드 중에 색깔이 없는 노드가 있을 경우 발생합니다.</exception>
+        public override void Delete(Node<T> Node) {
+            base.Delete(Node);
+            ColoredNode<T> colored = Node as ColoredNode<T>;
+            if (colored == null) throw new InvalidOperationException();
+            // DELETE FIXUP
         }
         private void LeftRotation(Node<T> Node) {
             Node<T> y = Node.RightChild;
@@ -89,12 +91,17 @@ namespace BinaryTree {
             // y를 x의 오른쪽 자식으로
             x.RightChild = Node;
         }
-        private bool IsNodeBlack(ColoredNode<T> Node) {
+        private bool IsNodeBlack(Node<T> Node) {
             if (Node == null) return true;
-            else {
-                if (Node.Color == ColorOfNode.Black) return true;
-                else return false; 
-            }
+            ColoredNode<T> colored = Node as ColoredNode<T>;
+            if (colored == null) throw new InvalidOperationException();
+            if (colored.Color == ColorOfNode.Black) return true;
+            else return false;
+        }
+        private void SetColor(Node<T> Node, ColorOfNode NewColor) {
+            ColoredNode<T> colored = Node as ColoredNode<T>;
+            if (colored == null) throw new InvalidOperationException();
+            colored.Color = NewColor;
         }
     }
 }
