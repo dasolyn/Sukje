@@ -81,10 +81,11 @@ namespace BinaryTree {
                 InternalDelete(Node);
             }
         }
+
         /// <summary>
         /// 자식이 1개 또는 0개 존재하는 특정 노드를 삭제하는 내부 메서드입니다.
         /// </summary>
-        private void InternalDelete(Node<T> Node) {
+        protected void InternalDelete(Node<T> Node) {
             if (Node.LeftChild == null && Node.RightChild == null) {
                 // 자식 0개
                 if (Node.Parent == null) Clear();
@@ -110,8 +111,11 @@ namespace BinaryTree {
                 }
             }
         }
-        private Node<T> GetSuccessor(Node<T> Node) {
-            if (Node.RightChild != null) return GetMinOfTree(Node.RightChild);
+        /// <summary>
+        /// 이진 탐색 트리에서 특정 노드의 바로 다음 정렬 순서를 가진 노드를 구하는 내부 메서드입니다.
+        /// </summary>
+        protected Node<T> GetSuccessor(Node<T> Node) {
+            if (Node.RightChild != null) return GetMinimum(Node.RightChild);
             Node<T> origin = Node;
             Node<T> temp = Node;
             while (true) {
@@ -120,7 +124,10 @@ namespace BinaryTree {
                 else return temp;
             }
         }
-        private Node<T> GetMinOfTree(Node<T> Parent) {
+        /// <summary>
+        /// 이진 탐색 트리에서 특정 노드를 루트로 하는 부분 트리의 최소값을 구하는 내부 메서드입니다.
+        /// </summary>
+        protected Node<T> GetMinimum(Node<T> Parent) {
             Node<T> temp = Parent;
             while (temp.LeftChild != null) temp = temp.LeftChild;
             return temp;
@@ -128,7 +135,7 @@ namespace BinaryTree {
 
         #region IEnumerable
         public IEnumerator<Node<T>> GetEnumerator() {
-            foreach (var i in AsInorderedEnumerable()) yield return i;
+            foreach (var i in InternalInorderedEnum(Root)) yield return i;
         }
         IEnumerator IEnumerable.GetEnumerator() {
             foreach (var i in AsInorderedEnumerable()) yield return i;

@@ -69,27 +69,11 @@ namespace BinaryTree {
         public IEnumerable<Node<T>> AsInorderedEnumerable() {
             foreach (var i in InternalInorderedEnum(Root)) yield return i;
         }
-        private IEnumerable<Node<T>> InternalInorderedEnum(Node<T> Parent) {
-            if (Parent == null) yield break;
-            else {
-                foreach (var i in InternalInorderedEnum(Parent.LeftChild)) yield return i;
-                yield return Parent;
-                foreach (var i in InternalInorderedEnum(Parent.RightChild)) yield return i;
-            }
-        }
         /// <summary>
         /// 현재 이진 트리를 선순위로 순회하여 열거합니다.
         /// </summary>
         public IEnumerable<Node<T>> AsPreorderedEnumerable() {
             foreach (var i in InternalPreorderedEnum(Root)) yield return i;
-        }
-        private IEnumerable<Node<T>> InternalPreorderedEnum(Node<T> Parent) {
-            if (Parent == null) yield break;
-            else {
-                yield return Parent;
-                foreach (var i in InternalPreorderedEnum(Parent.LeftChild)) yield return i;
-                foreach (var i in InternalPreorderedEnum(Parent.RightChild)) yield return i;
-            }
         }
         /// <summary>
         /// 현재 이진 트리를 후순위로 순회하여 열거합니다.
@@ -97,21 +81,59 @@ namespace BinaryTree {
         public IEnumerable<Node<T>> AsPostorderedEnumerable() {
             foreach (var i in InternalPostorderedEnum(Root)) yield return i;
         }
-        private IEnumerable<Node<T>> InternalPostorderedEnum(Node<T> Parent) {
-            if (Parent == null) yield break;
-            else {
-                foreach (var i in InternalPostorderedEnum(Parent.LeftChild)) yield return i;
-                foreach (var i in InternalPostorderedEnum(Parent.RightChild)) yield return i;
-                yield return Parent;
-            }
-        }
         /// <summary>
         /// 현재 이진 트리를 레벨 순위로 순회하여 열거합니다.
         /// </summary>
         public IEnumerable<Node<T>> AsLevelorderedEnumerable() {
-            if (Root == null) yield break;
+            foreach (var i in InternalLevelorderedEnum(Root)) yield return i;
+        }
+        /// <summary>
+        /// 이진 트리에 포함된 모든 노드를 제거합니다.
+        /// </summary>
+        public void Clear() {
+            Root = null;
+        }
+
+        /// <summary>
+        /// 지정된 노드와 모든 하위 노드를 재귀적으로 순회하여 중순위로 열거하는 내부 메서드입니다.
+        /// </summary>
+        protected IEnumerable<Node<T>> InternalInorderedEnum(Node<T> Node) {
+            if (Node == null) yield break;
+            else {
+                foreach (var i in InternalInorderedEnum(Node.LeftChild)) yield return i;
+                yield return Node;
+                foreach (var i in InternalInorderedEnum(Node.RightChild)) yield return i;
+            }
+        }
+        /// <summary>
+        /// 지정된 노드와 모든 하위 노드를 재귀적으로 순회하여 선순위로 열거하는 내부 메서드입니다.
+        /// </summary>
+        protected IEnumerable<Node<T>> InternalPreorderedEnum(Node<T> Node) {
+            if (Node == null) yield break;
+            else {
+                yield return Node;
+                foreach (var i in InternalPreorderedEnum(Node.LeftChild)) yield return i;
+                foreach (var i in InternalPreorderedEnum(Node.RightChild)) yield return i;
+            }
+        }
+        /// <summary>
+        /// 지정된 노드와 모든 하위 노드를 재귀적으로 순회하여 후순위로 열거하는 내부 메서드입니다.
+        /// </summary>
+        protected IEnumerable<Node<T>> InternalPostorderedEnum(Node<T> Node) {
+            if (Node == null) yield break;
+            else {
+                foreach (var i in InternalPostorderedEnum(Node.LeftChild)) yield return i;
+                foreach (var i in InternalPostorderedEnum(Node.RightChild)) yield return i;
+                yield return Node;
+            }
+        }
+        /// <summary>
+        /// 지정된 노드와 모든 하위 노드를 재귀적으로 순회하여 레벨순위로 열거하는 내부 메서드입니다.
+        /// </summary>
+        protected IEnumerable<Node<T>> InternalLevelorderedEnum(Node<T> Node) {
+            if (Node == null) yield break;
             Queue<Node<T>> q = new Queue<Node<T>>();
-            q.Enqueue(Root);
+            q.Enqueue(Node);
             do {
                 Node<T> temp = q.Dequeue();
                 yield return temp;
@@ -119,11 +141,6 @@ namespace BinaryTree {
                 if (temp.RightChild != null) q.Enqueue(temp.RightChild);
             } while (q.Count != 0);
         }
-        /// <summary>
-        /// 이진 트리의 모든 노드를 초기화합니다.
-        /// </summary>
-        public void Clear() {
-            Root = null;
-        }
+
     }
 }
