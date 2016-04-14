@@ -81,7 +81,7 @@ namespace BinaryTree {
             else temp = delete.RightChild;
             // 삭제
             InternalDelete(delete);
-            if (GetColor(Node) == ColorOfNode.Red) return;
+            if (GetColor(delete) == ColorOfNode.Red) return;
             // Delete Fix-up
             while (temp != Root && GetColor(temp) == ColorOfNode.Black) {
                 Node<T> parent;
