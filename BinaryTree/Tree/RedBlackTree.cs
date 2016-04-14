@@ -76,20 +76,20 @@ namespace BinaryTree {
             } else {
                 delete = Node;
             }
-            Node<T> x;
-            if (Node.Parent.LeftChild == Node) x = delete.LeftChild;
-            else x = delete.RightChild;
-            Node<T> y = delete.Parent;
+            Node<T> temp;
+            if (Node.Parent.LeftChild == Node) temp = delete.LeftChild;
+            else temp = delete.RightChild;
+            Node<T> py = delete.Parent;
             // 삭제
             InternalDelete(delete);
             if (GetColor(delete) == ColorOfNode.Red) return;
             // Delete Fix-up
-            while (x != Root && GetColor(x) == ColorOfNode.Black) {
+            while (temp != Root && GetColor(temp) == ColorOfNode.Black) {
                 Node<T> parent;
-                if (x == null) parent = y;
-                else parent = x.Parent;
+                if (temp == null) parent = py;
+                else parent = temp.Parent;
                 Node<T> sibling;
-                if (x == parent.LeftChild) {
+                if (temp == parent.LeftChild) {
                     sibling = parent.RightChild;
                     if (GetColor(sibling) == ColorOfNode.Red) {
                         // Case 1
@@ -101,10 +101,10 @@ namespace BinaryTree {
                     if (GetColor(sibling.LeftChild) == ColorOfNode.Black && GetColor(sibling.RightChild) == ColorOfNode.Black) {
                         // Case 2
                         SetColor(sibling, ColorOfNode.Red);
-                        x = x.Parent;
+                        temp = parent;
                     } else {
-                        // Case 3
                         if (GetColor(sibling.RightChild) == ColorOfNode.Black) {
+                            // Case 3
                             SetColor(sibling.LeftChild, ColorOfNode.Black);
                             SetColor(sibling, ColorOfNode.Red);
                             RightRotation(sibling);
@@ -115,7 +115,7 @@ namespace BinaryTree {
                         SetColor(parent, ColorOfNode.Black);
                         SetColor(sibling.RightChild, ColorOfNode.Black);
                         LeftRotation(parent);
-                        x = Root;
+                        temp = Root;
                     }
                 } else {
                     sibling = parent.LeftChild;
@@ -127,7 +127,7 @@ namespace BinaryTree {
                     }
                     if (GetColor(sibling.LeftChild) == ColorOfNode.Black && GetColor(sibling.RightChild) == ColorOfNode.Black) {
                         SetColor(sibling, ColorOfNode.Red);
-                        x = x.Parent;
+                        temp = parent;
                     } else {
                         if (GetColor(sibling.LeftChild) == ColorOfNode.Black) {
                             SetColor(sibling.RightChild, ColorOfNode.Black);
@@ -139,11 +139,11 @@ namespace BinaryTree {
                         SetColor(parent, ColorOfNode.Black);
                         SetColor(sibling.LeftChild, ColorOfNode.Black);
                         RightRotation(parent);
-                        x = Root;
+                        temp = Root;
                     }
                 }
             }
-            SetColor(x, ColorOfNode.Black);
+            SetColor(temp, ColorOfNode.Black);
         }
 
         private void LeftRotation(Node<T> Node) {
