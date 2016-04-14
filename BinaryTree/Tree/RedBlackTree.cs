@@ -84,8 +84,9 @@ namespace BinaryTree {
             if (GetColor(Node) == ColorOfNode.Red) return;
             // Delete Fix-up
             while (temp != Root && GetColor(temp) == ColorOfNode.Black) {
-                Node<T> parent = temp.Parent;
-                if (parent == null) break;
+                Node<T> parent;
+                if (temp == null) parent = delete;
+                else parent = temp.Parent;
                 Node<T> sibling;
                 if (temp == parent.LeftChild) {
                     sibling = parent.RightChild;
@@ -167,6 +168,7 @@ namespace BinaryTree {
             x.RightChild = Node;
         }
         private void SetColor(Node<T> Node, ColorOfNode NewColor) {
+            if (Node == null) return;
             ColoredNode<T> colored = Node as ColoredNode<T>;
             if (colored == null) throw new InvalidOperationException();
             colored.Color = NewColor;
