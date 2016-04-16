@@ -27,14 +27,14 @@ namespace BinaryTree {
                     if (GetColor(uncle) == ColorOfNode.Black) {
                         if (temp == parent.RightChild) {
                             // Case 2
-                            LeftRotation(parent);
+                            LeftRotate(parent);
                             parent = parent.Parent;
                             grandparent = parent.Parent;
                         }
                         // Case 3
                         SetColor(parent, ColorOfNode.Black);
                         SetColor(grandparent, ColorOfNode.Red);
-                        RightRotation(grandparent);
+                        RightRotate(grandparent);
                     } else {
                         // Case 1
                         SetColor(uncle, ColorOfNode.Black);
@@ -46,13 +46,13 @@ namespace BinaryTree {
                     uncle = grandparent.LeftChild;
                     if (GetColor(uncle) == ColorOfNode.Black) {
                         if (temp == parent.LeftChild) {
-                            RightRotation(parent);
+                            RightRotate(parent);
                             parent = parent.Parent;
                             grandparent = parent.Parent;
                         }
                         SetColor(parent, ColorOfNode.Black);
                         SetColor(grandparent, ColorOfNode.Red);
-                        LeftRotation(grandparent);
+                        LeftRotate(grandparent);
                     } else {
                         SetColor(uncle, ColorOfNode.Black);
                         SetColor(parent, ColorOfNode.Black);
@@ -95,7 +95,7 @@ namespace BinaryTree {
                         // Case 1
                         SetColor(sibling, ColorOfNode.Black);
                         SetColor(parent, ColorOfNode.Red);
-                        LeftRotation(parent);
+                        LeftRotate(parent);
                         sibling = parent.RightChild;
                     }
                     if (GetColor(sibling.LeftChild) == ColorOfNode.Black && GetColor(sibling.RightChild) == ColorOfNode.Black) {
@@ -107,14 +107,14 @@ namespace BinaryTree {
                             // Case 3
                             SetColor(sibling.LeftChild, ColorOfNode.Black);
                             SetColor(sibling, ColorOfNode.Red);
-                            RightRotation(sibling);
+                            RightRotate(sibling);
                             sibling = parent.RightChild;
                         }
                         // Case 4
                         SetColor(sibling, GetColor(parent));
                         SetColor(parent, ColorOfNode.Black);
                         SetColor(sibling.RightChild, ColorOfNode.Black);
-                        LeftRotation(parent);
+                        LeftRotate(parent);
                         temp = Root;
                     }
                 } else {
@@ -122,7 +122,7 @@ namespace BinaryTree {
                     if (GetColor(sibling) == ColorOfNode.Red) {
                         SetColor(sibling, ColorOfNode.Black);
                         SetColor(parent, ColorOfNode.Red);
-                        RightRotation(parent);
+                        RightRotate(parent);
                         sibling = parent.LeftChild;
                     }
                     if (GetColor(sibling.LeftChild) == ColorOfNode.Black && GetColor(sibling.RightChild) == ColorOfNode.Black) {
@@ -132,13 +132,13 @@ namespace BinaryTree {
                         if (GetColor(sibling.LeftChild) == ColorOfNode.Black) {
                             SetColor(sibling.RightChild, ColorOfNode.Black);
                             SetColor(sibling, ColorOfNode.Red);
-                            LeftRotation(sibling);
+                            LeftRotate(sibling);
                             sibling = parent.LeftChild;
                         }
                         SetColor(sibling, GetColor(parent));
                         SetColor(parent, ColorOfNode.Black);
                         SetColor(sibling.LeftChild, ColorOfNode.Black);
-                        RightRotation(parent);
+                        RightRotate(parent);
                         temp = Root;
                     }
                 }
@@ -146,35 +146,43 @@ namespace BinaryTree {
             SetColor(temp, ColorOfNode.Black);
         }
 
-        private void LeftRotation(Node<T> Node) {
+        /// <summary>
+        /// 레드-블랙 트리에서 특정 노드를 루트로 하는 부분 트리를 좌회전하는 내부 메서드입니다.
+        /// </summary>
+        protected void LeftRotate(Node<T> Node) {
             Node<T> y = Node.RightChild;
-            // y의 왼쪽 트리를 x의 오른쪽 트리로 이동
             Node.RightChild = y.LeftChild;
-            // y의 새 부모 지정
             if (Node.Parent == null) Root = y;
             else if (Node.Parent.LeftChild == Node) Node.Parent.LeftChild = y;
             else Node.Parent.RightChild = y;
-            // x를 y의 왼쪽 자식으로
             y.LeftChild = Node;
         }
-        private void RightRotation(Node<T> Node) {
+        /// <summary>
+        /// 레드-블랙 트리에서 특정 노드를 루트로 하는 부분 트리를 우회전하는 내부 메서드입니다.
+        /// </summary>
+        protected void RightRotate(Node<T> Node) {
             Node<T> x = Node.LeftChild;
-            // x의 오른쪽 트리를 y의 왼쪽 트리로 이동
             Node.LeftChild = x.RightChild;
-            // x의 새 부모 지정
             if (Node.Parent == null) Root = x;
             else if (Node.Parent.LeftChild == Node) Node.Parent.LeftChild = x;
             else Node.Parent.RightChild = x;
-            // y를 x의 오른쪽 자식으로
             x.RightChild = Node;
         }
-        private void SetColor(Node<T> Node, ColorOfNode NewColor) {
+        /// <summary>
+        /// 레드-블랙 트리에서 특정 노드의 색깔을 설정하는 내부 메서드입니다.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">지정된 노드가 색깔을 가지지 못하는 노드입니다. <c>ColoredNode</c>가 아닌 노드이면 발생합니다.</exception>
+        protected void SetColor(Node<T> Node, ColorOfNode NewColor) {
             if (Node == null) return;
             ColoredNode<T> colored = Node as ColoredNode<T>;
             if (colored == null) throw new InvalidOperationException();
             colored.Color = NewColor;
         }
-        private ColorOfNode GetColor(Node<T> Node) {
+        /// <summary>
+        /// 레드-블랙 트리에서 특정 노드의 색깔을 가져오는 내부 메서드입니다.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">지정된 노드가 색깔을 가지지 못하는 노드입니다. <c>ColoredNode</c>가 아닌 노드이면 발생합니다.</exception>
+        protected ColorOfNode GetColor(Node<T> Node) {
             if (Node == null) return ColorOfNode.Black;
             ColoredNode<T> colored = Node as ColoredNode<T>;
             if (colored == null) throw new InvalidOperationException();

@@ -64,15 +64,31 @@ namespace BinaryTree {
                             Console.WriteLine("Specified file does not exist");
                         }
                     } else if (splitcmd[0].ToLower() == "list") {
-                        foreach (var i in tree.AsInorderedEnumerable()) {
-                            Console.WriteLine(i.Data.Name);
-                            Console.WriteLine($"Company: {i.Data.Company}");
-                            Console.WriteLine($"Address: {i.Data.Address}");
-                            Console.WriteLine($"Zipcode: {i.Data.Zipcode}");
-                            Console.WriteLine($"Phones: {i.Data.Phone1}, {i.Data.Phone2}");
-                            Console.WriteLine($"Email: {i.Data.Email}");
-                            Console.WriteLine($"Web: {i.Data.Web}");
-                            Console.WriteLine();
+                        if (splitcmd.Length >= 2 && splitcmd[1].ToLower() == "node") {
+                            foreach (var i in tree) {
+                                Console.Write(i.Data.Name);
+                                if (i.LeftChild == null && i.RightChild == null) Console.Write(": leaf");
+                                else if (i.LeftChild != null && i.RightChild != null) Console.Write(": two children");
+                                else if (i.LeftChild != null) Console.Write(": only left child");
+                                else Console.Write(": only right child");
+                                ColoredNode<AddressBook> colored = i as ColoredNode<AddressBook>;
+                                if (colored == null) Console.Write(", no color");
+                                else if (colored.Color == ColorOfNode.Black) Console.Write(", black");
+                                else Console.Write(", red");
+                                if (i.Parent == null) Console.Write(", root");
+                                Console.WriteLine();
+                            }
+                        } else {
+                            foreach (var i in tree) {
+                                Console.WriteLine(i.Data.Name);
+                                Console.WriteLine($"Company: {i.Data.Company}");
+                                Console.WriteLine($"Address: {i.Data.Address}");
+                                Console.WriteLine($"Zipcode: {i.Data.Zipcode}");
+                                Console.WriteLine($"Phones: {i.Data.Phone1}, {i.Data.Phone2}");
+                                Console.WriteLine($"Email: {i.Data.Email}");
+                                Console.WriteLine($"Web: {i.Data.Web}");
+                                Console.WriteLine();
+                            }
                         }
                     } else if (splitcmd[0].ToLower() == "delete") {
                         try {
@@ -97,7 +113,7 @@ namespace BinaryTree {
                     } else if (splitcmd[0].ToLower() == "exit") {
                         break;
                     } else {
-                        Console.WriteLine("Commands: read (filename), list, find (name), delete (name), exit");
+                        Console.WriteLine("Commands: read (filename), list, list node, find (name), delete (name), exit");
                     }
                 } catch (IndexOutOfRangeException) {
                     Console.WriteLine("Commands: read (filename), list, find (name), delete (name), exit");
@@ -105,6 +121,7 @@ namespace BinaryTree {
             }
 #endif
             // 바로 종료 방지
+            Console.Write("Press enter for exit this program. ");
             Console.ReadLine();
         }
     }
