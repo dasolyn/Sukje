@@ -72,6 +72,7 @@ namespace HashSet {
         }
         public void Clear() {
             for (int i = 0; i < Source.Length; i++) Source[i] = null;
+            Count = 0;
         }
         public bool Contains(T item) {
             int hashindex = Math.Abs(item.GetHashCode() % Source.Length);
