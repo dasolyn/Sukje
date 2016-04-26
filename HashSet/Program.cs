@@ -15,7 +15,7 @@ namespace HashSet {
                             if (myhashset.Add(item)) Console.WriteLine("Success");
                             else Console.WriteLine("Failed : There are duplicate conflict");
                         } else {
-                            Console.WriteLine("Failed : There are no string to add");
+                            Console.WriteLine("Failed : Input a string to add");
                         }
                     } else if (splitcmd[0].ToLower() == "list") {
                         if (splitcmd.Length == 1) {
@@ -27,35 +27,31 @@ namespace HashSet {
                             Console.WriteLine();
                         } else {
                             if (splitcmd[1].ToLower() == "detail") {
-                                for (int i = 0; i < myhashset.Source.Length; i++) {
+                                for (int i = 0; i < myhashset.HashTableSize; i++) {
                                     Console.Write($"Hash value {i}: ");
-                                    var cursor = myhashset.Source[i];
-                                    while (cursor != null) {
-                                        Console.Write($"{cursor.Data} ");
-                                        cursor = cursor.Next;
-                                    }
+                                    foreach (string j in myhashset.AsEnumerableByHashValue(i)) Console.Write($"{j} ");
                                     Console.WriteLine();
                                 }
                             }
                         }
                     } else if (splitcmd[0].ToLower() == "remove") {
-                        string item = cmd.Replace("remove", "");
+                        string item = cmd.Replace("remove ", "");
                         if (item.Length > 0) {
                             if (myhashset.Remove(item)) Console.WriteLine("Success");
                             else Console.WriteLine("Failed : There are no specific element");
                         } else {
-                            Console.WriteLine("Failed : There are no string to delete");
+                            Console.WriteLine("Failed : Input a string to remove");
                         }
                     } else if (splitcmd[0].ToLower() == "find") {
-                        string item = cmd.Replace("find", "");
+                        string item = cmd.Replace("find ", "");
                         if (item.Length > 0) {
                             if (myhashset.Contains(item)) Console.WriteLine("Success : Specific element is in HashSet");
                             else Console.WriteLine("Failed : There are no specific element");
                         } else {
-                            Console.WriteLine("Failed : There are no string to delete");
+                            Console.WriteLine("Failed : Input a string to find");
                         }
                     } else {
-                        Console.WriteLine("command: add (item), list, remove, find");
+                        Console.WriteLine("command: add (item), list, remove (item), find (item)");
                     }
                 } catch (ArgumentException) {
                     Console.WriteLine("command: add (item), list, remove, find");

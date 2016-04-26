@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace HashSet {
     class MyHashSet<T> : ICollection<T> {
-        public class HashNode<TInternalData> {
+        #region Private 멤버
+        private class HashNode<TInternalData> {
             public HashNode<TInternalData> Next;
             public int HashValue {
                 get {
@@ -16,30 +17,47 @@ namespace HashSet {
                 this.Data = Data;
             }
         }
-        public HashNode<T>[] Source;
+        private HashNode<T>[] Source;
         private float LoadFactor;
-        private void ResizeIfBig() {
+        private void ResizeIfFull() {
             if (Count > LoadFactor * Source.Length) {
-                HashNode<T>[] newarray = new HashNode<T>[Source.Length * 2];
+                HashNode<T>[] oldsource = Source;
+                Source = new HashNode<T>[Source.Length * 2];
                 int cursorindex = 0;
-                HashNode<T> cursor = Source[0];
+                HashNode<T> cursor = oldsource[0];
                 while (true) {
                     if (cursor == null) {
                         cursorindex++;
-                        if (cursorindex >= Source.Length) break;
-                        cursor = Source[cursorindex];
+                        if (cursorindex >= oldsource.Length) break;
+                        else cursor = oldsource[cursorindex];
                     } else {
-                        newarray[cursor.HashValue % newarray.Length] = cursor;
-                        if (cursor.Next == null) {
-                            cursorindex++;
-                            if (cursorindex >= Source.Length) break;
-                            cursor = Source[cursorindex];
-                        } else cursor = cursor.Next;
+                        AddNode(cursor);
+                        HashNode<T> temp = cursor.Next;
+                        cursor.Next = null;
+                        cursor = temp;
                     }
                 }
-                Source = newarray;
             }
         }
+        private bool AddNode(HashNode<T> Node) {
+            int hashindex = Node.HashValue % Source.Length;
+            if (Source[hashindex] == null) {
+                Source[hashindex] = Node;
+            } else {
+                HashNode<T> cursor = Source[hashindex];
+                while (true) {
+                    if (cursor.Data.Equals(Node.Data)) return false;
+                    if (cursor.Next == null) break;
+                    else cursor = cursor.Next;
+                }
+                cursor.Next = Node;
+            }
+            Count++;
+            return true;
+        }
+        #endregion
+
+        #region ICollection 구현
         public int Count { get; private set; } = 0;
         public bool IsReadOnly { get; } = false;
         public MyHashSet() : this(4, 0.8f) { }
@@ -48,21 +66,9 @@ namespace HashSet {
             this.LoadFactor = LoadFactor;
         }
         public bool Add(T item) {
-            int hashindex = Math.Abs(item.GetHashCode() % Source.Length);
-            if (Source[hashindex] == null) {
-                Source[hashindex] = new HashNode<T>(item);
-            } else {
-                HashNode<T> cursor = Source[hashindex];
-                while (true) {
-                    if (cursor.Data.Equals(item)) return false;
-                    if (cursor.Next == null) break;
-                    else cursor = cursor.Next;
-                }
-                cursor.Next = new HashNode<T>(item);
-            }
-            Count++;
-            ResizeIfBig();
-            return true;
+            bool res = AddNode(new HashNode<T>(item));
+            ResizeIfFull();
+            return res;
         }
         public void Clear() {
             for (int i = 0; i < Source.Length; i++) Source[i] = null;
@@ -87,24 +93,6 @@ namespace HashSet {
             }
             etor.Dispose();
         }
-        public IEnumerator<T> GetEnumerator() {
-            int cursorindex = 0;
-            HashNode<T> cursor = Source[0];
-            while (true) {
-                if (cursor == null) {
-                    cursorindex++;
-                    if (cursorindex >= Source.Length) yield break;
-                    else cursor = Source[cursorindex];
-                } else {
-                    yield return cursor.Data;
-                    if (cursor.Next == null) {
-                        cursorindex++;
-                        if (cursorindex >= Source.Length) yield break;
-                        else cursor = Source[cursorindex];
-                    } else cursor = cursor.Next;
-                }
-            }
-        }
         public bool Remove(T item) {
             int hashindex = Math.Abs(item.GetHashCode() % Source.Length);
             if (Source[hashindex] == null) return false;
@@ -127,14 +115,52 @@ namespace HashSet {
                 }
             }
         }
-        IEnumerator IEnumerable.GetEnumerator() {
-            foreach (var i in this) yield return i;
-        }
         public bool IsEmpty() {
             return Count == 0;
         }
         void ICollection<T>.Add(T item) {
             Add(item);
         }
+        #endregion
+
+        #region 추가 구현
+        public int HashTableSize {
+            get {
+                return Source.Length;
+            }
+        }
+        public IEnumerable<T> AsEnumerableByHashValue(int value) {
+            if (value >= Source.Length) yield break;
+            HashNode<T> cursor = Source[value];
+            while (true) {
+                if (cursor == null) {
+                    yield break;
+                } else {
+                    yield return cursor.Data;
+                    cursor = cursor.Next;
+                }
+            }
+        }
+        #endregion
+
+        #region IEnumerable 구현
+        public IEnumerator<T> GetEnumerator() {
+            int cursorindex = 0;
+            HashNode<T> cursor = Source[0];
+            while (true) {
+                if (cursor == null) {
+                    cursorindex++;
+                    if (cursorindex >= Source.Length) yield break;
+                    else cursor = Source[cursorindex];
+                } else {
+                    yield return cursor.Data;
+                    cursor = cursor.Next;
+                }
+            }
+        }
+        IEnumerator IEnumerable.GetEnumerator() {
+            foreach (var i in this) yield return i;
+        }
+        #endregion
     }
 }
