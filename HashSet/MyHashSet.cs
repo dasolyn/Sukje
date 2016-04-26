@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace HashSet {
     class MyHashSet<T> : ICollection<T> {
         #region Private 멤버
+        private delegate bool ResizeFilter(int Count, int FactoredLength);
         private class HashNode<TInternalData> {
             public HashNode<TInternalData> Next;
             public int HashValue {
@@ -17,12 +18,13 @@ namespace HashSet {
                 this.Data = Data;
             }
         }
-        private HashNode<T>[] Source;
-        private float LoadFactor;
-        private void ResizeIfFull() {
-            if (Count > LoadFactor * Source.Length) {
+        private HashNode<T>[] Source = new HashNode<T>[4];
+        private float LoadFactor = 0.8f;
+        private void ResizeCapacity(ResizeFilter Filter, int NewSize) {
+            if (Filter(Count, (int)(LoadFactor * Source.Length))) {
                 HashNode<T>[] oldsource = Source;
-                Source = new HashNode<T>[Source.Length * 2];
+                Source = new HashNode<T>[NewSize];
+                Count = 0;
                 int cursorindex = 0;
                 HashNode<T> cursor = oldsource[0];
                 while (true) {
@@ -60,19 +62,15 @@ namespace HashSet {
         #region ICollection 구현
         public int Count { get; private set; } = 0;
         public bool IsReadOnly { get; } = false;
-        public MyHashSet() : this(4, 0.8f) { }
-        public MyHashSet(int Capacity, float LoadFactor) {
-            Source = new HashNode<T>[Capacity];
-            this.LoadFactor = LoadFactor;
-        }
         public bool Add(T item) {
             bool res = AddNode(new HashNode<T>(item));
-            ResizeIfFull();
+            ResizeCapacity((c, f) => c > f, Source.Length * 2);
             return res;
         }
         public void Clear() {
             for (int i = 0; i < Source.Length; i++) Source[i] = null;
             Count = 0;
+            ResizeCapacity((c, f) => c < f / 4, 4);
         }
         public bool Contains(T item) {
             int hashindex = Math.Abs(item.GetHashCode() % Source.Length);
@@ -105,6 +103,7 @@ namespace HashSet {
                         if (parent == null) Source[hashindex] = cursor.Next;
                         else parent.Next = cursor.Next;
                         Count--;
+                        ResizeCapacity((c, f) => c < f / 4, Source.Length / 2);
                         return true;
                     }
                     if (cursor.Next == null) {
@@ -115,9 +114,6 @@ namespace HashSet {
                     }
                 }
             }
-        }
-        public bool IsEmpty() {
-            return Count == 0;
         }
         void ICollection<T>.Add(T item) {
             Add(item);
@@ -141,6 +137,9 @@ namespace HashSet {
                     cursor = cursor.Next;
                 }
             }
+        }
+        public bool IsEmpty() {
+            return Count == 0;
         }
         #endregion
 
