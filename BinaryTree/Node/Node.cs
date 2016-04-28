@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace BinaryTree {
-    class Node<T> {
+    public class Node<T> {
         private Node<T> _Parent = null;
         /// <summary>
         /// 이 노드의 부모 노드의 값을 가져올 수 있습니다. 이 프로퍼티에 null을 할당하여 이 노드와 부모의 연결을 해제할 수 있습니다.

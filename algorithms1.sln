@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "algorithms1", "algorithms1\algorithms1.csproj", "{183B03BD-49A0-4F39-A96A-827AAA2D41B7}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinaryTree", "BinaryTree\BinaryTree.csproj", "{476183FE-E985-4006-A16A-0A14797874C5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashSet", "HashSet\HashSet.csproj", "{7956ADA8-904E-4D12-8605-2427C1049480}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graph", "Graph\Graph.csproj", "{EA364B17-7A90-42FA-ABA2-9670013208DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{7956ADA8-904E-4D12-8605-2427C1049480}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7956ADA8-904E-4D12-8605-2427C1049480}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7956ADA8-904E-4D12-8605-2427C1049480}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA364B17-7A90-42FA-ABA2-9670013208DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA364B17-7A90-42FA-ABA2-9670013208DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA364B17-7A90-42FA-ABA2-9670013208DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA364B17-7A90-42FA-ABA2-9670013208DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

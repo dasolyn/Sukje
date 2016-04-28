@@ -6,7 +6,7 @@ namespace BinaryTree {
     /// <summary>
     /// 기초적인 이진 탐색 트리입니다. 트리의 균형을 자동으로 보정하는 과정이 수행되지 않습니다.
     /// </summary>
-    class BinarySearchTree<T> : BinaryTree<T>, IEnumerable<Node<T>> where T : IComparable<T> {
+    public class BinarySearchTree<T> : BinaryTree<T>, IEnumerable<Node<T>> where T : IComparable<T> {
         /// <summary>
         /// 이진 탐색 트리에 데이터를 삽입합니다.
         /// </summary>
@@ -48,10 +48,10 @@ namespace BinaryTree {
         /// <exception cref="ArgumentException">해당 값을 갖는 노드를 찾는데 실패하였습니다.</exception>
         public Node<T> Search(T Data) {
             Node<T> temp = Root;
-            do {
+            while (temp != null && temp.Data.CompareTo(Data) != 0) {
                 if (Data.CompareTo(temp.Data) < 0) temp = temp.LeftChild;
                 else temp = temp.RightChild;
-            } while (temp != null && temp.Data.CompareTo(Data) != 0);
+            }
             if (temp == null) throw new ArgumentException();
             else return temp;
         }

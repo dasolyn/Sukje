@@ -4,7 +4,7 @@ namespace BinaryTree {
     /// <summary>
     /// 레드-블랙 탐색 트리입니다.
     /// </summary>
-    class RedBlackTree<T> : BinarySearchTree<T> where T : IComparable<T> {
+    public class RedBlackTree<T> : BinarySearchTree<T> where T : IComparable<T> {
         /// <summary>
         /// 레드-블랙 탐색 트리에 노드를 삽입합니다.
         /// </summary>

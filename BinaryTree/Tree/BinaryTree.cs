@@ -6,7 +6,7 @@ namespace BinaryTree {
     /// <summary>
     /// 단순한 이진 트리입니다. 순회 순서에 따라 노드를 탐색, 삽입, 제거할 수 있으며 트리를 열거하는 메서드를 제공합니다.
     /// </summary>
-    class BinaryTree<T> {
+    public class BinaryTree<T> {
         protected Node<T> Root = null;
         /// <summary>
         /// 해당 순서에 따라 이진 트리를 탐색하여 결과 노드를 반환합니다.
