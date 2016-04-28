@@ -3,6 +3,7 @@
 using BinaryTree;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using static System.Math;
@@ -39,7 +40,7 @@ namespace Graph {
             int index = -1;
             RedBlackTree<Data> rbtree = new RedBlackTree<Data>();
             Console.WriteLine("Inserting elements to red-black tree... Please wait a minute. (This task may be slow in debug build)");
-            foreach (string i in System.IO.File.ReadLines("Alabama AL Distances.TXT")) {
+            foreach (string i in System.IO.File.ReadLines("Cityname.txt")) {
                 if (index != -1) { // 첫번째 줄은 스킵
                     IList<string> splited = i.Split('\t').ToList();
                     // 번호 추가
@@ -67,11 +68,11 @@ namespace Graph {
                 int i = 0;
                 foreach (Node<Data> j in rbtree) graph[i++] = j.Data;
             }
+            Console.WriteLine("Value assignment finished");
             for (int i = 0; i < graph.Size; i++) {
-                for (int j = 0; j < graph.Size; j++) {
-                    if (i == j) continue;
+                for (int j = i + 1; j < graph.Size; j++) {
                     double dist = CalDistance(graph[i].Latitude, graph[i].Longitude, graph[j].Latitude, graph[j].Longitude);
-                    if (dist < 10) graph.MakeNewEdge(i, j);
+                    if (dist < 10 * 1000) graph.MakeNewEdge(i, j);
                 }
             }
             Console.WriteLine("Finished!");
@@ -83,9 +84,12 @@ namespace Graph {
                     Data found = rbtree.SearchData(new Data { PlaceName = city });
                     Console.Write("Input hop number: ");
                     int hop = int.Parse(Console.ReadLine());
+                    int count = 0;
                     foreach (Data i in graph.HopBFSTraversal(found.Index, d => d == hop)) {
-                        Console.WriteLine(i.PlaceName);
+                        Console.Write($"{i.PlaceName}, ");
+                        if (++count % 3 == 0) Console.WriteLine();
                     }
+                    if (count % 3 != 0) Console.WriteLine();
                 } catch (ArgumentException) {
                     Console.WriteLine("Failed to find given city name.");
                     continue;

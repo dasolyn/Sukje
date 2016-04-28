@@ -28,15 +28,16 @@ namespace Graph {
             visited.Initialize();
             distance.Initialize();
             queue.Enqueue(startindex);
-            while (queue.Count == 0) {
+            while (queue.Count != 0) {
                 int tempindex = queue.Dequeue();
                 Node<T> parent = source[tempindex];
-                Node<T> adj = parent;
+                Node<T> adj = parent.Next;
                 while (adj != null) {
                     if (visited[adj.Index] == 0) {
                         visited[adj.Index] = 1;
                         distance[adj.Index] = distance[parent.Index] + 1;
                         if (DistanceFilter?.Invoke(distance[adj.Index]) ?? false) yield return source[adj.Index].Data;
+                        queue.Enqueue(adj.Index);
                     }
                     adj = adj.Next;
                 }

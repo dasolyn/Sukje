@@ -28,7 +28,7 @@ namespace BinaryTree {
                         if (temp == parent.RightChild) {
                             // Case 2
                             LeftRotate(parent);
-                            parent = parent.Parent;
+                            parent = temp;
                             grandparent = parent.Parent;
                         }
                         // Case 3
@@ -47,7 +47,7 @@ namespace BinaryTree {
                     if (GetColor(uncle) == ColorOfNode.Black) {
                         if (temp == parent.LeftChild) {
                             RightRotate(parent);
-                            parent = parent.Parent;
+                            parent = temp;
                             grandparent = parent.Parent;
                         }
                         SetColor(parent, ColorOfNode.Black);
