@@ -60,6 +60,7 @@ namespace BinaryTree {
                                     });
                                 } catch (ArgumentOutOfRangeException) { }
                             }
+                            Console.WriteLine($"Finished.. There are {tree.Count()} elements");
                         } catch (System.IO.FileNotFoundException) {
                             Console.WriteLine("Specified file does not exist");
                         }

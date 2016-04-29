@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace BinaryTree {
-    class Node<T> {
+    public class Node<T> {
         private Node<T> _Parent = null;
         /// <summary>
         /// 이 노드의 부모 노드의 값을 가져올 수 있습니다. 이 프로퍼티에 null을 할당하여 이 노드와 부모의 연결을 해제할 수 있습니다.
@@ -32,8 +32,12 @@ namespace BinaryTree {
                 return _LeftChild;
             }
             set {
-                if (_LeftChild != null) _LeftChild.Parent = null;
-                if (value != null) value._Parent = this;
+                if (_LeftChild != null) _LeftChild._Parent = null;
+                if (value != null) {
+                    // 새로 붙일려는 노드가 다른 곳과 연결되어 있는 경우 먼저 그쪽을 해제해야 함.
+                    if (value.Parent != null) value.Parent = null;
+                    value._Parent = this;
+                }
                 _LeftChild = value;
             }
         }
@@ -46,8 +50,12 @@ namespace BinaryTree {
                 return _RightChild;
             }
             set {
-                if (_RightChild != null) _RightChild.Parent = null;
-                if (value != null) value._Parent = this;
+                if (_RightChild != null) _RightChild._Parent = null;
+                if (value != null) {
+                    // 새로 붙일려는 노드가 다른 곳과 연결되어 있는 경우 먼저 그쪽을 해제해야 함.
+                    if (value.Parent != null) value.Parent = null;
+                    value._Parent = this;
+                }
                 _RightChild = value;
             }
         }

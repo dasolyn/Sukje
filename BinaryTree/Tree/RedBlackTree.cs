@@ -4,7 +4,7 @@ namespace BinaryTree {
     /// <summary>
     /// 레드-블랙 탐색 트리입니다.
     /// </summary>
-    class RedBlackTree<T> : BinarySearchTree<T> where T : IComparable<T> {
+    public class RedBlackTree<T> : BinarySearchTree<T> where T : IComparable<T> {
         /// <summary>
         /// 레드-블랙 탐색 트리에 노드를 삽입합니다.
         /// </summary>
@@ -28,7 +28,7 @@ namespace BinaryTree {
                         if (temp == parent.RightChild) {
                             // Case 2
                             LeftRotate(parent);
-                            parent = parent.Parent;
+                            parent = temp;
                             grandparent = parent.Parent;
                         }
                         // Case 3
@@ -47,7 +47,7 @@ namespace BinaryTree {
                     if (GetColor(uncle) == ColorOfNode.Black) {
                         if (temp == parent.LeftChild) {
                             RightRotate(parent);
-                            parent = parent.Parent;
+                            parent = temp;
                             grandparent = parent.Parent;
                         }
                         SetColor(parent, ColorOfNode.Black);
