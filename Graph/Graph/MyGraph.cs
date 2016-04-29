@@ -20,7 +20,7 @@ namespace Graph {
                 source[index] = new Node<T> { Index = index, Data = value };
             }
         }
-        public IEnumerable<T> AsBFSTraversalWithDistanceFilterEnumerable(int startindex, Func<int, bool> DistanceFilter) {
+        public IEnumerable<T> AsBFSTraversalEnumerable(int startindex, Func<int, bool> DistanceFilter) {
             if (source[startindex] == null) yield break;
             Queue<int> queue = new Queue<int>();
             int[] visited = new int[Size];

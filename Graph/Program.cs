@@ -61,10 +61,11 @@ namespace Graph {
                 }
             }
             watch.Stop();
-            Console.WriteLine($"Completed! {rbtree.Count()} elements, {watch.ElapsedMilliseconds / 1000d:0.##} seconds");
+            int TotalNumberOfElements = rbtree.Count();
+            Console.WriteLine($"Finished! {TotalNumberOfElements} elements, {watch.ElapsedMilliseconds / 1000d:0.##} seconds");
             Console.WriteLine("Building graph...");
             watch.Restart();
-            MyGraph<Data> graph = new MyGraph<Data>(rbtree.Count());
+            MyGraph<Data> graph = new MyGraph<Data>(TotalNumberOfElements);
             {
                 int i = 0;
                 foreach (Node<Data> j in rbtree) graph[i++] = j.Data;
@@ -76,14 +77,6 @@ namespace Graph {
                     if (dist < 10 * 1000) lock (MakeEdgeLock) graph.MakeNewEdge(i, j);
                 });
             }
-            // 병렬화시 쿼드코어 기준 약 2.5배정도 빠름
-            //for (int i = 0; i < graph.Size; i++) {
-            //    for (int j = i + 1; j < graph.Size; j++) {
-            //        double dist = CalDistance(graph[i].Latitude, graph[i].Longitude, graph[j].Latitude, graph[j].Longitude);
-            //        if (dist < 10 * 1000) graph.MakeNewEdge(i, j);
-            //    }
-            //}
-
             watch.Stop();
             Console.WriteLine($"Finished! {watch.ElapsedMilliseconds / 1000d:0.##} seconds");
             while (true) {
@@ -94,12 +87,8 @@ namespace Graph {
                     Data found = rbtree.SearchData(new Data { PlaceName = city });
                     Console.Write("Input hop number: ");
                     int hop = int.Parse(Console.ReadLine());
-                    int count = 0;
-                    foreach (Data i in graph.AsBFSTraversalWithDistanceFilterEnumerable(found.Index, d => d == hop)) {
-                        Console.Write($"{i.PlaceName}, ");
-                        if (++count % 3 == 0) Console.WriteLine();
-                    }
-                    if (count % 3 != 0) Console.WriteLine();
+                    foreach (Data i in graph.AsBFSTraversalEnumerable(found.Index, d => d == hop)) Console.Write($"{i.PlaceName}, ");
+                    Console.WriteLine();
                 } catch (ArgumentException) {
                     Console.WriteLine("Failed to find given city name.");
                     continue;
