@@ -87,12 +87,12 @@ namespace HashSet {
             }
         }
         public void CopyTo(T[] array, int arrayIndex) {
-            IEnumerator<T> etor = GetEnumerator();
-            for (int i = arrayIndex; i < array.Length; i++) {
-                if (!etor.MoveNext()) break;
-                array[i] = etor.Current;
+            using (IEnumerator<T> etor = GetEnumerator()) {
+                for (int i = arrayIndex; i < array.Length; i++) {
+                    if (!etor.MoveNext()) break;
+                    array[i] = etor.Current;
+                }
             }
-            etor.Dispose();
         }
         public bool Remove(T item) {
             int hashindex = Math.Abs(item.GetHashCode() % Source.Length);
