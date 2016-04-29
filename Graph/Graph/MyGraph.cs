@@ -45,6 +45,7 @@ namespace Graph {
         }
         public void MakeNewEdge(int a, int b) {
             if (source[a] == null || source[b] == null) throw new ArgumentException();
+            if (a == b) throw new ArgumentException();
             if (CheckEdge(a, b)) throw new ArgumentException();
             Node<T> temp = source[a];
             while (temp.Next != null) temp = temp.Next;
@@ -54,7 +55,7 @@ namespace Graph {
             temp.Next = new Node<T> { Index = a };
         }
         public bool CheckEdge(int a, int b) {
-            if (a == b) return true;
+            if (a == b) return false;
             Node<T> temp = source[a];
             while (temp.Next != null) {
                 if (temp.Index == b) return true;

@@ -13,23 +13,23 @@ namespace Graph {
     class Program {
         static void Main(string[] args) {
 #if Q1
-            int linecount = 0;
             MyGraph<int> graph = null;
-            foreach (string i in System.IO.File.ReadLines("adjmatrix.txt")) {
-                if (linecount == 0) {
-                    graph = new MyGraph<int>(int.Parse(i));
-                    for (int j = 0; j < graph.Size; j++) graph[j] = j + 1;
-                } else {
-                    IList<int> splited = i.Split(' ').Select(s => int.Parse(s)).ToList();
-                    for (int j = 0; j < splited.Count; j++) {
-                        try {
-                            if (splited[j] == 1) graph.MakeNewEdge(linecount - 1, j);
-                        } catch (ArgumentException) {
-                            continue;
-                        }
+            IEnumerable<string> file = File.ReadLines("adjmatrix.txt");
+            foreach (string i in file.Take(1)) {
+                graph = new MyGraph<int>(int.Parse(i));
+                for (int j = 0; j < graph.Size; j++) graph[j] = j + 1;
+            }
+            int count = 0;
+            foreach (string i in file.Skip(1)) {
+                IList<int> splited = i.Split(' ').Select(s => int.Parse(s)).ToList();
+                for (int j = 0; j < splited.Count; j++) {
+                    try {
+                        if (splited[j] == 1) graph.MakeNewEdge(count, j);
+                    } catch (ArgumentException) {
+                        continue;
                     }
                 }
-                linecount++;
+                count++;
             }
             for (int i = 0; i < graph.Size; i++) {
                 Console.Write($"{graph[i]}: ");
