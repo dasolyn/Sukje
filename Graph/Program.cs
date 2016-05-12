@@ -98,7 +98,7 @@ namespace Graph {
             }
 #endif
             // 바로 종료 방지
-            Console.ReadLine();
+            if (Debugger.IsAttached) Debugger.Break();
         }
 #if Q2
         private class Data : IComparable<Data> {
@@ -115,12 +115,8 @@ namespace Graph {
             double dist = Sin(Deg2Rad(lat1)) * Sin(Deg2Rad(lat2)) + Cos(Deg2Rad(lat1)) * Cos(Deg2Rad(lat2)) * Cos(Deg2Rad(theta));
             return Rad2Deg(Acos(dist)) * 60.0 * 1.1515 * 1.609344 * 1000.0;
         }
-        private static double Deg2Rad(double deg) {
-            return deg * PI / 180.0;
-        }
-        private static double Rad2Deg(double rad) {
-            return rad * 180.0 / PI;
-        }
+        private static double Deg2Rad(double deg) => deg * PI / 180.0;
+        private static double Rad2Deg(double rad) => rad * 180.0 / PI;
 #endif
     }
 }
