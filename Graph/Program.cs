@@ -1,4 +1,4 @@
-﻿#define Q3
+﻿#define Q2
 
 using BinaryTree;
 using System;
@@ -43,7 +43,7 @@ namespace Graph {
             Console.WriteLine("Inserting elements to red-black tree... Please wait a minute.");
             Stopwatch watch = Stopwatch.StartNew();
             foreach (string i in File.ReadLines("Alabama AL Distances.TXT").Skip(1)) {
-                IList<string> splited = i.Split('\t').ToList();
+                List<string> splited = i.Split('\t').ToList();
                 // 번호 추가
                 string placename = splited[1];
                 int avoidduplicate = 1;
@@ -74,7 +74,7 @@ namespace Graph {
             for (int i = 0; i < graph.Size; i++) {
                 Parallel.For(i + 1, graph.Size, j => {
                     double dist = CalDistance(graph[i].Latitude, graph[i].Longitude, graph[j].Latitude, graph[j].Longitude);
-                    if (dist < 10 * 1000) lock (MakeEdgeLock) graph.MakeNewEdge(i, j);
+                    if (dist < 10 * 1000) lock (MakeEdgeLock) graph.MakeEdge(i, j);
                 });
             }
             watch.Stop();
@@ -106,7 +106,7 @@ namespace Graph {
                 rbtree = new RedBlackTree<Data>();
                 int index = 0;
                 foreach (string i in File.ReadLines("Alabama AL Distances.TXT").Skip(1)) {
-                    IList<string> splited = i.Split('\t').ToList();
+                    List<string> splited = i.Split('\t').ToList();
                     // 번호 추가
                     string placename = splited[1];
                     int avoidduplicate = 1;
