@@ -1,4 +1,4 @@
-﻿#define Q2
+﻿#define Q5
 
 using BinaryTree;
 using System;
@@ -158,10 +158,99 @@ namespace Graph {
                 }
             }
 #endif
+#if Q4
+            Stopwatch watch = new Stopwatch();
+            RedBlackTree<Data> rbtree = null;
+            Console.WriteLine("Inserting elements to red-black tree... Please wait a minute.");
+            {
+                watch.Restart();
+                rbtree = new RedBlackTree<Data>();
+                int index = 0;
+                foreach (string i in File.ReadLines("Alabama AL Distances.TXT").Skip(1)) {
+                    List<string> splited = i.Split('\t').ToList();
+                    // 번호 추가
+                    string placename = splited[1];
+                    int avoidduplicate = 1;
+                    while (true) {
+                        try {
+                            rbtree.Search(new Data { PlaceName = placename });
+                            // 중복 있음
+                            placename = $"{splited[1]}{avoidduplicate}";
+                            avoidduplicate++;
+                        } catch (ArgumentException) {
+                            rbtree.Insert(new Data { Index = index, PlaceName = placename, Longitude = double.Parse(splited[2]), Latitude = double.Parse(splited[3]) });
+                            index++;
+                            break;
+                        }
+                    }
+                }
+                watch.Stop();
+            }
+            int TotalNumberOfElements = rbtree.Count();
+            Console.WriteLine($"Finished! {TotalNumberOfElements} elements, {watch.ElapsedMilliseconds / 1000d:0.##} seconds");
+            Console.WriteLine("Building graph...");
+            MyGraph<Data> graph = null;
+            {
+                watch.Restart();
+                graph = new MyGraph<Data>(TotalNumberOfElements);
+                {
+                    int i = 0;
+                    foreach (Node<Data> j in rbtree) graph[i++] = j.Data;
+                }
+                object MakeEdgeLock = new object();
+                for (int i = 0; i < graph.Size; i++) {
+                    Parallel.For(i + 1, graph.Size, j => {
+                        double dist = CalDistance(graph[i].Latitude, graph[i].Longitude, graph[j].Latitude, graph[j].Longitude);
+                        if (dist < 15 * 1000) lock (MakeEdgeLock) graph.MakeEdge(i, j);
+                    });
+                }
+                watch.Stop();
+            }
+            Console.WriteLine($"Finished! {watch.ElapsedMilliseconds / 1000d:0.##} seconds");
+            Console.Write($"Kruskal MST Edge (10 edges per press enter) : ");
+            Console.ReadLine();
+            {
+                int index = 0;
+                foreach (var i in graph.AsKruskalMSTEdgeEnumerable()) {
+                    Console.WriteLine($"{graph[i.Item1].PlaceName} - {graph[i.Item2].PlaceName}");
+                    if ((index + 1) % 10 == 0) Console.ReadLine();
+                    index++;
+                }
+            }
+#endif
+#if Q5
+            List<Point> list = new List<Point>();
+            foreach (string i in File.ReadLines("input_prim.txt").Skip(1)) {
+                IEnumerable<int> p = i.Split(' ').Select(s => int.Parse(s));
+                int x = p.FirstOrDefault();
+                int y = p.Skip(1).FirstOrDefault();
+                list.Add(new Point { x = x, y = y });
+            }
+            MyGraph<Point> graph = new MyGraph<Point>(list.Count);
+            for (int i = 0; i < list.Count; i++) {
+                graph[i] = list[i];
+            }
+            for (int i = 0; i < list.Count; i++) {
+                for (int j = i + 1; j < list.Count; j++) {
+                    double distance = Sqrt(Pow(list[i].x - list[j].x, 2) + Pow(list[i].y - list[j].y, 2));
+                    graph.MakeEdge(i, j, distance);
+                }
+            }
+            Console.Write($"Prim MST Edge (10 edges per press enter) : ");
+            Console.ReadLine();
+            {
+                int index = 0;
+                foreach (var i in graph.AsPrimMSTEdgeEnumerable()) {
+                    Console.WriteLine($"{i.Item1}({list[i.Item1].x:#.##}, {list[i.Item1].y:#.##}) - {i.Item2}({list[i.Item2].x:#.##}, {list[i.Item2].y:#.##})");
+                    if ((index + 1) % 10 == 0) Console.ReadLine();
+                    index++;
+                }
+            }
+#endif
             // 바로 종료 방지
             if (Debugger.IsAttached) Debugger.Break();
         }
-#if Q2 || Q3
+#if Q2 || Q3 || Q4
         private class Data : IComparable<Data> {
             public int Index;
             public string PlaceName;
@@ -178,6 +267,12 @@ namespace Graph {
         }
         private static double Deg2Rad(double deg) => deg * PI / 180.0;
         private static double Rad2Deg(double rad) => rad * 180.0 / PI;
+#endif
+#if Q5
+        private class Point {
+            public int x;
+            public int y;
+        }
 #endif
     }
 }
