@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Graph {
     public class MyGraph<T> {
@@ -49,13 +50,13 @@ namespace Graph {
         #endregion
 
         #region 위상 정렬
-        public IEnumerable<T> AsTopologyOrderEnumerable() {
+        public Stack<T> AsTopologyOrderEnumerable() {
             int[] visited = new int[Size];
             visited.Initialize();
             Stack<T> r = new Stack<T>();
             for (int i = 0; i < Size; i++)
                 if (visited[i] == 0) InternalDFSTraversal(i, visited, r);
-            foreach (T i in r) yield return i;
+            return r;
         }
         private void InternalDFSTraversal(int index, int[] visited, Stack<T> stack) {
             visited[index] = 1;
@@ -70,9 +71,8 @@ namespace Graph {
 
         #region 에지 생성 및 확인
         public void MakeEdge(int a, int b, double weight = 1.0) {
-            MakeDirectedEdge(a, b);
-            MakeDirectedEdge(b, a);
-            edges.Add(new Edge { a = a, b = b, weight = weight });
+            MakeDirectedEdge(a, b, weight);
+            MakeDirectedEdge(b, a, weight);
         }
         public bool CheckEdge(int from, int to) {
             if (from == to) return false;
@@ -83,13 +83,13 @@ namespace Graph {
             }
             return false;
         }
-        public void MakeDirectedEdge(int from, int to) {
+        public void MakeDirectedEdge(int from, int to, double weight = 1.0) {
             if (nodes[from] == null || nodes[to] == null) throw new ArgumentException();
             if (from == to) throw new ArgumentException();
             if (CheckEdge(from, to)) throw new ArgumentException();
             Node<T> temp = nodes[from];
             while (temp.Next != null) temp = temp.Next;
-            temp.Next = new Node<T> { Index = to };
+            temp.Next = new Node<T> { Index = to, Weight = weight };
         }
         #endregion
 
@@ -168,38 +168,77 @@ namespace Graph {
         #endregion
 
         #region Dijkstra
-        public List<Tuple<int, int>> DijkstraShortedPath(int from, int to) {
-            int[] dist = new int[Size];
+        public DijkstraResult DijkstraShortedPath(int from, int to) {
+            double[] dist = new double[Size];
+            int[] prev = new int[Size];
             List<int> notvisited = new List<int>();
             for (int i = 0; i < Size; i++) {
-                if (i == from) dist[i] = 0;
-                else dist[i] = int.MaxValue;
+                if (i == from) dist[i] = 0.0;
+                else dist[i] = double.MaxValue;
                 notvisited.Add(i);
             }
-            while (notvisited.Count > 0) {
+            while (true) {
                 // 최소값 찾기
-                int min = int.MaxValue;
-                int minindex = 0;
+                double min = double.MaxValue;
+                int minindex = -1;
                 foreach (int i in notvisited) {
                     if (dist[i] < min) {
                         min = dist[i];
                         minindex = i;
                     }
                 }
+                if (minindex == -1) break;
+                // 방문한 것으로 마킹
+                notvisited.Remove(minindex);
+                if (minindex == to) break;
+                // 인접한 에지 relax
+                Node<T> adj = nodes[minindex].Next;
+                foreach (var i in AdjNodes(minindex)) {
+                    double alt = GetWeightOfEdge(i.Index, minindex);
+                    if (dist[i.Index] > dist[minindex] + alt) {
+                        dist[i.Index] = dist[minindex] + alt;
+                        prev[i.Index] = minindex;
+                    }
+                }
             }
-            return null;
+            Stack<int> result = new Stack<int>();
+            int cur = to;
+            while (true) {
+                result.Push(cur);
+                if (cur == from) break;
+                cur = prev[cur];
+            }
+            return new DijkstraResult { TotalDistance = dist[to], Route = result };
+        }
+        public double GetWeightOfEdge(int from, int to) {
+            foreach (var i in AdjNodes(from)) {
+                if (i.Index == to) return i.Weight;
+            }
+            return double.MaxValue;
+        }
+        private IEnumerable<Node<T>> AdjNodes(int from) {
+            Node<T> adj = nodes[from].Next;
+            while (adj != null) {
+                yield return adj;
+                adj = adj.Next;
+            }
         }
         #endregion
 
         private class Node<TNode> {
             public int Index = -1;
             public Node<TNode> Next;
+            public double Weight;
             public TNode Data;
         }
         private class Edge {
             public int a;
             public int b;
             public double weight;
+        }
+        public class DijkstraResult {
+            public double TotalDistance;
+            public Stack<int> Route;
         }
     }
 }
