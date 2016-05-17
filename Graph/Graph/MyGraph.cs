@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Graph {
-    class MyGraph<T> {
+    public class MyGraph<T> {
         private List<Edge> edges = new List<Edge>();
         private Node<T>[] nodes;
         public int Size {
@@ -164,6 +164,30 @@ namespace Graph {
                     }
                 }
             }
+        }
+        #endregion
+
+        #region Dijkstra
+        public List<Tuple<int, int>> DijkstraShortedPath(int from, int to) {
+            int[] dist = new int[Size];
+            List<int> notvisited = new List<int>();
+            for (int i = 0; i < Size; i++) {
+                if (i == from) dist[i] = 0;
+                else dist[i] = int.MaxValue;
+                notvisited.Add(i);
+            }
+            while (notvisited.Count > 0) {
+                // 최소값 찾기
+                int min = int.MaxValue;
+                int minindex = 0;
+                foreach (int i in notvisited) {
+                    if (dist[i] < min) {
+                        min = dist[i];
+                        minindex = i;
+                    }
+                }
+            }
+            return null;
         }
         #endregion
 

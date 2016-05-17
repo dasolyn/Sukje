@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashSet", "HashSet\HashSet.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graph", "Graph\Graph.csproj", "{EA364B17-7A90-42FA-ABA2-9670013208DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortestPath", "ShortestPath\ShortestPath.csproj", "{6EE1E875-7BA6-4CA9-ACDE-34D8AA5389F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{EA364B17-7A90-42FA-ABA2-9670013208DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA364B17-7A90-42FA-ABA2-9670013208DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA364B17-7A90-42FA-ABA2-9670013208DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EE1E875-7BA6-4CA9-ACDE-34D8AA5389F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EE1E875-7BA6-4CA9-ACDE-34D8AA5389F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE1E875-7BA6-4CA9-ACDE-34D8AA5389F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EE1E875-7BA6-4CA9-ACDE-34D8AA5389F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

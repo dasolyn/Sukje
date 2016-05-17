@@ -1,4 +1,4 @@
-﻿#define Q5
+﻿#define Q2
 
 using BinaryTree;
 using System;
@@ -236,7 +236,7 @@ namespace Graph {
                     graph.MakeEdge(i, j, distance);
                 }
             }
-            Console.Write($"Prim MST Edge (10 edges per press enter) : ");
+            Console.Write("Prim MST Edge (10 edges per press enter) : ");
             Console.ReadLine();
             {
                 int index = 0;
