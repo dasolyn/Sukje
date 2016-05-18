@@ -4,91 +4,92 @@ using System.Collections.Generic;
 namespace Graph {
     public class MyGraph<T> {
         private List<Edge> edges = new List<Edge>();
-        private Node<T>[] nodes;
+        private Dictionary<int, Node<T>> nodes = new Dictionary<int, Node<T>>();
         public int Size {
             get {
-                return nodes.Length;
+                return nodes.Count;
             }
         }
-        public MyGraph(int size) {
-            nodes = new Node<T>[size];
+        public int EdgeCount {
+            get {
+                return edges.Count;
+            }
         }
         public T this[int index] {
             get {
                 return nodes[index].Data;
             }
             set {
-                nodes[index] = new Node<T> { Index = index, Data = value };
+                nodes[index] = new Node<T>(index, value);
             }
+        }
+
+        public double GetWeightOfEdge(int from, int to) {
+            foreach (var i in nodes[from].Sibling) if (i.Index == to) return i.Weight;
+            return double.MaxValue;
         }
 
         #region 너비우선 탐색
         public IEnumerable<T> AsBFSTraversalEnumerable(int startindex, Func<int, bool> DistanceFilter) {
             if (nodes[startindex] == null) yield break;
             Queue<int> queue = new Queue<int>();
-            int[] visited = new int[Size];
-            int[] distance = new int[Size];
-            visited.Initialize();
-            distance.Initialize();
+            List<int> visited = new List<int>();
+            Dictionary<int, int> distance = new Dictionary<int, int>();
             queue.Enqueue(startindex);
+            distance[startindex] = 0;
             while (queue.Count != 0) {
-                int tempindex = queue.Dequeue();
-                Node<T> parent = nodes[tempindex];
-                Node<T> adj = parent.Next;
-                while (adj != null) {
-                    if (visited[adj.Index] == 0) {
-                        visited[adj.Index] = 1;
-                        distance[adj.Index] = distance[parent.Index] + 1;
-                        if (DistanceFilter?.Invoke(distance[adj.Index]) ?? false) yield return nodes[adj.Index].Data;
-                        queue.Enqueue(adj.Index);
+                Node<T> parent = nodes[queue.Dequeue()];
+                foreach (var i in parent.Sibling) {
+                    if (!visited.Contains(i.Index)) {
+                        visited.Add(i.Index);
+                        distance[i.Index] = distance[parent.Index] + 1;
+                        if (DistanceFilter?.Invoke(distance[i.Index]) ?? false) yield return nodes[i.Index].Data;
+                        queue.Enqueue(i.Index);
                     }
-                    adj = adj.Next;
                 }
             }
         }
         #endregion
 
         #region 위상 정렬
-        public Stack<T> AsTopologyOrderEnumerable() {
-            int[] visited = new int[Size];
-            visited.Initialize();
+        public Stack<T> TopologySort() {
+            List<int> visited = new List<int>();
             Stack<T> r = new Stack<T>();
             for (int i = 0; i < Size; i++)
-                if (visited[i] == 0) InternalDFSTraversal(i, visited, r);
+                if (!visited.Contains(i)) InternalDFSTraversal(i, visited, r);
             return r;
         }
-        private void InternalDFSTraversal(int index, int[] visited, Stack<T> stack) {
-            visited[index] = 1;
-            Node<T> temp = nodes[index];
-            while (temp.Next != null) {
-                if (visited[temp.Next.Index] == 0) InternalDFSTraversal(temp.Next.Index, visited, stack);
-                temp = temp.Next;
-            }
-            stack.Push(nodes[index].Data);
+        private void InternalDFSTraversal(int index, List<int> visited, Stack<T> resultstack) {
+            visited.Add(index);
+            foreach (var i in nodes[index].Sibling) if (!visited.Contains(i.Index)) InternalDFSTraversal(i.Index, visited, resultstack);
+            resultstack.Push(nodes[index].Data);
         }
         #endregion
 
         #region 에지 생성 및 확인
+        /// <summary>
+        /// 양방향 변을 만듭니다.
+        /// </summary>
         public void MakeEdge(int a, int b, double weight = 1.0) {
             MakeDirectedEdge(a, b, weight);
             MakeDirectedEdge(b, a, weight);
+            edges.Add(new Edge { a = a, b = b, weight = weight });
         }
+        /// <summary>
+        /// from에서 to로 가는 변이 있는지 확인합니다.
+        /// </summary>
         public bool CheckEdge(int from, int to) {
             if (from == to) return false;
-            Node<T> temp = nodes[from];
-            while (temp.Next != null) {
-                if (temp.Index == to) return true;
-                temp = temp.Next;
-            }
-            return false;
+            return nodes[from].Sibling.FindIndex(s => s.Index == to) != -1;
         }
+        /// <summary>
+        /// 방향성이 있는 변을 만듭니다. 최소 비용 생성나무를 찾고자 하는 경우 이 메서드를 사용하면 안됩니다.
+        /// </summary>
         public void MakeDirectedEdge(int from, int to, double weight = 1.0) {
             if (nodes[from] == null || nodes[to] == null) throw new ArgumentException();
             if (from == to) throw new ArgumentException();
             if (CheckEdge(from, to)) throw new ArgumentException();
-            Node<T> temp = nodes[from];
-            while (temp.Next != null) temp = temp.Next;
-            temp.Next = new Node<T> { Index = to, Weight = weight };
+            nodes[from].Sibling.Add(new AdjNode<T> { Index = to, Weight = weight });
         }
         #endregion
 
@@ -135,27 +136,24 @@ namespace Graph {
             if (edges.Count == 0) yield break;
             List<int> visited = new List<int>();
             List<double> key = new List<double>();
-            while (visited.Count < edges.Count) {
-                visited.Add(0);
-                key.Add(double.MaxValue);
-            }
+            while (key.Count < edges.Count) key.Add(double.MaxValue);
             key[0] = 0D;
             for (int i = 0; i < edges.Count; i++) {
                 // 최소값 찾기
                 double min = double.MaxValue;
                 int minindex = 0;
                 for (int j = 0; j < key.Count; j++) {
-                    if (visited[j] == 1) continue;
+                    if (visited.Contains(j)) continue;
                     if (key[j] < min) {
                         min = key[j];
                         minindex = j;
                     }
                 }
                 yield return new Tuple<int, int>(edges[minindex].a, edges[minindex].b);
-                visited[minindex] = 1;
+                visited.Add(minindex);
                 // 찾은 에지와 인접한 에지의 key 변경
                 for (int j = 0; j < key.Count; j++) {
-                    if (visited[j] == 1) continue;
+                    if (visited.Contains(j)) continue;
                     if (edges[j].a == edges[minindex].a || edges[j].a == edges[minindex].b || edges[j].b == edges[minindex].a || edges[j].b == edges[minindex].b) {
                         if (key[j] > edges[j].weight) {
                             key[j] = edges[j].weight;
@@ -167,40 +165,40 @@ namespace Graph {
         #endregion
 
         #region Dijkstra
-        public DijkstraResult DijkstraShortedPath(int from, int to) {
-            double[] dist = new double[Size];
-            int[] prev = new int[Size];
+        public DijkstraResult DijkstraShortestPath(int from, int to) {
+            Dictionary<int, double> dist = new Dictionary<int, double>();
+            Dictionary<int, int> prev = new Dictionary<int, int>();
             MinPqueue<DijkstraHeapElement> minqueue = new MinPqueue<DijkstraHeapElement>(); 
-            List<int> notvisited = new List<int>();
+            List<int> visited = new List<int>();
             for (int i = 0; i < Size; i++) {
-                if (i == from) dist[i] = 0.0;
-                else dist[i] = double.MaxValue;
-                minqueue.Insert(new DijkstraHeapElement { Index = i, Distance = dist[i] });
-                notvisited.Add(i);
+                if (i == from) {
+                    dist[i] = 0.0;
+                    minqueue.Insert(new DijkstraHeapElement { Index = i, Distance = dist[i] });
+                } else {
+                    dist[i] = double.MaxValue;
+                }
             }
             bool success = false;
             while (true) {
                 // 최소값 찾기
-                DijkstraHeapElement min = null;
+                DijkstraHeapElement min;
                 try {
                     do {
                         min = minqueue.ExtractMin();
-                    } while (!notvisited.Contains(min.Index));
+                    } while (visited.Contains(min.Index));
                 } catch (InvalidOperationException) {
                     break;
                 }
                 // 방문한 것으로 마킹
-                notvisited.Remove(min.Index);
+                visited.Add(min.Index);
                 if (min.Index == to) {
                     success = true;
                     break;
                 }
                 // 인접한 에지 relax
-                Node<T> adj = nodes[min.Index].Next;
-                foreach (var i in AdjNodes(min.Index)) {
-                    double alt = GetWeightOfEdge(i.Index, min.Index);
-                    if (dist[i.Index] > dist[min.Index] + alt) {
-                        dist[i.Index] = dist[min.Index] + alt;
+                foreach (var i in nodes[min.Index].Sibling) {
+                    if (dist[i.Index] > dist[min.Index] + i.Weight) {
+                        dist[i.Index] = dist[min.Index] + i.Weight;
                         minqueue.Insert(new DijkstraHeapElement { Index = i.Index, Distance = dist[i.Index] });
                         prev[i.Index] = min.Index;
                     }
@@ -219,37 +217,32 @@ namespace Graph {
                 return new DijkstraResult { TotalDistance = double.MaxValue, Route = null };
             }
         }
-        public double GetWeightOfEdge(int from, int to) {
-            foreach (var i in AdjNodes(from)) {
-                if (i.Index == to) return i.Weight;
-            }
-            return double.MaxValue;
-        }
-        private IEnumerable<Node<T>> AdjNodes(int from) {
-            Node<T> adj = nodes[from].Next;
-            while (adj != null) {
-                yield return adj;
-                adj = adj.Next;
-            }
-        }
         #endregion
 
-        private class Node<TNode> {
-            public int Index = -1;
-            public Node<TNode> Next;
-            public double Weight;
-            public TNode Data;
-        }
-        private class Edge {
-            public int a;
-            public int b;
-            public double weight;
-        }
         public class DijkstraResult {
             public double TotalDistance;
             public Stack<int> Route;
         }
-        private class DijkstraHeapElement : IComparable<DijkstraHeapElement> {
+        private class Node<TNode> {
+            public int Index;
+            public List<AdjNode<TNode>> Sibling;
+            public TNode Data;
+            public Node(int Index, TNode Data) {
+                this.Index = Index;
+                this.Data = Data;
+                Sibling = new List<AdjNode<TNode>>();
+            }
+        }
+        private struct AdjNode<TNode> {
+            public int Index;
+            public double Weight;
+        }
+        private struct Edge {
+            public int a;
+            public int b;
+            public double weight;
+        }
+        private struct DijkstraHeapElement : IComparable<DijkstraHeapElement> {
             public int Index;
             public double Distance;
             public int CompareTo(DijkstraHeapElement other) {

@@ -1,4 +1,4 @@
-﻿#define Q2
+﻿//#define Q2
 
 using BinaryTree;
 using System;
