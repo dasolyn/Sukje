@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Graph {
     public class MyGraph<T> {
@@ -171,44 +170,54 @@ namespace Graph {
         public DijkstraResult DijkstraShortedPath(int from, int to) {
             double[] dist = new double[Size];
             int[] prev = new int[Size];
+            MinPqueue<DijkstraHeapElement> minqueue = new MinPqueue<DijkstraHeapElement>(); 
             List<int> notvisited = new List<int>();
             for (int i = 0; i < Size; i++) {
                 if (i == from) dist[i] = 0.0;
                 else dist[i] = double.MaxValue;
+                minqueue.Insert(new DijkstraHeapElement { Index = i, Distance = dist[i] });
                 notvisited.Add(i);
             }
+            bool success = false;
             while (true) {
                 // 최소값 찾기
-                double min = double.MaxValue;
-                int minindex = -1;
-                foreach (int i in notvisited) {
-                    if (dist[i] < min) {
-                        min = dist[i];
-                        minindex = i;
-                    }
+                DijkstraHeapElement min = null;
+                try {
+                    do {
+                        min = minqueue.ExtractMin();
+                    } while (!notvisited.Contains(min.Index));
+                } catch (InvalidOperationException) {
+                    break;
                 }
-                if (minindex == -1) break;
                 // 방문한 것으로 마킹
-                notvisited.Remove(minindex);
-                if (minindex == to) break;
+                notvisited.Remove(min.Index);
+                if (min.Index == to) {
+                    success = true;
+                    break;
+                }
                 // 인접한 에지 relax
-                Node<T> adj = nodes[minindex].Next;
-                foreach (var i in AdjNodes(minindex)) {
-                    double alt = GetWeightOfEdge(i.Index, minindex);
-                    if (dist[i.Index] > dist[minindex] + alt) {
-                        dist[i.Index] = dist[minindex] + alt;
-                        prev[i.Index] = minindex;
+                Node<T> adj = nodes[min.Index].Next;
+                foreach (var i in AdjNodes(min.Index)) {
+                    double alt = GetWeightOfEdge(i.Index, min.Index);
+                    if (dist[i.Index] > dist[min.Index] + alt) {
+                        dist[i.Index] = dist[min.Index] + alt;
+                        minqueue.Insert(new DijkstraHeapElement { Index = i.Index, Distance = dist[i.Index] });
+                        prev[i.Index] = min.Index;
                     }
                 }
             }
-            Stack<int> result = new Stack<int>();
-            int cur = to;
-            while (true) {
-                result.Push(cur);
-                if (cur == from) break;
-                cur = prev[cur];
+            if (success) {
+                Stack<int> result = new Stack<int>();
+                int cur = to;
+                while (true) {
+                    result.Push(cur);
+                    if (cur == from) break;
+                    cur = prev[cur];
+                }
+                return new DijkstraResult { TotalDistance = dist[to], Route = result };
+            } else {
+                return new DijkstraResult { TotalDistance = double.MaxValue, Route = null };
             }
-            return new DijkstraResult { TotalDistance = dist[to], Route = result };
         }
         public double GetWeightOfEdge(int from, int to) {
             foreach (var i in AdjNodes(from)) {
@@ -239,6 +248,13 @@ namespace Graph {
         public class DijkstraResult {
             public double TotalDistance;
             public Stack<int> Route;
+        }
+        private class DijkstraHeapElement : IComparable<DijkstraHeapElement> {
+            public int Index;
+            public double Distance;
+            public int CompareTo(DijkstraHeapElement other) {
+                return Distance.CompareTo(other.Distance);
+            }
         }
     }
 }

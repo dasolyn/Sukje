@@ -40,7 +40,7 @@ namespace ShortestPath {
                     continue;
                 }
                 var res = graph.DijkstraShortedPath(from, to);
-                if (res.Route.Count > 0) {
+                if (res.Route != null) {
                     Console.WriteLine($"최단 거리는 {res.TotalDistance:0.##}입니다.");
                     Console.WriteLine("이하 경로를 출력합니다: ");
                     int prev = res.Route.First();
