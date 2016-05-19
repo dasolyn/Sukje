@@ -23,6 +23,7 @@ namespace ShortestPath {
             }
             Console.WriteLine($"도로 로딩이 완료되었습니다. {graph.EdgeCount}개의 도로가 있습니다.");
             while (true) {
+                Console.WriteLine();
                 Console.Write($"시작점의 이름 또는 번호를 입력하세요. ");
                 string input = Console.ReadLine();
                 int from;
@@ -43,11 +44,12 @@ namespace ShortestPath {
                 Console.WriteLine($"도착점: {to} ({cities[to]})");
                 var res = graph.DijkstraShortestPath(from, to);
                 if (res.Route != null) {
-                    Console.WriteLine($"최단 거리는 {res.TotalDistance:0.##}입니다.");
+                    Console.WriteLine();
+                    Console.WriteLine($"최단 경로의 거리는 {res.TotalDistance:0.##}입니다.");
                     Console.WriteLine("이하 경로를 출력합니다: ");
                     int prev = res.Route.First();
                     foreach (int i in res.Route.Skip(1)) {
-                        Console.WriteLine($"{prev} ({cities[prev]}) -> {i} ({cities[i]}): Distance is {graph.GetWeightOfEdge(prev, i):0.##}");
+                        Console.WriteLine($"{prev} ({cities[prev]}) -> {i} ({cities[i]}) 도로 길이는 {graph.GetWeightOfEdge(prev, i):0.##}");
                         prev = i;
                     }
                 } else {
