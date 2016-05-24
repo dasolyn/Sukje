@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graph", "Graph\Graph.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortestPath", "ShortestPath\ShortestPath.csproj", "{6EE1E875-7BA6-4CA9-ACDE-34D8AA5389F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedBlack", "RedBlack\RedBlack.csproj", "{4E89854C-65F4-4D1D-9072-1BC2DAFC719D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memoization", "Memoization\Memoization.csproj", "{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{6EE1E875-7BA6-4CA9-ACDE-34D8AA5389F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EE1E875-7BA6-4CA9-ACDE-34D8AA5389F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EE1E875-7BA6-4CA9-ACDE-34D8AA5389F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E89854C-65F4-4D1D-9072-1BC2DAFC719D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E89854C-65F4-4D1D-9072-1BC2DAFC719D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E89854C-65F4-4D1D-9072-1BC2DAFC719D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E89854C-65F4-4D1D-9072-1BC2DAFC719D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
