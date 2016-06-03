@@ -26,7 +26,11 @@ namespace RedBlack {
         public bool IsReadOnly { get; } = false;
         public ICollection<TKey> Keys {
             get {
-                throw new NotImplementedException();
+                List<TKey> keylist = new List<TKey>();
+                foreach (var i in this) {
+                    keylist.Add(i.Key);
+                }
+                return keylist;
             }
         }
         public ICollection<TValue> Values {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -7,8 +8,6 @@ namespace Memoization {
     class Program {
         static void Main(string[] args) {
             int[,] path;
-            int from;
-            int count;
             {
                 IEnumerable<string> file = File.ReadLines("input_and_answer.txt").Where(s => s.Trim().Length != 0 && s[0] != '#');
                 List<int> size = file.First().Split(' ').Select(s => int.Parse(s)).ToList();
@@ -18,60 +17,75 @@ namespace Memoization {
                 foreach (List<int> i in file.Skip(1).Take(size[1]).Select(s => s.Split(' ').Select(t => int.Parse(t)).ToList())) {
                     path[i[0], i[1]]++;
                 }
-                // 마지막 줄 해석
-                List<int> input = file.Skip(1 + size[1]).First().Split(' ').Select(s => int.Parse(s)).ToList();
-                from = input[0];
-                count = input[1];
             }
-            {
-                Memoization mem = new Memoization(path.GetLength(0));
-                mem.PathToProb(path);
-                for (int i = 0; i < path.GetLength(0); i++) {
-                    Console.WriteLine(mem.GetProb(from, i, count));
+            Memoization mem = new Memoization();
+            mem.PathToProb(path);
+            Console.WriteLine("r을 입력하면 캐시 초기화를, x를 입력하면 종료합니다.");
+            while (true) {
+                int from, count;
+                try {
+                    Console.Write("출발점 번호를 입력하세요. ");
+                    string input = Console.ReadLine();
+                    if (input.ToLower() == "r") {
+                        mem.ClearCache();
+                        Console.WriteLine("캐시가 초기화되었습니다.");
+                        continue;
+                    } else if (input.ToLower() == "x") {
+                        break;
+                    } else {
+                        from = int.Parse(input);
+                    }
+                    Console.Write("시도 횟수를 입력하세요. ");
+                    input = Console.ReadLine();
+                    count = int.Parse(input);
+                } catch (FormatException) {
+                    Console.WriteLine("적절한 값이 입력되지 않았습니다.");
+                    continue;
                 }
+                Stopwatch sw = Stopwatch.StartNew();
+                for (int i = 0; i < path.GetLength(0); i++) {
+                    Console.Write($"{mem.GetProb(from, i, count) * 100:#.###}% ");
+                }
+                sw.Stop();
+                Console.WriteLine();
+                Console.WriteLine($"{sw.ElapsedMilliseconds}ms 소요되었습니다.");
             }
-            Console.ReadLine();
         }
         private class Memoization {
             // SortedDictionary는 C#에서 기본으로 제공하는 레드 블랙 트리입니다.
-            private SortedDictionary<int, double[,]> cache;
-            private double[,] prob;
-            private int size;
+            private SortedDictionary<Tuple<int, int, int>, double> cache = new SortedDictionary<Tuple<int, int, int>, double>();
+            private SortedDictionary<Tuple<int, int>, double> prob = new SortedDictionary<Tuple<int, int>, double>();
             public void PathToProb(int[,] Path) {
+                if (prob.Count > 0) prob.Clear();
                 for (int i = 0; i < Path.GetLength(0); i++) {
                     int sum = 0;
                     for (int j = 0; j < Path.GetLength(1); j++) sum += Path[i, j];
-                    for (int j = 0; j < Path.GetLength(1); j++) prob[i, j] = (double)Path[i, j] / sum;
+                    for (int j = 0; j < Path.GetLength(1); j++) prob[new Tuple<int, int>(i, j)] = (double)Path[i, j] / sum;
                 }
             }
             public double GetProb(int from, int to, int count) {
+                var key = new Tuple<int, int, int>(from, to, count);
                 if (count == 1) {
-                    return prob[from, to];
-                } else if (cache.ContainsKey(count) && cache[count][from, to] != -1) {
+                    try {
+                        return prob[new Tuple<int, int>(from, to)];
+                    } catch (KeyNotFoundException) {
+                        return 0;
+                    }
+                } else if (cache.ContainsKey(key)) {
                     // 캐싱된 결과 리턴
-                    return cache[count][from, to];
+                    return cache[key];
                 } else {
                     double sum = 0;
-                    for (int i = 0; i < size; i++) {
-                        sum += prob[from, i] * GetProb(i, to, count - 1);
+                    foreach (var i in prob.Where(s => s.Key.Item1 == from)) {
+                        sum += prob[new Tuple<int, int>(from, i.Key.Item2)] * GetProb(i.Key.Item2, to, count - 1);
                     }
                     // 계산 결과 캐시
-                    if (cache.ContainsKey(count)) {
-                        cache[count][from, to] = sum;
-                    } else {
-                        cache[count] = new double[size, size];
-                        for (int i = 0; i < size; i++)
-                            for (int j = 0; j < size; j++)
-                                cache[count][i, j] = -1;
-                        cache[count][from, to] = sum;
-                    }
+                    cache[key] = sum;
                     return sum;
                 }
             }
-            public Memoization(int size) {
-                this.size = size;
-                prob = new double[size, size];
-                cache = new SortedDictionary<int, double[,]>();
+            public void ClearCache() {
+                cache.Clear();
             }
         }
     }
