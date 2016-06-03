@@ -35,7 +35,11 @@ namespace RedBlack {
         }
         public ICollection<TValue> Values {
             get {
-                throw new NotImplementedException();
+                List<TValue> valuelist = new List<TValue>();
+                foreach (var i in this) {
+                    valuelist.Add(i.Value);
+                }
+                return valuelist;
             }
         }
         public void Add(KeyValuePair<TKey, TValue> item) {
@@ -159,6 +163,7 @@ namespace RedBlack {
             Root.Color = Color.Black;
         }
         private void RedBlackDeleteNode(TKey Key) {
+            Count--;
             // x와 y 구하기
             Node delete = RedBlackSearchNode(Key);
             if (delete.LeftChild != null && delete.RightChild != null) {

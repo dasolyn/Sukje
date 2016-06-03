@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedBlack", "RedBlack\RedBla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memoization", "Memoization\Memoization.csproj", "{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Huffman", "Huffman\Huffman.csproj", "{49373DF1-C69D-4722-A708-AF1298F8F6F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49373DF1-C69D-4722-A708-AF1298F8F6F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49373DF1-C69D-4722-A708-AF1298F8F6F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49373DF1-C69D-4722-A708-AF1298F8F6F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49373DF1-C69D-4722-A708-AF1298F8F6F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
