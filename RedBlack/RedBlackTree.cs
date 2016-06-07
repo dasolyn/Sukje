@@ -62,7 +62,14 @@ namespace RedBlack {
             return found != null;
         }
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
-            throw new NotImplementedException();
+            int cursor = 0;
+            foreach (Node i in RedBlackEnumNode()) {
+                if (cursor + arrayIndex >= array.Length) return;
+                else {
+                    array[arrayIndex + cursor] = new KeyValuePair<TKey, TValue>(i.Key, i.Value);
+                    cursor++;
+                }
+            }
         }
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
             foreach (Node i in RedBlackEnumNode()) yield return new KeyValuePair<TKey, TValue>(i.Key, i.Value);
@@ -162,10 +169,9 @@ namespace RedBlack {
             }
             Root.Color = Color.Black;
         }
-        private void RedBlackDeleteNode(TKey Key) {
+        private void RedBlackDeleteNode(Node delete) {
             Count--;
             // x와 y 구하기
-            Node delete = RedBlackSearchNode(Key);
             if (delete.LeftChild != null && delete.RightChild != null) {
                 Node newdelete = GetSuccessor(delete);
                 delete.Value = newdelete.Value;
