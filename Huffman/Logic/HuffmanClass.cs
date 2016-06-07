@@ -30,11 +30,11 @@ namespace Huffman {
         public static HuffmanRun CreateHuffmanTree(List<HuffmanRun> CollectedRuns) {
             MinPQueue<HuffmanRun> heap = new MinPQueue<HuffmanRun>(CollectedRuns, (a, b) => a.Frequency.CompareTo(b.Frequency));
             while (heap.Count > 1) {
-                HuffmanRun run1 = heap.ExtractMin();
-                HuffmanRun run2 = heap.ExtractMin();
-                heap.Insert(new HuffmanRun(run1, run2));
+                HuffmanRun run1 = heap.Pop();
+                HuffmanRun run2 = heap.Pop();
+                heap.Push(new HuffmanRun(run1, run2));
             }
-            return heap.ExtractMin();
+            return heap.Pop();
         }
     }
 }

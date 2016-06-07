@@ -1,18 +1,30 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Huffman {
     /// <summary>
     /// 힙을 이용해 구현한 최소 우선순위 큐입니다.
     /// </summary>
-    public class MinPQueue<T> {
+    public class MinPQueue<T> : IEnumerable<T>, ICollection {
         private List<T> datas;
-        public IComparer<T> Comparer { get; private set; }
-        public int Count {
-            get {
-                return datas.Count;
-            }
+        public IComparer<T> Comparer { get; }
+        
+        #region 인터페이스 구현
+        public int Count => datas.Count;
+        private object SyncRoot_ = new object();
+        public object SyncRoot => SyncRoot_;
+        public bool IsSynchronized => false;
+        public void CopyTo(Array array, int index) {
+            datas.CopyTo((T[])array, index);
         }
+        public IEnumerator<T> GetEnumerator() {
+            return datas.GetEnumerator();
+        }
+        IEnumerator IEnumerable.GetEnumerator() {
+            return datas.GetEnumerator();
+        }
+        #endregion
 
         #region 생성자
         public MinPQueue() {
@@ -30,21 +42,21 @@ namespace Huffman {
         public MinPQueue(IEnumerable<T> Source) {
             Comparer = Comparer<T>.Default;
             datas = new List<T>();
-            foreach (T i in Source) Insert(i);
+            foreach (T i in Source) Push(i);
         }
         public MinPQueue(IEnumerable<T> Source, IComparer<T> Comparer) {
             this.Comparer = Comparer;
             datas = new List<T>();
-            foreach (T i in Source) Insert(i);
+            foreach (T i in Source) Push(i);
         }
         public MinPQueue(IEnumerable<T> Source, Comparison<T> Comparison) {
             Comparer = Comparer<T>.Create(Comparison);
             datas = new List<T>();
-            foreach (T i in Source) Insert(i);
+            foreach (T i in Source) Push(i);
         }
         #endregion
 
-        public void Insert(T one) {
+        public void Push(T one) {
             datas.Add(one);
             int i = datas.Count - 1;
             while (i > 0 && Comparer.Compare(datas[parent(i)], datas[i]) > 0) {
@@ -54,7 +66,7 @@ namespace Huffman {
                 i = parent(i);
             }
         }
-        public T ExtractMin() {
+        public T Pop() {
             if (datas.Count == 0) throw new InvalidOperationException();
             T retval = datas[0];
             datas[0] = datas[datas.Count - 1];
@@ -62,6 +74,11 @@ namespace Huffman {
             heapify(datas);
             return retval;
         }
+        public T Peek() {
+            if (datas.Count == 0) throw new InvalidOperationException();
+            return datas[0];
+        }
+
         private void heapify(List<T> Source) {
             int Mother = 0;
             while (true) {
