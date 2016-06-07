@@ -19,10 +19,23 @@ namespace Huffman {
             List<HuffmanRun> runs = HuffmanClass.CollectRuns(File.ReadAllBytes(TxtFile.Text));
             using (StreamWriter output = File.CreateText("runs.txt")) {
                 foreach (HuffmanRun i in runs) {
-                    output.WriteLine($"{i.Symbol:x2} {i.Length} {i.Frequency}");
+                    output.WriteLine(i);
                 }
             }
-            MessageBox.Show("해당 파일의 Runs를 모두 구했습니다. 실행파일과 같은 폴더의 runs.txt에 결과가 출력됩니다.");
+            HuffmanRun root = HuffmanClass.CreateHuffmanTree(runs);
+            using (StreamWriter output = File.CreateText("tree.txt")) {
+                HuffmanPreorderTraverse(output, root, 0);
+            }
+        }
+        private void HuffmanPreorderTraverse(StreamWriter output, HuffmanRun Node, int depth) {
+            for (int i = 0; i < depth; i++) output.Write(" ");
+            if (Node != null) {
+                output.WriteLine(Node);
+                HuffmanPreorderTraverse(output, Node.LeftChild, depth + 1);
+                HuffmanPreorderTraverse(output, Node.RightChild, depth + 1);
+            } else {
+                output.WriteLine("null");
+            }
         }
     }
 }

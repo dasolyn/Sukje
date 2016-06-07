@@ -62,8 +62,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Logic\Huffman.cs" />
+    <Compile Include="Logic\HuffmanClass.cs" />
     <Compile Include="Logic\HuffmanRun.cs" />
+    <Compile Include="Logic\MinPQueue.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
