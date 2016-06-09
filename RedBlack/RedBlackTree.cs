@@ -3,8 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace RedBlack {
-    public class RedBlackTree<TKey, TValue> : IDictionary<TKey, TValue> where TKey : IComparable<TKey>, IComparable, IEquatable<TKey> {
+    public class RedBlackTree<TKey, TValue> : IDictionary<TKey, TValue> {
+
         private Node Root;
+        public IComparer<TKey> Comparer { get; }
+
+        #region 생성자
+        public RedBlackTree() {
+            Comparer = Comparer<TKey>.Default;
+        }
+        public RedBlackTree(IComparer<TKey> Comparer) {
+            this.Comparer = Comparer;
+        }
+        public RedBlackTree(Comparison<TKey> Comparison) {
+            Comparer = Comparer<TKey>.Create(Comparison);
+        }
+        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source) {
+            Comparer = Comparer<TKey>.Default;
+            foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
+        }
+        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, IComparer<TKey> Comparer) {
+            this.Comparer = Comparer;
+            foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
+        }
+        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, Comparison<TKey> Comparison) {
+            Comparer = Comparer<TKey>.Create(Comparison);
+            foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
+        }
+        #endregion
+
+        #region 인덱스
         public TValue this[TKey key] {
             get {
                 if (key == null) throw new ArgumentNullException();
@@ -22,8 +50,72 @@ namespace RedBlack {
                 }
             }
         }
+        #endregion
+
+        #region 삽입
+        public void Add(KeyValuePair<TKey, TValue> item) {
+            if (item.Key == null) return;
+            Node found = RedBlackSearchNode(item.Key);
+            if (found != null) return;
+            RedBlackAddNode(item.Key, item.Value);
+        }
+        public void Add(TKey key, TValue value) {
+            if (key == null) throw new ArgumentNullException();
+            Node found = RedBlackSearchNode(key);
+            if (found != null) throw new ArgumentException();
+            RedBlackAddNode(key, value);
+        }
+        #endregion
+
+        #region 검색
+        public bool Contains(KeyValuePair<TKey, TValue> item) {
+            if (item.Key == null) return false;
+            Node found = RedBlackSearchNode(item.Key);
+            if (found == null) return false;
+            else return found.Value.Equals(item.Value);
+        }
+        public bool ContainsKey(TKey key) {
+            if (key == null) throw new ArgumentNullException();
+            Node found = RedBlackSearchNode(key);
+            return found != null;
+        }
+        public bool TryGetValue(TKey key, out TValue value) {
+            if (key == null) throw new ArgumentNullException();
+            Node found = RedBlackSearchNode(key);
+            if (found == null) {
+                value = default(TValue);
+                return false;
+            } else {
+                value = found.Value;
+                return true;
+            }
+        }
+        #endregion
+
+        #region 삭제
+        public void Clear() {
+            Root = null;
+            Count = 0;
+        }
+        public bool Remove(KeyValuePair<TKey, TValue> item) {
+            if (item.Key == null) return false;
+            Node found = RedBlackSearchNode(item.Key);
+            if (found == null || found.Value.Equals(item.Value)) return false;
+            RedBlackDeleteNode(found);
+            return true;
+        }
+        public bool Remove(TKey key) {
+            if (key == null) throw new ArgumentNullException();
+            Node found = RedBlackSearchNode(key);
+            if (found == null) return false;
+            RedBlackDeleteNode(found);
+            return true;
+        }
+        #endregion
+
+        #region 기타
         public int Count { get; private set; }
-        public bool IsReadOnly { get; } = false;
+        public bool IsReadOnly => false;
         public ICollection<TKey> Keys {
             get {
                 List<TKey> keylist = new List<TKey>();
@@ -42,25 +134,6 @@ namespace RedBlack {
                 return valuelist;
             }
         }
-        public void Add(KeyValuePair<TKey, TValue> item) {
-            RedBlackAddNode(item.Key, item.Value);
-        }
-        public void Add(TKey key, TValue value) {
-            RedBlackAddNode(key, value);
-        }
-        public void Clear() {
-            Root = null;
-            Count = 0;
-        }
-        public bool Contains(KeyValuePair<TKey, TValue> item) {
-            Node found = RedBlackSearchNode(item.Key);
-            if (found == null) return false;
-            else return found.Value.Equals(item.Value);
-        }
-        public bool ContainsKey(TKey key) {
-            Node found = RedBlackSearchNode(key);
-            return found != null;
-        }
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
             int cursor = 0;
             foreach (Node i in RedBlackEnumNode()) {
@@ -74,22 +147,16 @@ namespace RedBlack {
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
             foreach (Node i in RedBlackEnumNode()) yield return new KeyValuePair<TKey, TValue>(i.Key, i.Value);
         }
-        public bool Remove(KeyValuePair<TKey, TValue> item) {
-            throw new NotImplementedException();
-        }
-        public bool Remove(TKey key) {
-            throw new NotImplementedException();
-        }
-        public bool TryGetValue(TKey key, out TValue value) {
-            throw new NotImplementedException();
-        }
         IEnumerator IEnumerable.GetEnumerator() {
             foreach (Node i in RedBlackEnumNode()) yield return new KeyValuePair<TKey, TValue>(i.Key, i.Value);
         }
+        #endregion
+
+        #region 내부 로직
         private Node RedBlackSearchNode(TKey Key) {
             Node temp = Root;
-            while (temp != null && temp.Key.CompareTo(Key) != 0) {
-                if (Key.CompareTo(temp.Key) < 0) temp = temp.LeftChild;
+            while (temp != null && Comparer.Compare(temp.Key, Key) != 0) {
+                if (Comparer.Compare(Key, temp.Key) < 0) temp = temp.LeftChild;
                 else temp = temp.RightChild;
             }
             return temp;
@@ -105,7 +172,7 @@ namespace RedBlack {
             }
             Node cursor = Root;
             while (true) {
-                if (insert.Key.CompareTo(cursor.Key) < 0) {
+                if (Comparer.Compare(insert.Key, cursor.Key) < 0) {
                     if (cursor.LeftChild == null) {
                         cursor.LeftChild = insert;
                         break;
@@ -399,5 +466,6 @@ namespace RedBlack {
                 Color = Color.Red;
             }
         }
+        #endregion
     }
 }
