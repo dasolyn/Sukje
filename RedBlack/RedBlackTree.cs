@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace RedBlack {
     public class RedBlackTree<TKey, TValue> : IDictionary<TKey, TValue> {
-
         private Node Root;
         public IComparer<TKey> Comparer { get; }
 
@@ -29,6 +28,33 @@ namespace RedBlack {
         public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, Comparison<TKey> Comparison) {
             Comparer = Comparer<TKey>.Create(Comparison);
             foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
+        }
+        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values) {
+            Comparer = Comparer<TKey>.Default;
+            using (IEnumerator<TKey> KeyEtor = Keys.GetEnumerator())
+            using (IEnumerator<TValue> ValueEtor = Values.GetEnumerator()) {
+                while (KeyEtor.MoveNext() && ValueEtor.MoveNext()) {
+                    RedBlackAddNode(KeyEtor.Current, ValueEtor.Current);
+                }
+            }
+        }
+        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, IComparer<TKey> Comparer) {
+            this.Comparer = Comparer;
+            using (IEnumerator<TKey> KeyEtor = Keys.GetEnumerator())
+            using (IEnumerator<TValue> ValueEtor = Values.GetEnumerator()) {
+                while (KeyEtor.MoveNext() && ValueEtor.MoveNext()) {
+                    RedBlackAddNode(KeyEtor.Current, ValueEtor.Current);
+                }
+            }
+        }
+        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, Comparison<TKey> Comparison) {
+            Comparer = Comparer<TKey>.Create(Comparison);
+            using (IEnumerator<TKey> KeyEtor = Keys.GetEnumerator())
+            using (IEnumerator<TValue> ValueEtor = Values.GetEnumerator()) {
+                while (KeyEtor.MoveNext() && ValueEtor.MoveNext()) {
+                    RedBlackAddNode(KeyEtor.Current, ValueEtor.Current);
+                }
+            }
         }
         #endregion
 
