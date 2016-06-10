@@ -92,7 +92,7 @@ namespace Huffman {
                         BufferLength += found.CodeWordLen;
                         while (BufferLength > 8) {
                             byte[] ba = BitConverter.GetBytes(Buffer >> (BufferLength - 8));
-                            fout.Write(ba[3]);
+                            fout.Write(ba[0]);
                             BufferLength -= 8;
                         }
                         run = new HuffmanRun(ch);
@@ -106,14 +106,14 @@ namespace Huffman {
                 BufferLength += found.CodeWordLen;
                 while (BufferLength > 8) {
                     byte[] ba = BitConverter.GetBytes(Buffer >> (BufferLength - 8));
-                    fout.Write(ba[3]);
+                    fout.Write(ba[0]);
                     BufferLength -= 8;
                 }
             }
             // 마지막으로 버퍼에 찌꺼기 남아있는지 확인하고 비움
             if (BufferLength > 0) {
                 byte[] ba = BitConverter.GetBytes(Buffer << (8 - BufferLength));
-                fout.Write(ba[3]);
+                fout.Write(ba[0]);
             }
         }
         public static List<HuffmanRun> InputFrequency(BinaryReader fin, out long OriginalLength) {
