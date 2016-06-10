@@ -15,7 +15,7 @@ namespace Huffman {
                 TxtFile.Text = dlg.FileName;
             }
         }
-        private void BtnRun(object sender, RoutedEventArgs e) {
+        private void BtnCompress(object sender, RoutedEventArgs e) {
             FileInfo fi = new FileInfo(TxtFile.Text);
             using (FileStream input = fi.Open(FileMode.OpenOrCreate)) {
                 List<HuffmanRun> runs = HuffmanClass.CollectRuns(input);
