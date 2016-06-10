@@ -1,23 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Huffman {
     public static class HuffmanClass {
-        public static List<HuffmanRun> CollectRuns(byte[] b) {
+        /// <summary>
+        /// 스트림에서 Huffman Run을 수집하고 그 Run들을 담은 가변 배열을 반환합니다.
+        /// </summary>
+        public static List<HuffmanRun> CollectRuns(Stream Stream) {
             List<HuffmanRun> listrun = new List<HuffmanRun>();
             HuffmanRun run = null;
-            foreach (byte ch in b) {
-                if (run == null) {
-                    run = new HuffmanRun(ch);
-                } else {
-                    if (run.Symbol == ch) {
-                        run.Length++;
-                    } else {
-                        HuffmanRun found = listrun.Find(t => t == run);
-                        if (found == null) listrun.Add(run);
-                        else found.Frequency++;
+            using (BinaryReader br = new BinaryReader(Stream, Encoding.Default, true)) {
+                while (br.BaseStream.Position < br.BaseStream.Length) {
+                    byte ch = br.ReadByte();
+                    if (run == null) {
                         run = new HuffmanRun(ch);
+                    } else {
+                        if (run.Symbol == ch) {
+                            run.Length++;
+                        } else {
+                            HuffmanRun found = listrun.Find(t => t == run);
+                            if (found == null) listrun.Add(run);
+                            else found.Frequency++;
+                            run = new HuffmanRun(ch);
+                        }
                     }
                 }
             }
@@ -29,7 +36,10 @@ namespace Huffman {
             }
             return listrun;
         }
-        public static HuffmanRun CreateHuffmanTree(List<HuffmanRun> CollectedRuns) {
+        /// <summary>
+        /// 컬렉션에 포함되어 있는 Huffman Run을 이용하여 트리를 구성하고 트리의 루트 Run을 반환합니다.
+        /// </summary>
+        public static HuffmanRun CreateHuffmanTree(IEnumerable<HuffmanRun> CollectedRuns) {
             MinPQueue<HuffmanRun> heap = new MinPQueue<HuffmanRun>(CollectedRuns, (a, b) => a.Frequency.CompareTo(b.Frequency));
             while (heap.Count > 1) {
                 HuffmanRun run1 = heap.Dequeue();
@@ -38,6 +48,9 @@ namespace Huffman {
             }
             return heap.Dequeue();
         }
+        /// <summary>
+        /// Huffman 트리의 루트 Run부터 시작하여 모든 Leaf Run에 Code Word를 할당합니다.
+        /// </summary>
         public static void AssignCodewords(HuffmanRun RootRun) {
             AssignCodewordsRecursive(RootRun, 0, 0);
         }
@@ -50,7 +63,10 @@ namespace Huffman {
                 AssignCodewordsRecursive(Run.RightChild, (Codeword << 1) + 1, CodewordLen + 1);
             }
         }
-        public static LinkedList<HuffmanRun>[] BuildArrayOfLinkedList(List<HuffmanRun> CollectedRuns) {
+        /// <summary>
+        /// 컬렉션에 포함된 모든 Huffman Run을, Symbol을 키로 하는 고정 배열에 연결 리스트 형태로 달려 있도록 구성하고 그 배열을 반환합니다.
+        /// </summary>
+        public static LinkedList<HuffmanRun>[] StoreRunsIntoArray(IEnumerable<HuffmanRun> CollectedRuns) {
             LinkedList<HuffmanRun>[] array = new LinkedList<HuffmanRun>[256];
             foreach (HuffmanRun i in CollectedRuns) {
                 if (array[i.Symbol] == null) array[i.Symbol] = new LinkedList<HuffmanRun>();
@@ -58,7 +74,10 @@ namespace Huffman {
             }
             return array;
         }
-        public static HuffmanRun FindRunBySymbol(LinkedList<HuffmanRun>[] Source, byte Symbol, int Length) {
+        /// <summary>
+        /// 연결 리스트 배열에서 주어진 Symbol, Length와 같은 값을 가진 Huffman Run을 탐색합니다.
+        /// </summary>
+        private static HuffmanRun FindRun(LinkedList<HuffmanRun>[] Source, byte Symbol, int Length) {
             LinkedList<HuffmanRun> ll = Source[Symbol];
             LinkedListNode<HuffmanRun> cursor = ll.First;
             while (cursor != null) {
@@ -67,93 +86,119 @@ namespace Huffman {
             }
             return null;
         }
-        public static void OutputFrequency(BinaryWriter output, List<HuffmanRun> CollectedRuns, long OriginalFileSize) {
-            output.Write(CollectedRuns.Count);
-            output.Write(OriginalFileSize);
-            foreach (HuffmanRun i in CollectedRuns) {
-                output.Write(i.Symbol);
-                output.Write(i.Length);
-                output.Write(i.Frequency);
+        /// <summary>
+        /// Huffman 헤더를 작성합니다.
+        /// 주어진 스트림에 Huffman Run의 갯수와 원본 파일의 크기, 각각의 Run 정보를 씁니다.
+        /// </summary>
+        public static void OutputFrequency(Stream Stream, List<HuffmanRun> CollectedRuns, long OriginalFileSize) {
+            using (BinaryWriter bw = new BinaryWriter(Stream, Encoding.Default, true)) {
+                bw.Write(CollectedRuns.Count);
+                bw.Write(OriginalFileSize);
+                foreach (HuffmanRun i in CollectedRuns) {
+                    bw.Write(i.Symbol);
+                    bw.Write(i.Length);
+                    bw.Write(i.Frequency);
+                }
             }
         }
-        public static void Encode(byte[] fin, BinaryWriter fout, LinkedList<HuffmanRun>[] LinkedListOfRuns) {
+        /// <summary>
+        /// Huffman 인코드 메서드입니다. 입력 스트림에서 한 바이트씩 읽으면서 인코딩하여 출력 스트림에 씁니다.
+        /// Huffman Run을 탐색하는데 연결 리스트 배열을 사용합니다.
+        /// </summary>
+        public static void Encode(Stream InputStream, Stream OutputStream, LinkedList<HuffmanRun>[] LinkedListOfRuns) {
             int BufferLength = 0;
             uint Buffer = 0;
             HuffmanRun run = null;
-            foreach (byte ch in fin) {
-                if (run == null) {
-                    run = new HuffmanRun(ch);
-                } else {
-                    if (run.Symbol == ch) {
-                        run.Length++;
-                    } else {
-                        HuffmanRun found = FindRunBySymbol(LinkedListOfRuns, run.Symbol, run.Length);
-                        Buffer = (Buffer << found.CodeWordLen) + found.CodeWord;
-                        BufferLength += found.CodeWordLen;
-                        while (BufferLength > 8) {
-                            byte[] ba = BitConverter.GetBytes(Buffer >> (BufferLength - 8));
-                            fout.Write(ba[0]);
-                            BufferLength -= 8;
-                        }
+            using (BinaryReader br = new BinaryReader(InputStream, Encoding.Default, true))
+            using (BinaryWriter bw = new BinaryWriter(OutputStream, Encoding.Default, true)) {
+                while (br.BaseStream.Position < br.BaseStream.Length) {
+                    byte ch = br.ReadByte();
+                    if (run == null) {
                         run = new HuffmanRun(ch);
+                    } else {
+                        if (run.Symbol == ch) {
+                            run.Length++;
+                        } else {
+                            HuffmanRun found = FindRun(LinkedListOfRuns, run.Symbol, run.Length);
+                            Buffer = (Buffer << found.CodeWordLen) + found.CodeWord;
+                            BufferLength += found.CodeWordLen;
+                            while (BufferLength > 8) {
+                                byte[] ba = BitConverter.GetBytes(Buffer >> (BufferLength - 8));
+                                bw.Write(ba[0]);
+                                BufferLength -= 8;
+                            }
+                            run = new HuffmanRun(ch);
+                        }
                     }
                 }
-            }
-            // 마지막 Run 인코딩
-            if (run != null) {
-                HuffmanRun found = FindRunBySymbol(LinkedListOfRuns, run.Symbol, run.Length);
-                Buffer = (Buffer << found.CodeWordLen) + found.CodeWord;
-                BufferLength += found.CodeWordLen;
-                while (BufferLength > 8) {
-                    byte[] ba = BitConverter.GetBytes(Buffer >> (BufferLength - 8));
-                    fout.Write(ba[0]);
-                    BufferLength -= 8;
+                // 마지막 Run 인코딩
+                if (run != null) {
+                    HuffmanRun found = FindRun(LinkedListOfRuns, run.Symbol, run.Length);
+                    Buffer = (Buffer << found.CodeWordLen) + found.CodeWord;
+                    BufferLength += found.CodeWordLen;
+                    while (BufferLength > 8) {
+                        byte[] ba = BitConverter.GetBytes(Buffer >> (BufferLength - 8));
+                        bw.Write(ba[0]);
+                        BufferLength -= 8;
+                    }
+                }
+                // 마지막으로 버퍼에 찌꺼기 남아있는지 확인하고 비움
+                if (BufferLength > 0) {
+                    byte[] ba = BitConverter.GetBytes(Buffer << (8 - BufferLength));
+                    bw.Write(ba[0]);
                 }
             }
-            // 마지막으로 버퍼에 찌꺼기 남아있는지 확인하고 비움
-            if (BufferLength > 0) {
-                byte[] ba = BitConverter.GetBytes(Buffer << (8 - BufferLength));
-                fout.Write(ba[0]);
-            }
         }
-        public static List<HuffmanRun> InputFrequency(BinaryReader fin, out long OriginalLength) {
-            int count = fin.ReadInt32();
-            long originallength = fin.ReadInt64();
+        /// <summary>
+        /// Huffman 헤더를 읽어들입니다.
+        /// 스트림에서 헤더를 읽어들여 Huffman Run을 담은 가변 배열과 원래 파일의 크기를 반환합니다.
+        /// </summary>
+        public static List<HuffmanRun> InputFrequency(Stream Stream, out long OriginalLength) {
             List<HuffmanRun> list = new List<HuffmanRun>();
-            for (int i = 0; i < count; i++) {
-                byte symbol = fin.ReadByte();
-                int length = fin.ReadInt32();
-                int frequency = fin.ReadInt32();
-                HuffmanRun run = new HuffmanRun(symbol);
-                run.Length = length;
-                run.Frequency = frequency;
-                list.Add(run);
+            using (BinaryReader br = new BinaryReader(Stream, Encoding.Default, true)) {
+                int count = br.ReadInt32();
+                OriginalLength = br.ReadInt64();
+                for (int i = 0; i < count; i++) {
+                    byte symbol = br.ReadByte();
+                    int length = br.ReadInt32();
+                    int frequency = br.ReadInt32();
+                    HuffmanRun run = new HuffmanRun(symbol);
+                    run.Length = length;
+                    run.Frequency = frequency;
+                    list.Add(run);
+                }
             }
-            OriginalLength = originallength;
             return list;
         }
-        public static void Decode(BinaryReader fin, BinaryWriter fout, HuffmanRun RootOfTree, long OriginalLength) {
-            int BytesRead = 0, BitCnt = 1, mask = 1, bits = 8;
-            mask <<= bits - 1;
-            for (int ch = fin.ReadByte(); ch != -1 && BytesRead < OriginalLength;) {
-                HuffmanRun p = RootOfTree;
-                while (true) {
-                    if (p.LeftChild == null || p.RightChild == null) {
-                        for (int j = 0; j < p.Length; j++) {
-                            fout.Write(p.Symbol);
+        /// <summary>
+        /// Huffman 디코드 메서드입니다. 입력 스트림에서 한 바이트씩 읽으면서 디코딩하여 출력 스트림에 씁니다.
+        /// Huffman Run을 탐색하는데 Huffman 트리의 루트 Run이 필요합니다.
+        /// </summary>
+        /// <param name="InputStream">압축을 해제할 입력 스트림입니다. Huffman 헤더가 포함되면 안됩니다.</param>
+        public static void Decode(Stream InputStream, Stream OutputStream, HuffmanRun RootOfTree, long OriginalLength) {
+            int WrittenBytes = 0, BitCnt = 1;
+            int mask = 128;
+            using (BinaryReader br = new BinaryReader(InputStream, Encoding.Default, true))
+            using (BinaryWriter bw = new BinaryWriter(OutputStream, Encoding.Default, true)) {
+                byte ch = br.ReadByte();
+                while (WrittenBytes < OriginalLength) {
+                    HuffmanRun p = RootOfTree;
+                    while (true) {
+                        if (p.LeftChild == null || p.RightChild == null) {
+                            for (int j = 0; j < p.Length; j++) bw.Write(p.Symbol);
+                            WrittenBytes += p.Length;
+                            break;
+                        } else if ((ch & mask) == 0) {
+                            p = p.LeftChild;
+                        } else {
+                            p = p.RightChild;
                         }
-                        BytesRead += p.Length;
-                        break;
-                    } else if ((ch & mask) == 0) {
-                        p = p.LeftChild;
-                    } else {
-                        p = p.RightChild;
-                    }
-                    if (BitCnt++ == bits) {
-                        ch = fin.ReadByte();
-                        BitCnt = 1;
-                    } else {
-                        ch <<= 1;
+                        if (BitCnt++ == 8) {
+                            ch = br.ReadByte();
+                            BitCnt = 1;
+                        } else {
+                            ch <<= 1;
+                        }
                     }
                 }
             }
