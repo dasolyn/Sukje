@@ -99,6 +99,6 @@ namespace Huffman {
                 Mother = SmallerChild;
             }
         }
-        private int parent(int index) => (index + 1) / 2 - 1;
+        private int parent(int index) => (index - 1) / 2;
     }
 }

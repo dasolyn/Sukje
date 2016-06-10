@@ -10,7 +10,8 @@
         <StackPanel Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top">
             <TextBox x:Name="TxtFile" Width="400" Height="30" Margin="10" />
             <Button Content="파일 찾기" Width="200" Height="30" Margin="10" Click="BtnFileDialog" />
-            <Button Content="Huffman" Width="200" Height="30" Margin="10" Click="BtnRun" />
+            <Button Content="Huffman Compress" Width="200" Height="30" Margin="10" Click="BtnRun" />
+            <Button Content="Huffman Decompress" Width="200" Height="30" Margin="10" Click="BtnDecompress" />
         </StackPanel>
     </Grid>
 </Window>

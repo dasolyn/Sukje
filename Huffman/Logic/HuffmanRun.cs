@@ -5,12 +5,16 @@ namespace Huffman {
         public byte Symbol { get; set; }
         public int Length { get; set; }
         public int Frequency { get; set; }
+        public uint CodeWord { get; set; }
+        public int CodeWordLen { get; set; }
         public HuffmanRun LeftChild { get; set; }
         public HuffmanRun RightChild { get; set; }
         public HuffmanRun(byte Symbol) {
             this.Symbol = Symbol;
             Length = 1;
             Frequency = 1;
+            CodeWord = 0;
+            CodeWordLen = 0;
             LeftChild = null;
             RightChild = null;
         }
@@ -23,7 +27,7 @@ namespace Huffman {
         }
 
         public override string ToString() {
-            return $"{Symbol:x2} {Length} {Frequency}";
+            return $"{Symbol:x2} {Length} {Frequency} {CodeWord:x2} {CodeWordLen}";
         }
         public override bool Equals(object other) {
             HuffmanRun o = other as HuffmanRun;
