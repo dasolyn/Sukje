@@ -90,7 +90,7 @@ namespace Huffman {
         /// Huffman 헤더를 작성합니다.
         /// 주어진 스트림에 Huffman Run의 갯수와 원본 파일의 크기, 각각의 Run 정보를 씁니다.
         /// </summary>
-        public static void OutputFrequency(Stream Stream, List<HuffmanRun> CollectedRuns, long OriginalFileSize) {
+        public static void OutputFrequency(Stream Stream, ICollection<HuffmanRun> CollectedRuns, long OriginalFileSize) {
             using (BinaryWriter bw = new BinaryWriter(Stream, Encoding.Default, true)) {
                 bw.Write(CollectedRuns.Count);
                 bw.Write(OriginalFileSize);
