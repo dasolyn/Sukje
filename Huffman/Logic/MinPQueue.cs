@@ -6,7 +6,7 @@ namespace Huffman {
     /// <summary>
     /// 힙을 이용해 구현한 최소 우선순위 큐입니다.
     /// </summary>
-    public class MinPQueue<T> : IEnumerable<T> {
+    public class MinPQueue<T> : IReadOnlyCollection<T> {
         private List<T> datas;
         public IComparer<T> Comparer { get; }
 
