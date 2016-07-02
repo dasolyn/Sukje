@@ -153,6 +153,7 @@ namespace Huffman {
         /// Huffman 헤더를 읽어들입니다.
         /// 스트림에서 헤더를 읽어들여 Huffman Run을 담은 가변 배열과 원래 파일의 크기를 반환합니다.
         /// </summary>
+        /// <exception cref="EndOfStreamException">헤더를 읽는 도중 예기치 않은 스트림의 끝이 나타났습니다.</exception>
         public static List<HuffmanRun> InputFrequency(Stream Stream, out long OriginalLength) {
             List<HuffmanRun> list = new List<HuffmanRun>();
             using (BinaryReader br = new BinaryReader(Stream, Encoding.Default, true)) {
@@ -175,9 +176,11 @@ namespace Huffman {
         /// Huffman Run을 탐색하는데 Huffman 트리의 루트 Run이 필요합니다.
         /// </summary>
         /// <param name="InputStream">압축을 해제할 입력 스트림입니다. Huffman 헤더가 포함되면 안됩니다.</param>
+        /// <param name="OriginalLength">압축 전 파일의 길이입니다.</param>
+        /// <exception cref="EndOfStreamException">파일의 원래 길이에 해당하는 디코딩을 완료하기 전에 입력 스트림의 끝이 나타났습니다.</exception>
         public static void Decode(Stream InputStream, Stream OutputStream, HuffmanRun RootOfTree, long OriginalLength) {
             int WrittenBytes = 0, BitCnt = 1;
-            int mask = 128;
+            byte mask = 128;
             using (BinaryReader br = new BinaryReader(InputStream, Encoding.Default, true))
             using (BinaryWriter bw = new BinaryWriter(OutputStream, Encoding.Default, true)) {
                 byte ch = br.ReadByte();

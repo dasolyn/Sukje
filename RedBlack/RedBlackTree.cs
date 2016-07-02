@@ -59,18 +59,18 @@ namespace RedBlack {
         #endregion
 
         #region 인덱스
-        public TValue this[TKey key] {
+        public TValue this[TKey Key] {
             get {
-                if (key == null) throw new ArgumentNullException();
-                Node found = RedBlackSearchNode(key);
+                if (Key == null) throw new ArgumentNullException();
+                Node found = RedBlackSearchNode(Key);
                 if (found == null) throw new KeyNotFoundException();
                 return found.Value;
             }
             set {
-                if (key == null) throw new ArgumentNullException();
-                Node found = RedBlackSearchNode(key);
+                if (Key == null) throw new ArgumentNullException();
+                Node found = RedBlackSearchNode(Key);
                 if (found == null) {
-                    RedBlackAddNode(key, value);
+                    RedBlackAddNode(Key, value);
                 } else {
                     found.Value = value;
                 }
@@ -79,42 +79,60 @@ namespace RedBlack {
         #endregion
 
         #region 삽입
-        public void Add(KeyValuePair<TKey, TValue> item) {
-            if (item.Key == null) return;
-            Node found = RedBlackSearchNode(item.Key);
+        public void Add(KeyValuePair<TKey, TValue> Item) {
+            if (Item.Key == null) return;
+            Node found = RedBlackSearchNode(Item.Key);
             if (found != null) return;
-            RedBlackAddNode(item.Key, item.Value);
+            RedBlackAddNode(Item.Key, Item.Value);
         }
-        public void Add(TKey key, TValue value) {
-            if (key == null) throw new ArgumentNullException();
-            Node found = RedBlackSearchNode(key);
+        public void Add(TKey Key, TValue Value) {
+            if (Key == null) throw new ArgumentNullException();
+            Node found = RedBlackSearchNode(Key);
             if (found != null) throw new ArgumentException();
-            RedBlackAddNode(key, value);
+            RedBlackAddNode(Key, Value);
         }
         #endregion
 
         #region 검색
-        public bool Contains(KeyValuePair<TKey, TValue> item) {
-            if (item.Key == null) return false;
-            Node found = RedBlackSearchNode(item.Key);
+        public bool Contains(KeyValuePair<TKey, TValue> Item) {
+            if (Item.Key == null) return false;
+            Node found = RedBlackSearchNode(Item.Key);
             if (found == null) return false;
-            else return found.Value.Equals(item.Value);
+            else return found.Value.Equals(Item.Value);
         }
-        public bool ContainsKey(TKey key) {
-            if (key == null) throw new ArgumentNullException();
-            Node found = RedBlackSearchNode(key);
+        public bool ContainsKey(TKey Key) {
+            if (Key == null) throw new ArgumentNullException();
+            Node found = RedBlackSearchNode(Key);
             return found != null;
         }
-        public bool TryGetValue(TKey key, out TValue value) {
-            if (key == null) throw new ArgumentNullException();
-            Node found = RedBlackSearchNode(key);
+        public bool TryGetValue(TKey Key, out TValue Value) {
+            if (Key == null) throw new ArgumentNullException();
+            Node found = RedBlackSearchNode(Key);
             if (found == null) {
-                value = default(TValue);
+                Value = default(TValue);
                 return false;
             } else {
-                value = found.Value;
+                Value = found.Value;
                 return true;
             }
+        }
+        public bool TryGetKey(TValue Value, out TKey Key) {
+            if (Value == null) throw new ArgumentNullException();
+            if (Root != null) {
+                Queue<Node> queue = new Queue<Node>();
+                queue.Enqueue(Root);
+                while (queue.Count > 0) {
+                    Node e = queue.Dequeue();
+                    if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
+                    if (e.RightChild != null) queue.Enqueue(e.RightChild);
+                    if (e.Value.Equals(Value)) {
+                        Key = e.Key;
+                        return true;
+                    }
+                }
+            }
+            Key = default(TKey);
+            return false;
         }
         #endregion
 
@@ -123,16 +141,16 @@ namespace RedBlack {
             Root = null;
             Count = 0;
         }
-        public bool Remove(KeyValuePair<TKey, TValue> item) {
-            if (item.Key == null) return false;
-            Node found = RedBlackSearchNode(item.Key);
-            if (found == null || found.Value.Equals(item.Value)) return false;
+        public bool Remove(KeyValuePair<TKey, TValue> Item) {
+            if (Item.Key == null) return false;
+            Node found = RedBlackSearchNode(Item.Key);
+            if (found == null || found.Value.Equals(Item.Value)) return false;
             RedBlackDeleteNode(found);
             return true;
         }
-        public bool Remove(TKey key) {
-            if (key == null) throw new ArgumentNullException();
-            Node found = RedBlackSearchNode(key);
+        public bool Remove(TKey Key) {
+            if (Key == null) throw new ArgumentNullException();
+            Node found = RedBlackSearchNode(Key);
             if (found == null) return false;
             RedBlackDeleteNode(found);
             return true;
@@ -160,12 +178,12 @@ namespace RedBlack {
                 return valuelist;
             }
         }
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
+        public void CopyTo(KeyValuePair<TKey, TValue>[] Array, int ArrayIndex) {
             int cursor = 0;
             foreach (Node i in RedBlackEnumNode()) {
-                if (cursor + arrayIndex >= array.Length) return;
+                if (cursor + ArrayIndex >= Array.Length) return;
                 else {
-                    array[arrayIndex + cursor] = new KeyValuePair<TKey, TValue>(i.Key, i.Value);
+                    Array[ArrayIndex + cursor] = new KeyValuePair<TKey, TValue>(i.Key, i.Value);
                     cursor++;
                 }
             }
@@ -179,17 +197,17 @@ namespace RedBlack {
         #endregion
 
         #region 내부 로직
-        private Node RedBlackSearchNode(TKey Key) {
+        private Node RedBlackSearchNode(TKey key) {
             Node temp = Root;
-            while (temp != null && Comparer.Compare(temp.Key, Key) != 0) {
-                if (Comparer.Compare(Key, temp.Key) < 0) temp = temp.LeftChild;
+            while (temp != null && Comparer.Compare(temp.Key, key) != 0) {
+                if (Comparer.Compare(key, temp.Key) < 0) temp = temp.LeftChild;
                 else temp = temp.RightChild;
             }
             return temp;
         }
-        private void RedBlackAddNode(TKey Key, TValue Value) {
+        private void RedBlackAddNode(TKey key, TValue value) {
             Count++;
-            Node insert = new Node(Key, Value);
+            Node insert = new Node(key, value);
             // 삽입
             if (Root == null) {
                 Root = insert;
@@ -383,38 +401,38 @@ namespace RedBlack {
                 }
             }
         }
-        private Color GetColor(Node Node) {
-            if (Node == null) return Color.Black;
-            return Node.Color;
+        private Color GetColor(Node node) {
+            if (node == null) return Color.Black;
+            return node.Color;
         }
-        private void LeftRotate(Node Node) {
-            Node y = Node.RightChild;
-            Node.RightChild = y.LeftChild;
-            if (Node.Parent == null) Root = y;
-            else if (Node.Parent.LeftChild == Node) Node.Parent.LeftChild = y;
-            else Node.Parent.RightChild = y;
-            y.LeftChild = Node;
+        private void LeftRotate(Node node) {
+            Node y = node.RightChild;
+            node.RightChild = y.LeftChild;
+            if (node.Parent == null) Root = y;
+            else if (node.Parent.LeftChild == node) node.Parent.LeftChild = y;
+            else node.Parent.RightChild = y;
+            y.LeftChild = node;
         }
-        private void RightRotate(Node Node) {
-            Node x = Node.LeftChild;
-            Node.LeftChild = x.RightChild;
-            if (Node.Parent == null) Root = x;
-            else if (Node.Parent.LeftChild == Node) Node.Parent.LeftChild = x;
-            else Node.Parent.RightChild = x;
-            x.RightChild = Node;
+        private void RightRotate(Node node) {
+            Node x = node.LeftChild;
+            node.LeftChild = x.RightChild;
+            if (node.Parent == null) Root = x;
+            else if (node.Parent.LeftChild == node) node.Parent.LeftChild = x;
+            else node.Parent.RightChild = x;
+            x.RightChild = node;
         }
-        private Node GetSuccessor(Node Node) {
-            if (Node.RightChild != null) return GetMinimum(Node.RightChild);
-            Node origin = Node;
-            Node temp = Node;
+        private Node GetSuccessor(Node node) {
+            if (node.RightChild != null) return GetMinimum(node.RightChild);
+            Node origin = node;
+            Node temp = node;
             while (true) {
                 if (temp.Parent == null) return origin;
                 else if (temp.Parent.LeftChild != temp) temp = temp.Parent;
                 else return temp;
             }
         }
-        private Node GetMinimum(Node Parent) {
-            Node temp = Parent;
+        private Node GetMinimum(Node parent) {
+            Node temp = parent;
             while (temp.LeftChild != null) temp = temp.LeftChild;
             return temp;
         }
