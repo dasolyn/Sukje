@@ -134,6 +134,22 @@ namespace RedBlack {
             Key = default(TKey);
             return false;
         }
+        public bool ContainsValue(TValue Value) {
+            if (Value == null) throw new ArgumentNullException();
+            if (Root != null) {
+                Queue<Node> queue = new Queue<Node>();
+                queue.Enqueue(Root);
+                while (queue.Count > 0) {
+                    Node e = queue.Dequeue();
+                    if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
+                    if (e.RightChild != null) queue.Enqueue(e.RightChild);
+                    if (e.Value.Equals(Value)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         #endregion
 
         #region 삭제
