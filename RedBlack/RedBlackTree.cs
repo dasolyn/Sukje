@@ -61,47 +61,40 @@ namespace RedBlack {
         #region 인덱스
         public TValue this[TKey Key] {
             get {
-                if (Key == null) throw new ArgumentNullException();
+                if (Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
                 Node found = RedBlackSearchNode(Key);
-                if (found == null) throw new KeyNotFoundException();
+                if (found == null) throw new KeyNotFoundException("RedBlackTree(TKey, TValue)");
                 return found.Value;
             }
             set {
-                if (Key == null) throw new ArgumentNullException();
+                if (Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
                 Node found = RedBlackSearchNode(Key);
-                if (found == null) {
-                    RedBlackAddNode(Key, value);
-                } else {
-                    found.Value = value;
-                }
+                if (found == null) RedBlackAddNode(Key, value);
+                else found.Value = value;
             }
         }
         #endregion
 
         #region 삽입
-        public void Add(KeyValuePair<TKey, TValue> Item) {
-            if (Item.Key == null) return;
-            Node found = RedBlackSearchNode(Item.Key);
-            if (found != null) return;
-            RedBlackAddNode(Item.Key, Item.Value);
+        void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> Item) {
+            Add(Item.Key, Item.Value);
         }
         public void Add(TKey Key, TValue Value) {
-            if (Key == null) throw new ArgumentNullException();
+            if (Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
             Node found = RedBlackSearchNode(Key);
-            if (found != null) throw new ArgumentException();
+            if (found != null) throw new ArgumentException("RedBlackTree(TKey, TValue)");
             RedBlackAddNode(Key, Value);
         }
         #endregion
 
         #region 검색
-        public bool Contains(KeyValuePair<TKey, TValue> Item) {
-            if (Item.Key == null) return false;
+        bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> Item) {
+            if (Item.Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
             Node found = RedBlackSearchNode(Item.Key);
-            if (found == null) return false;
-            else return found.Value.Equals(Item.Value);
+            return found != null && found.Value.Equals(Item.Value);
         }
         public bool ContainsKey(TKey Key) {
-            if (Key == null) throw new ArgumentNullException();
+            if (Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
             Node found = RedBlackSearchNode(Key);
             return found != null;
         }
@@ -157,7 +150,7 @@ namespace RedBlack {
             Root = null;
             Count = 0;
         }
-        public bool Remove(KeyValuePair<TKey, TValue> Item) {
+        bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> Item) {
             if (Item.Key == null) return false;
             Node found = RedBlackSearchNode(Item.Key);
             if (found == null || found.Value.Equals(Item.Value)) return false;
