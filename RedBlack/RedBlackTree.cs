@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace RedBlack {
-    public class RedBlackTree<TKey, TValue> : IDictionary<TKey, TValue> {
+    public class RedBlackTree<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDictionary, ICollection {
         private Node Root;
         public IComparer<TKey> Comparer { get; }
 
@@ -11,22 +11,22 @@ namespace RedBlack {
         public RedBlackTree() {
             Comparer = Comparer<TKey>.Default;
         }
-        public RedBlackTree(IComparer<TKey> Comparer) {
-            this.Comparer = Comparer;
+        public RedBlackTree(IComparer<TKey> KeyComparer) {
+            this.Comparer = KeyComparer;
         }
-        public RedBlackTree(Comparison<TKey> Comparison) {
-            Comparer = Comparer<TKey>.Create(Comparison);
+        public RedBlackTree(Comparison<TKey> KeyComparison) {
+            Comparer = Comparer<TKey>.Create(KeyComparison);
         }
         public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source) {
             Comparer = Comparer<TKey>.Default;
             foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
         }
-        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, IComparer<TKey> Comparer) {
-            this.Comparer = Comparer;
+        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, IComparer<TKey> KeyComparer) {
+            this.Comparer = KeyComparer;
             foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
         }
-        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, Comparison<TKey> Comparison) {
-            Comparer = Comparer<TKey>.Create(Comparison);
+        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, Comparison<TKey> KeyComparison) {
+            Comparer = Comparer<TKey>.Create(KeyComparison);
             foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
         }
         public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values) {
@@ -38,8 +38,8 @@ namespace RedBlack {
                 }
             }
         }
-        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, IComparer<TKey> Comparer) {
-            this.Comparer = Comparer;
+        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, IComparer<TKey> KeyComparer) {
+            this.Comparer = KeyComparer;
             using (IEnumerator<TKey> KeyEtor = Keys.GetEnumerator())
             using (IEnumerator<TValue> ValueEtor = Values.GetEnumerator()) {
                 while (KeyEtor.MoveNext() && ValueEtor.MoveNext()) {
@@ -47,8 +47,8 @@ namespace RedBlack {
                 }
             }
         }
-        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, Comparison<TKey> Comparison) {
-            Comparer = Comparer<TKey>.Create(Comparison);
+        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, Comparison<TKey> KeyComparison) {
+            Comparer = Comparer<TKey>.Create(KeyComparison);
             using (IEnumerator<TKey> KeyEtor = Keys.GetEnumerator())
             using (IEnumerator<TValue> ValueEtor = Values.GetEnumerator()) {
                 while (KeyEtor.MoveNext() && ValueEtor.MoveNext()) {
@@ -58,16 +58,16 @@ namespace RedBlack {
         }
         #endregion
 
-        #region 인덱스
+        #region 인덱스로 접근
         public TValue this[TKey Key] {
             get {
-                if (Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
+                if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
                 Node found = RedBlackSearchNode(Key);
-                if (found == null) throw new KeyNotFoundException("RedBlackTree(TKey, TValue)");
+                if (found == null) throw new KeyNotFoundException("RedBlackTree`2");
                 return found.Value;
             }
             set {
-                if (Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
+                if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
                 Node found = RedBlackSearchNode(Key);
                 if (found == null) RedBlackAddNode(Key, value);
                 else found.Value = value;
@@ -75,31 +75,23 @@ namespace RedBlack {
         }
         #endregion
 
-        #region 삽입
-        void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> Item) {
-            Add(Item.Key, Item.Value);
-        }
+        #region 추가
         public void Add(TKey Key, TValue Value) {
-            if (Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
+            if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
             Node found = RedBlackSearchNode(Key);
-            if (found != null) throw new ArgumentException("RedBlackTree(TKey, TValue)");
+            if (found != null) throw new ArgumentException("RedBlackTree`2");
             RedBlackAddNode(Key, Value);
         }
         #endregion
 
         #region 검색
-        bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> Item) {
-            if (Item.Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
-            Node found = RedBlackSearchNode(Item.Key);
-            return found != null && found.Value.Equals(Item.Value);
-        }
         public bool ContainsKey(TKey Key) {
             if (Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
             Node found = RedBlackSearchNode(Key);
             return found != null;
         }
         public bool TryGetValue(TKey Key, out TValue Value) {
-            if (Key == null) throw new ArgumentNullException();
+            if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
             Node found = RedBlackSearchNode(Key);
             if (found == null) {
                 Value = default(TValue);
@@ -108,6 +100,22 @@ namespace RedBlack {
                 Value = found.Value;
                 return true;
             }
+        }
+        public bool ContainsValue(TValue Value) {
+            if (Value == null) throw new ArgumentNullException();
+            if (Root != null) {
+                Queue<Node> queue = new Queue<Node>();
+                queue.Enqueue(Root);
+                while (queue.Count > 0) {
+                    Node e = queue.Dequeue();
+                    if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
+                    if (e.RightChild != null) queue.Enqueue(e.RightChild);
+                    if (e.Value.Equals(Value)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         public bool TryGetKey(TValue Value, out TKey Key) {
             if (Value == null) throw new ArgumentNullException();
@@ -127,35 +135,12 @@ namespace RedBlack {
             Key = default(TKey);
             return false;
         }
-        public bool ContainsValue(TValue Value) {
-            if (Value == null) throw new ArgumentNullException();
-            if (Root != null) {
-                Queue<Node> queue = new Queue<Node>();
-                queue.Enqueue(Root);
-                while (queue.Count > 0) {
-                    Node e = queue.Dequeue();
-                    if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
-                    if (e.RightChild != null) queue.Enqueue(e.RightChild);
-                    if (e.Value.Equals(Value)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
         #endregion
 
-        #region 삭제
+        #region 제거
         public void Clear() {
             Root = null;
             Count = 0;
-        }
-        bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> Item) {
-            if (Item.Key == null) return false;
-            Node found = RedBlackSearchNode(Item.Key);
-            if (found == null || found.Value.Equals(Item.Value)) return false;
-            RedBlackDeleteNode(found);
-            return true;
         }
         public bool Remove(TKey Key) {
             if (Key == null) throw new ArgumentNullException();
@@ -168,8 +153,7 @@ namespace RedBlack {
 
         #region 기타
         public int Count { get; private set; }
-        public bool IsReadOnly => false;
-        public ICollection<TKey> Keys {
+        public IEnumerable<TKey> Keys {
             get {
                 List<TKey> keylist = new List<TKey>();
                 foreach (var i in this) {
@@ -178,7 +162,7 @@ namespace RedBlack {
                 return keylist;
             }
         }
-        public ICollection<TValue> Values {
+        public IEnumerable<TValue> Values {
             get {
                 List<TValue> valuelist = new List<TValue>();
                 foreach (var i in this) {
@@ -187,22 +171,93 @@ namespace RedBlack {
                 return valuelist;
             }
         }
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
+            foreach (Node i in RedBlackEnumNode()) yield return new KeyValuePair<TKey, TValue>(i.Key, i.Value);
+        }
         public void CopyTo(KeyValuePair<TKey, TValue>[] Array, int ArrayIndex) {
             int cursor = 0;
             foreach (Node i in RedBlackEnumNode()) {
-                if (cursor + ArrayIndex >= Array.Length) return;
+                if (cursor + ArrayIndex >= Array.Length || cursor + ArrayIndex < 0) return;
                 else {
                     Array[ArrayIndex + cursor] = new KeyValuePair<TKey, TValue>(i.Key, i.Value);
                     cursor++;
                 }
             }
         }
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
-            foreach (Node i in RedBlackEnumNode()) yield return new KeyValuePair<TKey, TValue>(i.Key, i.Value);
-        }
+        #endregion
+
+        #region 명시적 인터페이스 구현
+        private object InternalSyncRoot = new object();
         IEnumerator IEnumerable.GetEnumerator() {
-            foreach (Node i in RedBlackEnumNode()) yield return new KeyValuePair<TKey, TValue>(i.Key, i.Value);
+            return GetEnumerator();
         }
+        object ICollection.SyncRoot => InternalSyncRoot;
+        bool ICollection.IsSynchronized => false;
+        void ICollection.CopyTo(Array array, int index) {
+            CopyTo((KeyValuePair<TKey, TValue>[])array, index);
+        }
+        void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> Item) {
+            Add(Item.Key, Item.Value);
+        }
+        bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> Item) {
+            TValue result;
+            if (TryGetValue(Item.Key, out result)) return result.Equals(Item.Value);
+            else return false;
+        }
+        bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> Item) {
+            TValue result;
+            if (TryGetValue(Item.Key, out result) && result.Equals(Item.Value)) return Remove(Item.Key);
+            else return false;
+        }
+        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
+        ICollection IDictionary.Keys => (ICollection)Keys;
+        ICollection IDictionary.Values => (ICollection)Values;
+        bool IDictionary.IsFixedSize => false;
+        object IDictionary.this[object Key] {
+            get {
+                if (Key is TKey && ContainsKey((TKey)Key)) return this[(TKey)Key];
+                else return null;
+            }
+            set {
+                if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
+                if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2");
+                if (value is TValue == false) throw new ArgumentException("RedBlackTree`2");
+                this[(TKey)Key] = (TValue)value;
+            }
+        }
+        bool IDictionary.Contains(object Key) {
+            if (Key is TKey) return ContainsKey((TKey)Key);
+            else return false;
+        }
+        void IDictionary.Add(object Key, object Value) {
+            if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
+            if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2");
+            if (Value is TValue == false) throw new ArgumentException("RedBlackTree`2");
+            Add((TKey)Key, (TValue)Value);
+        }
+        IDictionaryEnumerator IDictionary.GetEnumerator() {
+            return new DictionaryEnumerator(GetEnumerator());
+        }
+        void IDictionary.Remove(object Key) {
+            if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
+            if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2");
+            Remove((TKey)Key);
+        }
+        bool IDictionary.IsReadOnly => false;
+        private class DictionaryEnumerator : IDictionaryEnumerator {
+            private IEnumerator<KeyValuePair<TKey, TValue>> InnerEnumerator;
+            public DictionaryEnumerator(IEnumerator<KeyValuePair<TKey, TValue>> InnerEnumerator) {
+                this.InnerEnumerator = InnerEnumerator;
+            }
+            public object Current => new DictionaryEntry(InnerEnumerator.Current.Key, InnerEnumerator.Current.Value);
+            public DictionaryEntry Entry => new DictionaryEntry(InnerEnumerator.Current.Key, InnerEnumerator.Current.Value);
+            public object Key => InnerEnumerator.Current.Key;
+            public object Value => InnerEnumerator.Current.Value;
+            public bool MoveNext() => InnerEnumerator.MoveNext();
+            public void Reset() => InnerEnumerator.Reset();
+        }
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => (ICollection<TKey>)Keys;
+        ICollection<TValue> IDictionary<TKey, TValue>.Values => (ICollection<TValue>)Values;
         #endregion
 
         #region 내부 로직
