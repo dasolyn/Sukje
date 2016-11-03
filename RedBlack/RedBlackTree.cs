@@ -5,17 +5,17 @@ using System.Collections.Generic;
 namespace RedBlack {
     public class RedBlackTree<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDictionary {
         private Node Root;
-        public IComparer<TKey> Comparer { get; }
+        public IComparer<TKey> KeyComparer { get; }
 
         #region 생성자
         public RedBlackTree() {
-            Comparer = Comparer<TKey>.Default;
+            KeyComparer = Comparer<TKey>.Default;
         }
         public RedBlackTree(IComparer<TKey> KeyComparer) {
-            Comparer = KeyComparer;
+            this.KeyComparer = KeyComparer;
         }
         public RedBlackTree(Comparison<TKey> KeyComparison) {
-            Comparer = Comparer<TKey>.Create(KeyComparison);
+            KeyComparer = Comparer<TKey>.Create(KeyComparison);
         }
         public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source) : this() {
             foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
@@ -264,8 +264,8 @@ namespace RedBlack {
         #region 내부 로직
         private Node RedBlackSearchNode(TKey key) {
             Node temp = Root;
-            while (temp != null && Comparer.Compare(temp.Key, key) != 0) {
-                if (Comparer.Compare(key, temp.Key) < 0) temp = temp.LeftChild;
+            while (temp != null && KeyComparer.Compare(temp.Key, key) != 0) {
+                if (KeyComparer.Compare(key, temp.Key) < 0) temp = temp.LeftChild;
                 else temp = temp.RightChild;
             }
             return temp;
@@ -281,7 +281,7 @@ namespace RedBlack {
             }
             Node cursor = Root;
             while (true) {
-                if (Comparer.Compare(insert.Key, cursor.Key) < 0) {
+                if (KeyComparer.Compare(insert.Key, cursor.Key) < 0) {
                     if (cursor.LeftChild == null) {
                         cursor.LeftChild = insert;
                         break;
