@@ -12,25 +12,21 @@ namespace RedBlack {
             Comparer = Comparer<TKey>.Default;
         }
         public RedBlackTree(IComparer<TKey> KeyComparer) {
-            this.Comparer = KeyComparer;
+            Comparer = KeyComparer;
         }
         public RedBlackTree(Comparison<TKey> KeyComparison) {
             Comparer = Comparer<TKey>.Create(KeyComparison);
         }
-        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source) {
-            Comparer = Comparer<TKey>.Default;
+        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source) : this() {
             foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
         }
-        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, IComparer<TKey> KeyComparer) {
-            this.Comparer = KeyComparer;
+        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, IComparer<TKey> KeyComparer) : this(KeyComparer) {
             foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
         }
-        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, Comparison<TKey> KeyComparison) {
-            Comparer = Comparer<TKey>.Create(KeyComparison);
+        public RedBlackTree(IEnumerable<KeyValuePair<TKey, TValue>> Source, Comparison<TKey> KeyComparison) : this(KeyComparison) {
             foreach (KeyValuePair<TKey, TValue> i in Source) RedBlackAddNode(i.Key, i.Value);
         }
-        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values) {
-            Comparer = Comparer<TKey>.Default;
+        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values) : this() {
             using (IEnumerator<TKey> KeyEtor = Keys.GetEnumerator())
             using (IEnumerator<TValue> ValueEtor = Values.GetEnumerator()) {
                 while (KeyEtor.MoveNext() && ValueEtor.MoveNext()) {
@@ -38,8 +34,7 @@ namespace RedBlack {
                 }
             }
         }
-        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, IComparer<TKey> KeyComparer) {
-            this.Comparer = KeyComparer;
+        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, IComparer<TKey> KeyComparer) : this(KeyComparer) {
             using (IEnumerator<TKey> KeyEtor = Keys.GetEnumerator())
             using (IEnumerator<TValue> ValueEtor = Values.GetEnumerator()) {
                 while (KeyEtor.MoveNext() && ValueEtor.MoveNext()) {
@@ -47,8 +42,7 @@ namespace RedBlack {
                 }
             }
         }
-        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, Comparison<TKey> KeyComparison) {
-            Comparer = Comparer<TKey>.Create(KeyComparison);
+        public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, Comparison<TKey> KeyComparison) : this(KeyComparison) {
             using (IEnumerator<TKey> KeyEtor = Keys.GetEnumerator())
             using (IEnumerator<TValue> ValueEtor = Values.GetEnumerator()) {
                 while (KeyEtor.MoveNext() && ValueEtor.MoveNext()) {
