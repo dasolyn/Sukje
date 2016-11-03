@@ -300,7 +300,7 @@ namespace RedBlack {
             cursor = insert;
             while (true) {
                 Node parent = cursor.Parent;
-                if (parent.Color == Color.Black) break;
+                if (GetColor(parent) == Color.Black) break;
                 Node grandparent = parent.Parent;
                 Node uncle;
                 if (parent == grandparent.LeftChild) {
@@ -364,21 +364,12 @@ namespace RedBlack {
             } else {
                 // 자식 1개
                 if (delete.Parent == null) {
-                    if (delete.LeftChild != null) {
-                        Root = delete.LeftChild;
-                        delete.LeftChild = null;
-                    } else {
-                        Root = delete.RightChild;
-                        delete.RightChild = null;
-                    }
+                    if (delete.LeftChild != null) Root = delete.LeftChild;
+                    else Root = delete.RightChild;
+                    Root.Parent = null;
                 } else {
-                    if (delete.LeftChild != null) {
-                        delete.LeftChild.Parent = delete.Parent;
-                        delete.Parent = null;
-                    } else {
-                        delete.RightChild.Parent = delete.Parent;
-                        delete.Parent = null;
-                    }
+                    if (delete.LeftChild != null) delete.Parent.LeftChild = delete.LeftChild;
+                    else delete.Parent.RightChild = delete.RightChild;
                 }
             }
             if (GetColor(delete) == Color.Red) return;
