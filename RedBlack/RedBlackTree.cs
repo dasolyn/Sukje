@@ -187,8 +187,15 @@ namespace RedBlack {
         }
         object ICollection.SyncRoot => InternalSyncRoot;
         bool ICollection.IsSynchronized => false;
-        void ICollection.CopyTo(Array array, int index) {
-            CopyTo((KeyValuePair<TKey, TValue>[])array, index);
+        void ICollection.CopyTo(Array Array, int ArrayIndex) {
+            int cursor = 0;
+            foreach (Node i in RedBlackEnumNode()) {
+                if (cursor + ArrayIndex >= Array.Length || cursor + ArrayIndex < 0) return;
+                else {
+                    Array.SetValue(new KeyValuePair<TKey, TValue>(i.Key, i.Value), ArrayIndex + cursor);
+                    cursor++;
+                }
+            }
         }
         void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> Item) {
             Add(Item.Key, Item.Value);
