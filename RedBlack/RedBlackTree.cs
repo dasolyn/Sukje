@@ -241,7 +241,7 @@ namespace RedBlack {
         }
         void IDictionary.Remove(object Key) {
             if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
-            if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2");
+            if (Key is TKey == false) return;
             Remove((TKey)Key);
         }
         bool IDictionary.IsReadOnly => false;
