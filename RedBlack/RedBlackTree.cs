@@ -55,13 +55,13 @@ namespace RedBlack {
         #region 인덱스로 접근
         public TValue this[TKey Key] {
             get {
-                if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
+                if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null");
                 Node found = RedBlackSearchNode(Key);
-                if (found == null) throw new KeyNotFoundException("RedBlackTree`2");
+                if (found == null) throw new KeyNotFoundException("RedBlackTree`2: Key was not found in this dictionary");
                 return found.Value;
             }
             set {
-                if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
+                if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null");
                 Node found = RedBlackSearchNode(Key);
                 if (found == null) RedBlackAddNode(Key, value);
                 else found.Value = value;
@@ -71,21 +71,21 @@ namespace RedBlack {
 
         #region 추가
         public void Add(TKey Key, TValue Value) {
-            if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
+            if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null");
             Node found = RedBlackSearchNode(Key);
-            if (found != null) throw new ArgumentException("RedBlackTree`2");
+            if (found != null) throw new ArgumentException("RedBlackTree`2: Given key already exists in this dictionary", "Key");
             RedBlackAddNode(Key, Value);
         }
         #endregion
 
         #region 검색
         public bool ContainsKey(TKey Key) {
-            if (Key == null) throw new ArgumentNullException("RedBlackTree(TKey, TValue)");
+            if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null");
             Node found = RedBlackSearchNode(Key);
             return found != null;
         }
         public bool TryGetValue(TKey Key, out TValue Value) {
-            if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
+            if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null");
             Node found = RedBlackSearchNode(Key);
             if (found == null) {
                 Value = default(TValue);
@@ -96,33 +96,62 @@ namespace RedBlack {
             }
         }
         public bool ContainsValue(TValue Value) {
-            if (Value == null) throw new ArgumentNullException();
-            if (Root != null) {
-                Queue<Node> queue = new Queue<Node>();
-                queue.Enqueue(Root);
-                while (queue.Count > 0) {
-                    Node e = queue.Dequeue();
-                    if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
-                    if (e.RightChild != null) queue.Enqueue(e.RightChild);
-                    if (e.Value.Equals(Value)) {
-                        return true;
+            if (Value == null) {
+                if (Root != null) {
+                    Queue<Node> queue = new Queue<Node>();
+                    queue.Enqueue(Root);
+                    while (queue.Count > 0) {
+                        Node e = queue.Dequeue();
+                        if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
+                        if (e.RightChild != null) queue.Enqueue(e.RightChild);
+                        if (e.Value == null) {
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                if (Root != null) {
+                    Queue<Node> queue = new Queue<Node>();
+                    queue.Enqueue(Root);
+                    while (queue.Count > 0) {
+                        Node e = queue.Dequeue();
+                        if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
+                        if (e.RightChild != null) queue.Enqueue(e.RightChild);
+                        if (e.Value.Equals(Value)) {
+                            return true;
+                        }
                     }
                 }
             }
             return false;
         }
         public bool TryGetKey(TValue Value, out TKey Key) {
-            if (Value == null) throw new ArgumentNullException();
-            if (Root != null) {
-                Queue<Node> queue = new Queue<Node>();
-                queue.Enqueue(Root);
-                while (queue.Count > 0) {
-                    Node e = queue.Dequeue();
-                    if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
-                    if (e.RightChild != null) queue.Enqueue(e.RightChild);
-                    if (e.Value.Equals(Value)) {
-                        Key = e.Key;
-                        return true;
+            if (Value == null) {
+                if (Root != null) {
+                    Queue<Node> queue = new Queue<Node>();
+                    queue.Enqueue(Root);
+                    while (queue.Count > 0) {
+                        Node e = queue.Dequeue();
+                        if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
+                        if (e.RightChild != null) queue.Enqueue(e.RightChild);
+                        if (e.Value == null) {
+                            Key = e.Key;
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                if (Root != null) {
+                    Queue<Node> queue = new Queue<Node>();
+                    queue.Enqueue(Root);
+                    while (queue.Count > 0) {
+                        Node e = queue.Dequeue();
+                        if (e.LeftChild != null) queue.Enqueue(e.LeftChild);
+                        if (e.RightChild != null) queue.Enqueue(e.RightChild);
+                        if (e.Value.Equals(Value)) {
+                            Key = e.Key;
+                            return true;
+                        }
                     }
                 }
             }
@@ -137,7 +166,7 @@ namespace RedBlack {
             Count = 0;
         }
         public bool Remove(TKey Key) {
-            if (Key == null) throw new ArgumentNullException();
+            if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null");
             Node found = RedBlackSearchNode(Key);
             if (found == null) return false;
             RedBlackDeleteNode(found);
@@ -149,34 +178,16 @@ namespace RedBlack {
         public int Count { get; private set; }
         public IEnumerable<TKey> Keys {
             get {
-                List<TKey> keylist = new List<TKey>();
-                foreach (var i in this) {
-                    keylist.Add(i.Key);
-                }
-                return keylist;
+                foreach (var i in this) yield return i.Key;
             }
         }
         public IEnumerable<TValue> Values {
             get {
-                List<TValue> valuelist = new List<TValue>();
-                foreach (var i in this) {
-                    valuelist.Add(i.Value);
-                }
-                return valuelist;
+                foreach (var i in this) yield return i.Value;
             }
         }
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
             foreach (Node i in RedBlackEnumNode()) yield return new KeyValuePair<TKey, TValue>(i.Key, i.Value);
-        }
-        public void CopyTo(KeyValuePair<TKey, TValue>[] Array, int ArrayIndex) {
-            int cursor = 0;
-            foreach (Node i in RedBlackEnumNode()) {
-                if (cursor + ArrayIndex >= Array.Length || cursor + ArrayIndex < 0) return;
-                else {
-                    Array[ArrayIndex + cursor] = new KeyValuePair<TKey, TValue>(i.Key, i.Value);
-                    cursor++;
-                }
-            }
         }
         #endregion
 
@@ -211,6 +222,16 @@ namespace RedBlack {
             else return false;
         }
         bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
+        void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] Array, int ArrayIndex) {
+            int cursor = 0;
+            foreach (Node i in RedBlackEnumNode()) {
+                if (cursor + ArrayIndex >= Array.Length || cursor + ArrayIndex < 0) return;
+                else {
+                    Array[ArrayIndex + cursor] = new KeyValuePair<TKey, TValue>(i.Key, i.Value);
+                    cursor++;
+                }
+            }
+        }
         ICollection IDictionary.Keys => (ICollection)Keys;
         ICollection IDictionary.Values => (ICollection)Values;
         bool IDictionary.IsFixedSize => false;
@@ -220,9 +241,9 @@ namespace RedBlack {
                 else return null;
             }
             set {
-                if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
-                if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2");
-                if (value is TValue == false) throw new ArgumentException("RedBlackTree`2");
+                if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null");
+                if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2: Type of key is not acceptable by this dictionary", "Key");
+                if (value is TValue == false) throw new ArgumentException("RedBlackTree`2: Type of value is not acceptable by this dictionary", "Value");
                 this[(TKey)Key] = (TValue)value;
             }
         }
@@ -231,9 +252,9 @@ namespace RedBlack {
             else return false;
         }
         void IDictionary.Add(object Key, object Value) {
-            if (Key == null) throw new ArgumentNullException("RedBlackTree`2");
-            if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2");
-            if (Value is TValue == false) throw new ArgumentException("RedBlackTree`2");
+            if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null.");
+            if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2: Type of key is not acceptable by this dictionary", "Key");
+            if (Value is TValue == false) throw new ArgumentException("RedBlackTree`2: Type of value is not acceptable by this dictionary", "Value");
             Add((TKey)Key, (TValue)Value);
         }
         IDictionaryEnumerator IDictionary.GetEnumerator() {
@@ -257,8 +278,8 @@ namespace RedBlack {
             public bool MoveNext() => InnerEnumerator.MoveNext();
             public void Reset() => InnerEnumerator.Reset();
         }
-        ICollection<TKey> IDictionary<TKey, TValue>.Keys => (ICollection<TKey>)Keys;
-        ICollection<TValue> IDictionary<TKey, TValue>.Values => (ICollection<TValue>)Values;
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => new List<TKey>(Keys);
+        ICollection<TValue> IDictionary<TKey, TValue>.Values => new List<TValue>(Values);
         #endregion
 
         #region 내부 로직
