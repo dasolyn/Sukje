@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "algorithms1", "algorithms1\algorithms1.csproj", "{183B03BD-49A0-4F39-A96A-827AAA2D41B7}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memoization", "Memoization\Memoization.csproj", "{C82D0614-FF49-4DA1-9B99-FE2C6013D80E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Huffman", "Huffman\Huffman.csproj", "{49373DF1-C69D-4722-A708-AF1298F8F6F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedBlackTree", "RedBlackTree\RedBlackTree.csproj", "{177CCB82-1618-4268-A26A-ACF2DF80E86F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{49373DF1-C69D-4722-A708-AF1298F8F6F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49373DF1-C69D-4722-A708-AF1298F8F6F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49373DF1-C69D-4722-A708-AF1298F8F6F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{177CCB82-1618-4268-A26A-ACF2DF80E86F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{177CCB82-1618-4268-A26A-ACF2DF80E86F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{177CCB82-1618-4268-A26A-ACF2DF80E86F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{177CCB82-1618-4268-A26A-ACF2DF80E86F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
