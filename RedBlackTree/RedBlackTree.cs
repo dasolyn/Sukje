@@ -285,7 +285,7 @@ namespace Dasolyn {
         /// </summary>
         public IEnumerable<TKey> Keys {
             get {
-                foreach (var i in this) yield return i.Key;
+                foreach (Node i in RedBlackEnumNode()) yield return i.Key;
             }
         }
         /// <summary>
@@ -293,7 +293,7 @@ namespace Dasolyn {
         /// </summary>
         public IEnumerable<TValue> Values {
             get {
-                foreach (var i in this) yield return i.Value;
+                foreach (Node i in RedBlackEnumNode()) yield return i.Value;
             }
         }
         /// <summary>
