@@ -345,8 +345,8 @@ namespace Dasolyn {
                 }
             }
         }
-        ICollection IDictionary.Keys => (ICollection)Keys;
-        ICollection IDictionary.Values => (ICollection)Values;
+        ICollection IDictionary.Keys => new List<TKey>(Keys);
+        ICollection IDictionary.Values => new List<TValue>(Values);
         bool IDictionary.IsFixedSize => false;
         object IDictionary.this[object Key] {
             get {
