@@ -63,7 +63,7 @@ namespace Dasolyn {
         /// 기본 키 비교자를 사용하고 지정한 키 컬렉션과 값 컬렉션의 내용으로 구성한 키-값 쌍으로 채워진 레드 블랙 트리를 생성합니다.
         /// </summary>
         /// <param name="Keys">이 트리의 내용을 채우는데 사용할 키 컬렉션입니다.</param>
-        /// <param name="Value">이 트리의 내용을 채우는데 사용할 값 컬렉션입니다.</param>
+        /// <param name="Values">이 트리의 내용을 채우는데 사용할 값 컬렉션입니다.</param>
         /// <remarks>키 컬렉션과 값 컬렉션의 길이가 다를 경우, 보다 짧은 쪽에 맞춰지고 나머지 내용은 버립니다.</remarks>
         public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values) : this() {
             using (IEnumerator<TKey> KeyEtor = Keys.GetEnumerator())
@@ -77,7 +77,7 @@ namespace Dasolyn {
         /// 지정된 키 비교자를 사용하고 지정한 키 컬렉션과 값 컬렉션의 내용으로 구성한 키-값 쌍으로 채워진 레드 블랙 트리를 생성합니다.
         /// </summary>
         /// <param name="Keys">이 트리의 내용을 채우는데 사용할 키 컬렉션입니다.</param>
-        /// <param name="Value">이 트리의 내용을 채우는데 사용할 값 컬렉션입니다.</param>
+        /// <param name="Values">이 트리의 내용을 채우는데 사용할 값 컬렉션입니다.</param>
         /// <param name="KeyComparer">이 트리에서 사용할 키 비교자입니다.</param>
         /// <remarks>키 컬렉션과 값 컬렉션의 길이가 다를 경우, 보다 짧은 쪽에 맞춰지고 나머지 내용은 버립니다.</remarks>
         public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, IComparer<TKey> KeyComparer) : this(KeyComparer) {
@@ -92,7 +92,7 @@ namespace Dasolyn {
         /// 지정된 키 비교를 사용하고 지정한 키 컬렉션과 값 컬렉션의 내용으로 구성한 키-값 쌍으로 채워진 레드 블랙 트리를 생성합니다.
         /// </summary>
         /// <param name="Keys">이 트리의 내용을 채우는데 사용할 키 컬렉션입니다.</param>
-        /// <param name="Value">이 트리의 내용을 채우는데 사용할 값 컬렉션입니다.</param>
+        /// <param name="Values">이 트리의 내용을 채우는데 사용할 값 컬렉션입니다.</param>
         /// <param name="KeyComparison">이 트리에서 사용할 키 비교입니다.</param>
         /// <remarks>키 컬렉션과 값 컬렉션의 길이가 다를 경우, 보다 짧은 쪽에 맞춰지고 나머지 내용은 버립니다.</remarks>
         public RedBlackTree(IEnumerable<TKey> Keys, IEnumerable<TValue> Values, Comparison<TKey> KeyComparison) : this(KeyComparison) {
@@ -113,7 +113,7 @@ namespace Dasolyn {
         /// <returns>지정된 키와 연관된 값입니다.</returns>
         /// <exception cref="ArgumentNullException">키가 null인 경우.</exception>
         /// <exception cref="KeyNotFoundException">값을 가져올 때 트리 내에 해당 키가 없는 경우.</exception>
-        /// <remarks>지정된 키가 없으면 설정 작업에서는 새 키-값 쌍을 만들며, 가져오기 작업에서는 예외를 던집니다.</remarks>
+        /// <remarks>지정된 키가 트리 내에 없으면 설정 작업에서는 새 키-값 쌍을 만들며, 가져오기 작업에서는 예외를 던집니다.</remarks>
         public TValue this[TKey Key] {
             get {
                 if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null");
