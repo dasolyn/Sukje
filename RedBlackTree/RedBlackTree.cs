@@ -355,8 +355,8 @@ namespace Dasolyn {
             }
             set {
                 if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null");
-                if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2: Type of key is not acceptable by this dictionary", "Key");
-                if (value is TValue == false) throw new ArgumentException("RedBlackTree`2: Type of value is not acceptable by this dictionary", "Value");
+                if (Key is TKey == false) throw new InvalidCastException("RedBlackTree`2: Type of key is not acceptable by this dictionary");
+                if (value is TValue == false) throw new InvalidCastException("RedBlackTree`2: Type of value is not acceptable by this dictionary");
                 this[(TKey)Key] = (TValue)value;
             }
         }
@@ -366,8 +366,8 @@ namespace Dasolyn {
         }
         void IDictionary.Add(object Key, object Value) {
             if (Key == null) throw new ArgumentNullException("Key", "RedBlackTree`2: Key should not be null.");
-            if (Key is TKey == false) throw new ArgumentException("RedBlackTree`2: Type of key is not acceptable by this dictionary", "Key");
-            if (Value is TValue == false) throw new ArgumentException("RedBlackTree`2: Type of value is not acceptable by this dictionary", "Value");
+            if (Key is TKey == false) throw new InvalidCastException("RedBlackTree`2: Type of key is not acceptable by this dictionary");
+            if (Value is TValue == false) throw new InvalidCastException("RedBlackTree`2: Type of value is not acceptable by this dictionary");
             Add((TKey)Key, (TValue)Value);
         }
         IDictionaryEnumerator IDictionary.GetEnumerator() {
